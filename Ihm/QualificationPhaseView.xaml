@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="Contest.Ihm.QualificationPhaseView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ihm="clr-namespace:Contest.Ihm"
+             mc:Ignorable="d" 
+             d:DesignHeight="NaN" d:DesignWidth="NaN"
+        d:DataContext="{d:DesignInstance ihm:QualificationPhaseViewVm}">
+    <ScrollViewer VerticalScrollBarVisibility="Hidden" Name="ScrollViewer">
+        <ItemsControl ItemsSource="{Binding QualificationStepList}">
+            <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate><WrapPanel Orientation="Horizontal"/></ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <StackPanel Margin="5, 25">
+                    <TextBlock Text="{Binding GroupName}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" FontWeight="Bold" TextDecorations="Underline" Margin="5"></TextBlock>
+                    <DataGrid ItemsSource="{Binding RowList}" Width="450" AutoGenerateColumns="False" IsManipulationEnabled="False" Margin="10">
+                        <DataGrid.Columns>
+                                <DataGridTextColumn Width="4*" Header="Equipe" Binding="{Binding Name}" IsReadOnly="True" FontSize="16" FontWeight="Bold" />
+                                <DataGridTextColumn Width="*" Header="J" Binding="{Binding CountMatchPlayed}" IsReadOnly="True" FontSize="16" FontWeight="Bold" />
+                                <DataGridTextColumn Width="*" Header="G" Binding="{Binding CountMatchWin}" IsReadOnly="True" FontSize="16" FontWeight="Bold" />
+                                <DataGridTextColumn Width="*" Header="P" Binding="{Binding CountMatchLoose}" IsReadOnly="True" FontSize="16" FontWeight="Bold" />
+                                <DataGridTextColumn Width="*" Header="PM" Binding="{Binding SumMarkedPoint}" IsReadOnly="True" FontSize="16" FontWeight="Bold" />
+                                <DataGridTextColumn Width="*" Header="PE" Binding="{Binding SumTakePoint}" IsReadOnly="True" FontSize="16" FontWeight="Bold" />
+                                <DataGridTextColumn Width="*" Header="Diff." Binding="{Binding DifPointTakePoint}" IsReadOnly="True" FontSize="16" FontWeight="Bold" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </ScrollViewer>
+</UserControl>

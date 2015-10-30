@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1E4D7146-80A7-452E-871E-C5551D230714}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Contest.Business</RootNamespace>
+    <AssemblyName>Contest.Business.Interface</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AreaType.cs" />
+    <Compile Include="ContestEvent.cs" />
+    <Compile Include="GameStepEvent.cs" />
+    <Compile Include="IAddress.cs" />
+    <Compile Include="IContest.cs" />
+    <Compile Include="IEliminationStep.cs" />
+    <Compile Include="IEliminationStepSetting.cs" />
+    <Compile Include="IField.cs" />
+    <Compile Include="IGameSetting.cs" />
+    <Compile Include="IGameStep.cs" />
+    <Compile Include="IMatch.cs" />
+    <Compile Include="IMatchFactory.cs" />
+    <Compile Include="IMatchSetting.cs" />
+    <Compile Include="IPerson.cs" />
+    <Compile Include="IPhase.cs" />
+    <Compile Include="IPhysicalSetting.cs" />
+    <Compile Include="IQualificationStep.cs" />
+    <Compile Include="IQualificationStepSetting.cs" />
+    <Compile Include="IStepSetting.cs" />
+    <Compile Include="ITeam.cs" />
+    <Compile Include="MatchEvent.cs" />
+    <Compile Include="MatchState.cs" />
+    <Compile Include="PhaseEvent.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="EliminationType.cs" />
+    <Compile Include="PhaseType.cs" />
+    <Compile Include="EndTypeConstaint.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Contest.Core.csproj">
+      <Project>{aa703556-dd37-4b27-986d-9b8c01c24040}</Project>
+      <Name>Contest.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
+      <Project>{1FF5796B-18D0-4BF3-919D-14166813B7B2}</Project>
+      <Name>Contest.Core.Repository.Sql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Core.Windows\Contest.Core.Windows.csproj">
+      <Project>{117C2981-C2C7-4B80-BA99-A7F73B8A9B62}</Project>
+      <Name>Contest.Core.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Repository\Contest.Core.Repository.csproj">
+      <Project>{4194F8F9-57E1-4D31-B4E3-A989F0D786F0}</Project>
+      <Name>Contest.Core.Repository</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

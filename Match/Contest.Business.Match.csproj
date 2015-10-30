@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A91498D5-363D-48A6-98B2-E5120386C877}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Contest.Business</RootNamespace>
+    <AssemblyName>Contest.Business.Match</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ClosedMatchState.cs" />
+    <Compile Include="MatchRepository.cs" />
+    <Compile Include="MatchFactory.cs" />
+    <Compile Include="PlannedMatchState.cs" />
+    <Compile Include="InProgressMatchState.cs" />
+    <Compile Include="FinishedMatchState.cs" />
+    <Compile Include="Match.cs" />
+    <Compile Include="InternalMatchState.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Contest.Core.Component\Contest.Core.Component.csproj">
+      <Project>{6CC897AB-E169-4F20-A56D-0BC0AF8E451D}</Project>
+      <Name>Contest.Core.Component</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
+      <Project>{1FF5796B-18D0-4BF3-919D-14166813B7B2}</Project>
+      <Name>Contest.Core.Repository.Sql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MatchSetting\Contest.Business.MatchSetting.csproj">
+      <Project>{50fa9f63-d0e3-4019-8833-38e129418942}</Project>
+      <Name>Contest.Business.MatchSetting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Business\Contest.Business.csproj">
+      <Project>{8329c086-e43e-4299-9fbd-02f4c7aeb6cc}</Project>
+      <Name>Contest.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Contest.Core.csproj">
+      <Project>{aa703556-dd37-4b27-986d-9b8c01c24040}</Project>
+      <Name>Contest.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Business.Interface\Contest.Business.Interface.csproj">
+      <Project>{1e4d7146-80a7-452e-871e-c5551d230714}</Project>
+      <Name>Contest.Business.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Repository\Contest.Core.Repository.csproj">
+      <Project>{4194F8F9-57E1-4D31-B4E3-A989F0D786F0}</Project>
+      <Name>Contest.Core.Repository</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

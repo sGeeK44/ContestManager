@@ -1,0 +1,87 @@
+﻿<Window x:Class="Contest.Ihm.PhaseViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ihm="clr-namespace:Contest.Ihm"
+             mc:Ignorable="d"
+      d:DataContext="{d:DesignInstance ihm:PhaseViewerVm}" Height="600" Width="1000">
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="400"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Text="{Binding Current.Title}" TextAlignment="Center" FontFamily="Stencil" FontSize="36" FontStyle="Italic" Foreground="#FF0A0A0A"/>
+        <Frame Grid.Column="0" Grid.Row="1" NavigationUIVisibility="Hidden"  Focusable="false" Content="{Binding Current.Instance}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <StackPanel Grid.Row="0" Grid.Column="1" >
+            <Border BorderBrush="Black" BorderThickness="2">
+                <TextBlock Text="{Binding CurrentTime}" HorizontalAlignment="Center" Margin="5,0" FontFamily="Rockwell Extra Bold" FontSize="48"/>
+            </Border>
+        </StackPanel>
+        <ScrollViewer Grid.Row="1" Grid.Column="1" Name="ScrollViewer">
+            <StackPanel>
+                <StackPanel>
+                    <GroupBox>
+                        <GroupBox.Header>
+                            <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Current.FinishedGameList.Count}"/>
+                                <TextBlock>&#160;dernier(s) match(s) terminé(s)</TextBlock>
+                            </StackPanel>
+                        </GroupBox.Header>
+                        <Grid Margin="5">
+                                <TextBlock Margin="5" Text="Pas de match terminé." Visibility="{Binding Current.HasMatchEnded, Converter={StaticResource FalseToVisible}}"/>
+                                <ItemsControl ItemsSource="{Binding Current.FinishedGameList}" Visibility="{Binding Current.HasMatchEnded, Converter={StaticResource TrueToVisible}}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <ihm:MatchViewer Margin="5"></ihm:MatchViewer>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </GroupBox>
+                </StackPanel>
+                <StackPanel>
+                    <GroupBox>
+                        <GroupBox.Header>
+                            <Label Content="Matchs en cours"></Label>
+                        </GroupBox.Header>
+                        <Grid Margin="5">
+                            <TextBlock Margin="5" Text="Pas de match en cours." Visibility="{Binding Current.HasMatchInProgress, Converter={StaticResource FalseToVisible}}"/>
+                            <ItemsControl ItemsSource="{Binding Current.InProgressGameList}" Visibility="{Binding Current.HasMatchInProgress, Converter={StaticResource TrueToVisible}}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <ihm:MatchViewer Margin="5"></ihm:MatchViewer>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </GroupBox>
+                </StackPanel>
+                <StackPanel>
+                    <GroupBox Margin="5">
+                        <GroupBox.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Current.NextGameList.Count}"/>
+                                <TextBlock>&#160;prochain(s) match(s)</TextBlock>
+                            </StackPanel>
+                        </GroupBox.Header>
+                        <Grid Margin="5">
+                            <TextBlock Margin="5" Text="Plus de match à venir." Visibility="{Binding Current.HasMatchPlanned, Converter={StaticResource FalseToVisible}}"/>
+                            <ItemsControl ItemsSource="{Binding Current.NextGameList}" Visibility="{Binding Current.HasMatchPlanned, Converter={StaticResource TrueToVisible}}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <ihm:MatchViewer Margin="5"></ihm:MatchViewer>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </GroupBox>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

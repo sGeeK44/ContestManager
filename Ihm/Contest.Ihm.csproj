@@ -1,0 +1,314 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B39A4F9E-0484-4346-95A9-3AF5D62236BB}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Contest.Ihm</RootNamespace>
+    <AssemblyName>Contest.Ihm</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility" />
+    <Reference Include="PresentationUI, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="ReachFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Printing" />
+    <Reference Include="System.Windows.Controls.Input.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Windows.Controls.Layout.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\MvvmLightLibs.4.4.32.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WPFToolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="AvailablePlayer.cs" />
+    <Compile Include="ContestView.xaml.cs">
+      <DependentUpon>ContestView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ContestViewVm.cs" />
+    <Compile Include="AddTeamMember.xaml.cs">
+      <DependentUpon>AddTeamMember.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddTeamMemberVm.cs" />
+    <Compile Include="ContestCreate.xaml.cs">
+      <DependentUpon>ContestCreate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ContestCreateVm.cs" />
+    <Compile Include="ContestSelect.xaml.cs">
+      <DependentUpon>ContestSelect.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ContestSelectVm.cs" />
+    <Compile Include="EliminationMatchViewerVm.cs" />
+    <Compile Include="EliminationMatchViewer.xaml.cs">
+      <DependentUpon>EliminationMatchViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EliminationMatchConteneur.xaml.cs">
+      <DependentUpon>EliminationMatchConteneur.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EliminationMatchConteneurVm.cs" />
+    <Compile Include="EliminationPhaseView.xaml.cs">
+      <DependentUpon>EliminationPhaseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EliminationPhaseViewVm.cs" />
+    <Compile Include="EliminationStepView.xaml.cs">
+      <DependentUpon>EliminationStepView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EliminationStepViewVm.cs" />
+    <Compile Include="LineVm.cs" />
+    <Compile Include="MatchSettingVm.cs" />
+    <Compile Include="QualificationPhaseView.xaml.cs">
+      <DependentUpon>QualificationPhaseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="QualificationPhaseViewVm.cs" />
+    <Compile Include="PhaseViewer.xaml.cs">
+      <DependentUpon>PhaseViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PhaseViewerVm.cs" />
+    <Compile Include="MatchBase.xaml.cs">
+      <DependentUpon>MatchBase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ManagePhase.xaml.cs">
+      <DependentUpon>ManagePhase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ManagePhaseVm.cs" />
+    <Compile Include="MatchUpdateVm.cs" />
+    <Compile Include="MatchUpdate.xaml.cs">
+      <DependentUpon>MatchUpdate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MatchViewer.xaml.cs">
+      <DependentUpon>MatchViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MatchViewerVm.cs" />
+    <Compile Include="MatchBaseVm.cs" />
+    <Compile Include="PlayerList.xaml.cs">
+      <DependentUpon>PlayerList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindowVm.cs" />
+    <Compile Include="PlayerListVm.cs" />
+    <Compile Include="QualificationStepViewVm.cs" />
+    <Compile Include="RegisterPlayerVm.cs" />
+    <Compile Include="RegisterTeam.xaml.cs">
+      <DependentUpon>RegisterTeam.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Exceptions\UserException.cs" />
+    <Compile Include="RegisterTeamVm.cs" />
+    <Compile Include="SelectTextBehavior.cs" />
+    <Page Include="ContestView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddTeamMember.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ContestCreate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ContestSelect.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EliminationMatchViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EliminationMatchConteneur.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EliminationPhaseView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EliminationStepView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="QualificationPhaseView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PhaseViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MatchBase.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ManagePhase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MatchUpdate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MatchViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PlayerList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RegisterTeam.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="RegisterPlayer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="RegisterPlayer.xaml.cs">
+      <DependentUpon>RegisterPlayer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Business.Interface\Contest.Business.Interface.csproj">
+      <Project>{1e4d7146-80a7-452e-871e-c5551d230714}</Project>
+      <Name>Contest.Business.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Business\Contest.Business.csproj">
+      <Project>{8329c086-e43e-4299-9fbd-02f4c7aeb6cc}</Project>
+      <Name>Contest.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Core.Component\Contest.Core.Component.csproj">
+      <Project>{6CC897AB-E169-4F20-A56D-0BC0AF8E451D}</Project>
+      <Name>Contest.Core.Component</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Core.Converters\Contest.Core.Converters.csproj">
+      <Project>{ae46a224-2c96-4f3c-af4d-960cab831457}</Project>
+      <Name>Contest.Core.Converters</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Control\Contest.Control.csproj">
+      <Project>{396a76d7-d178-4bdd-a9ff-a4af9fc21818}</Project>
+      <Name>Contest.Control</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Contest.Core.csproj">
+      <Project>{aa703556-dd37-4b27-986d-9b8c01c24040}</Project>
+      <Name>Contest.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MatchSetting\Contest.Business.MatchSetting.csproj">
+      <Project>{50fa9f63-d0e3-4019-8833-38e129418942}</Project>
+      <Name>Contest.Business.MatchSetting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Match\Contest.Business.Match.csproj">
+      <Project>{a91498d5-363d-48a6-98b2-e5120386c877}</Project>
+      <Name>Contest.Business.Match</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Repository\Contest.Core.Repository.csproj">
+      <Project>{4194F8F9-57E1-4D31-B4E3-A989F0D786F0}</Project>
+      <Name>Contest.Core.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
+      <Project>{1FF5796B-18D0-4BF3-919D-14166813B7B2}</Project>
+      <Name>Contest.Core.Repository.Sql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Core.Windows\Contest.Core.Windows.csproj">
+      <Project>{117C2981-C2C7-4B80-BA99-A7F73B8A9B62}</Project>
+      <Name>Contest.Core.Windows</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="App_GlobalResources\Pictures\Picture.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_GlobalResources\Localization\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

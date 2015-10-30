@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="Contest.Ihm.EliminationMatchConteneur"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:ihm="clr-namespace:Contest.Ihm"
+      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+      mc:Ignorable="d">
+    <StackPanel>
+        <ihm:EliminationMatchViewer DataContext="{Binding MatchViewer}" HorizontalAlignment="Center"/>
+        <Canvas Height="10" Visibility="{Binding ShowBottom, Converter={StaticResource TrueToVisible}}" SizeChanged="OnSizeChanged">
+            <Line X1="{Binding X1}" X2 ="{Binding X2}" Y1="0" Y2="0" StrokeThickness="3" Stroke="Black"></Line>
+            <Line X1="{Binding X1}" X2 ="{Binding X1}" Y1="0" Y2="10" StrokeThickness="3" Stroke="Black"></Line>
+            <Line X1="{Binding X2}" X2 ="{Binding X2}" Y1="0" Y2="10" StrokeThickness="3" Stroke="Black"></Line>
+        </Canvas>
+    </StackPanel>
+</UserControl>

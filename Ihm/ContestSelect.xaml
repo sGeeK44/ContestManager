@@ -1,0 +1,18 @@
+﻿<Window x:Class="Contest.Ihm.ContestSelect"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ihm="clr-namespace:Contest.Ihm"
+        mc:Ignorable="d" 
+        d:DataContext="{d:DesignInstance ihm:ContestSelectVm}" d:DesignWidth="339" d:DesignHeight="345">
+    <StackPanel>
+        <DataGrid VerticalScrollBarVisibility="Auto" SelectedItem="{Binding SelectedContest}" SelectionUnit="FullRow" SelectionMode="Single" Margin="0, 10, 0, 10"
+                      ItemsSource="{Binding ContestList}" CanUserAddRows="False" AutoGenerateColumns="False" IsManipulationEnabled="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="*" Header="Date" Binding="{Binding DatePlanned}" IsReadOnly="True" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Width="125" Height="35" HorizontalAlignment="Center" Command="{Binding Load}">Ouvrir</Button>
+    </StackPanel>
+</Window>

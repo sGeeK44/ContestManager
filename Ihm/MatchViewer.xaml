@@ -1,0 +1,14 @@
+﻿<UserControl x:Class="Contest.Ihm.MatchViewer"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:ihm="clr-namespace:Contest.Ihm"
+      mc:Ignorable="d" 
+      d:DesignHeight="NaN" d:DesignWidth="NaN"
+      d:DataContext="{d:DesignInstance ihm:MatchViewerVm}" BorderThickness="1" BorderBrush="Black">
+
+    <StackPanel Orientation="Horizontal" Margin="5">
+        <ihm:MatchBase/>
+    </StackPanel>
+</UserControl>

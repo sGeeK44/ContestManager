@@ -1,0 +1,62 @@
+﻿<UserControl x:Class="Contest.Ihm.MatchBase"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:ihm="clr-namespace:Contest.Ihm"
+      mc:Ignorable="d" 
+      d:DesignHeight="NaN" d:DesignWidth="NaN"
+      d:DataContext="{d:DesignInstance ihm:MatchBaseVm}">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <DockPanel Width="75" Margin="5,0">
+            <TextBlock TextWrapping="Wrap" Text="{Binding TeamName1}" VerticalAlignment="Center"  HorizontalAlignment="Center"/>
+        </DockPanel>
+        <StackPanel Margin="5,0" Grid.Column="1" Orientation="Horizontal" Visibility="{Binding ShowUpdateScoreBox, Converter={StaticResource TrueToVisible}}">
+            <DockPanel Width="30">
+                <TextBox Width="20" Text="{Binding TeamScore1}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </DockPanel>
+            <DockPanel Width="5">
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">-</TextBlock>
+            </DockPanel>
+            <DockPanel Width="30">
+                <TextBox Width="20" Text="{Binding TeamScore2}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </DockPanel>
+        </StackPanel>
+        <StackPanel Margin="5,0" Grid.Column="1" Orientation="Horizontal" Visibility="{Binding ShowScoreBlock, Converter={StaticResource TrueToVisible}}" >
+            <DockPanel Width="30">
+                <TextBlock Text="{Binding TeamScore1}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </DockPanel>
+            <DockPanel Width="5">
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">-</TextBlock>
+            </DockPanel>
+            <DockPanel Width="30">
+                <TextBlock Text="{Binding TeamScore2}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </DockPanel>
+        </StackPanel>
+        <StackPanel Margin="5,0" Grid.Column="1" Orientation="Horizontal" Visibility="{Binding ShowVs, Converter={StaticResource TrueToVisible}}">
+            <DockPanel Width="65">
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Vs</TextBlock>
+            </DockPanel>
+        </StackPanel>
+        <DockPanel Grid.Column="2" Width="75" Margin="5,0">
+            <TextBlock TextWrapping="Wrap" Text="{Binding TeamName2}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </DockPanel>
+        <StackPanel Grid.Column="3" Margin="5,0">
+            <StackPanel Orientation="Horizontal" Visibility="{Binding IsInProgress, Converter={StaticResource TrueToVisible}}">
+                <TextBlock Margin="5" Text="Terrain:" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextBlock Width="30" Margin="5" Text="{Binding PlayGroundNumber}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Visibility="{Binding IsStarted, Converter={StaticResource TrueToVisible}}">
+                <TextBlock Margin="5" Text="Durée:" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextBlock Width="30" Margin="5" Text="{Binding ElapseTime}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

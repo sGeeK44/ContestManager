@@ -1,0 +1,168 @@
+﻿<UserControl x:Class="Contest.Ihm.ContestView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ihm="clr-namespace:Contest.Ihm"
+             mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance ihm:ContestViewVm}" Height="705" Width="892">
+    <UserControl.Resources>
+        <ControlTemplate x:Key="MatchSetting">
+            <StackPanel d:DataContext="{d:DesignInstance ihm:MatchSettingVm}" Orientation="Horizontal">
+                <Label Margin="5" Content="Contrainte de fin:" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <WrapPanel Margin="5" Visibility="{Binding ByPoint, Converter={StaticResource TrueToVisible}}">
+                    <TextBlock Margin="5" Text="{Binding MatchPoint}"/>
+                    <TextBlock Margin="5" Text="point(s)"/>
+                </WrapPanel>
+                <WrapPanel Margin="5" Visibility="{Binding ByTime, Converter={StaticResource TrueToVisible}}">
+                    <TextBlock Margin="5" Text="{Binding MatchElapse}"/>
+                    <TextBlock Margin="5" Text="durée (hh:mm:ss)"/>
+                </WrapPanel>
+                <WrapPanel Margin="5" Visibility="{Binding ByBoth, Converter={StaticResource TrueToVisible}}">
+                    <TextBlock Margin="5" Text="{Binding MatchPoint}"/>
+                    <TextBlock Margin="5" Text="point(s)"/>
+                    <TextBlock Margin="5" Text=" ou "/>
+                    <TextBlock Margin="5" Text="{Binding MatchElapse}"/>
+                    <TextBlock Margin="5" Text="durée (hh:mm:ss)"/>
+                </WrapPanel>
+            </StackPanel>
+        </ControlTemplate>
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+        <Grid Margin="10, 0, 10, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Column="0">
+                <GroupBox Margin="5">
+                    <GroupBox.Header>
+                        <Label Content="Paramètre général du tournoi"></Label>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Margin="5" Grid.Column="0" Grid.Row="0" Content="Type de tournoi:"/>
+                        <Label Grid.Row="0" Grid.Column="1" Height="23" Margin="5" Content="Eliminatoire" HorizontalAlignment="Left"/>
+                        <Label Margin="5" Grid.Row="2" Grid.Column="0" Content="Phase de qualification (Poule):"/>
+                        <CheckBox Grid.Row="2" Grid.Column="1" Margin="5" IsChecked="{Binding HasQualificationStep}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        <Label Margin="5" Grid.Row="3" Grid.Column="0" Content="Consolante"/>
+                        <CheckBox Grid.Row="3" Grid.Column="1" Margin="5" IsEnabled="{Binding HasQualificationStep}" IsChecked="{Binding HasConsolingStep}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        <StackPanel Margin="5" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4" VerticalAlignment="Center" Orientation="Horizontal">
+                            <Label Margin="5" Content="Nb min équipe:" VerticalAlignment="Center"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding CountMinTeamRegister}" Width="30px"/>
+                            <Label Margin="5" VerticalAlignment="Center" Content="Nb max équipe:"/>
+                            <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding CountMaxTeamRegister}" Width="30px"/>
+                        </StackPanel>
+                        <StackPanel Margin="5" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="5" VerticalAlignment="Center" Orientation="Horizontal">
+                            <Label Margin="5" Content="Nb joueur min / équipe:"/>
+                            <TextBox Margin="5" Text="{Binding CountMinPlayerByTeam}" Width="30px"/>
+                            <Label Margin="5" Content="Nb Joueur max / équipe:"/>
+                            <TextBox Margin="5" Text="{Binding CountMaxPlayerByTeam}" Width="30px"/>
+                        </StackPanel>
+                        <Label Margin="5" Grid.Column="0" Grid.Row="6" Content="Nombre de terrain:" Target="{Binding ElementName=CountField}"/>
+                        <TextBox HorizontalAlignment="Left" Margin="5" Grid.Column="1" Grid.Row="6" Name="CountField" Text="{Binding CountField}" Width="30px"/>
+                    </Grid>
+                </GroupBox>
+                <GroupBox  Margin="5">
+                    <GroupBox.Header>
+                        <Label Content="Phase principale"></Label>
+                    </GroupBox.Header>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Margin="5" Content="Profondeur:"/>
+                            <ComboBox Margin="5"  SelectedItem="{Binding FirstEliminationStep}" ItemsSource="{Binding AvailableEliminationStep}" HorizontalAlignment="Left">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding ., Converter={StaticResource DisplayEnumConverter}}"></TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                        <Control Template="{StaticResource MatchSetting}" DataContext="{Binding EliminationSettingVM}"/>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="1">
+                <GroupBox  Margin="5" IsEnabled="{Binding HasQualificationStep}">
+                    <GroupBox.Header>
+                        <Label Content="Phases qualificatives"></Label>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Margin="5" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+                            <Label Margin="0,5" Content="Nombre de poule:"/>
+                            <ComboBox Margin="5" SelectedValue="{Binding CountQualificationGroup}" ItemsSource="{Binding AvailableNumberOfQualificationGroup}" HorizontalAlignment="Left"/>
+                            <Label Margin="5" Content="Nombre de qualifié/poule:"/>
+                            <ComboBox Margin="5" SelectedValue="{Binding CountQualifiedTeam}" ItemsSource="{Binding AvailableNumberOfQualifiedTeam}" HorizontalAlignment="Left"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Orientation="Horizontal">
+                            <Label Margin="5" Content="Nb équipe repêché pour la phase finale:"/>
+                            <TextBox Margin="5" IsEnabled="False" Text="{Binding CountFishPlayer}" Width="30px"/>
+                        </StackPanel>
+                        <StackPanel Margin="5" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Orientation="Horizontal" DataContext="{Binding QualificationSettingVM}">
+                            <Label Margin="0,5" Content="Point par victoire:" VerticalAlignment="Center"/>
+                            <TextBox Margin="5" Text="{Binding MatchPointWin}" Width="30"/>
+                            <Label Margin="5" Content="Point par nulle:" VerticalAlignment="Center"/>
+                            <TextBox Margin="5" Text="{Binding MatchPointDuce}" Width="30" IsEnabled="{Binding MatchNullIsPossible}"/>
+                            <Label Margin="5" Content="Point par défaite:" VerticalAlignment="Center"/>
+                            <TextBox Margin="5" Text="{Binding MatchPointLoose}" Width="30"/>
+                        </StackPanel>
+                        <StackPanel Margin="5" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal">
+                            <Label Margin="0,5" Content="Match avec revanche:" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <CheckBox Margin="5" Name="WithRevenge" IsChecked="{Binding WithRevenge}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <Label Margin="5" Content="Match nulle possible:" Target="{Binding ElementName=HasConsolante}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <CheckBox Margin="5" Name="MatchNullIsPossible" DataContext="{Binding QualificationSettingVM}" IsChecked="{Binding MatchNullIsPossible}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        </StackPanel>
+                        <Control Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Template="{StaticResource MatchSetting}" DataContext="{Binding QualificationSettingVM}"></Control>
+                    </Grid>
+                </GroupBox>
+                <GroupBox  Margin="5" IsEnabled="{Binding HasConsolingStep}">
+                    <GroupBox.Header>
+                        <Label Content="Phase consolante"></Label>
+                    </GroupBox.Header>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Margin="5" Content="Profondeur:"/>
+                            <ComboBox Margin="5"  SelectedItem="{Binding FirstConsolingEliminationStep}" ItemsSource="{Binding AvailableConsolingEliminationStep}" HorizontalAlignment="Left">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding ., Converter={StaticResource DisplayEnumConverter}}"></TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                        <Control Template="{StaticResource MatchSetting}" DataContext="{Binding ConsolingEliminationSettingVM}"/>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

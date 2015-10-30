@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="Contest.Ihm.MatchUpdate"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ihm="clr-namespace:Contest.Ihm"
+      mc:Ignorable="d"
+      d:DataContext="{d:DesignInstance ihm:MatchUpdateVm}" BorderThickness="1" BorderBrush="Black">
+    <StackPanel Orientation="Horizontal" Margin="5">
+        <ihm:MatchBase></ihm:MatchBase>
+        <Button Width="50" Visibility="{Binding IsInProgress, Converter={StaticResource TrueToVisible}}" Command="{Binding SetScore}">Fin</Button>
+        <Button Width="50" Visibility="{Binding IsStarted, Converter={StaticResource FalseToVisible}}" Command="{Binding Start}">Go</Button>
+        <Button Width="50" Visibility="{Binding IsEnded, Converter={StaticResource TrueToVisible}}" Command="{Binding Update}">Maj</Button>
+    </StackPanel>
+</UserControl>
