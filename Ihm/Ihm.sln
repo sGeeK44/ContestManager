@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Ihm", "Contest.Ihm.csproj", "{B39A4F9E-0484-4346-95A9-3AF5D62236BB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business", "..\Business\Contest.Business.csproj", "{8329C086-E43E-4299-9FBD-02F4C7AEB6CC}"
@@ -40,6 +42,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Repository.Sql", "..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj", "{1FF5796B-18D0-4BF3-919D-14166813B7B2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Repository.Sql.UnitTest", "..\Contest.Core.Repository.Sql.UnitTest\Contest.Core.Repository.Sql.UnitTest.csproj", "{8B54910B-B726-4B01-B5F1-8935FAD4AA9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Address", "..\Contest.Business.Address\Contest.Business.Address.csproj", "{CBAAEC44-AE3C-497B-9B97-043041CA994E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -127,6 +131,10 @@ Global
 		{8B54910B-B726-4B01-B5F1-8935FAD4AA9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B54910B-B726-4B01-B5F1-8935FAD4AA9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B54910B-B726-4B01-B5F1-8935FAD4AA9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBAAEC44-AE3C-497B-9B97-043041CA994E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBAAEC44-AE3C-497B-9B97-043041CA994E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBAAEC44-AE3C-497B-9B97-043041CA994E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBAAEC44-AE3C-497B-9B97-043041CA994E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

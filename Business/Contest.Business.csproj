@@ -43,9 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Address.cs" />
     <Compile Include="ContestRepository.cs" />
-    <Compile Include="AddressRepository.cs" />
     <Compile Include="TeamPhaseRelationshipRepository.cs" />
     <Compile Include="StepSettingRepository.cs" />
     <Compile Include="GameSettingRepository.cs" />

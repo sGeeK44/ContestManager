@@ -260,6 +260,10 @@
       <Project>{8329c086-e43e-4299-9fbd-02f4c7aeb6cc}</Project>
       <Name>Contest.Business</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.Address\Contest.Business.Address.csproj">
+      <Project>{cbaaec44-ae3c-497b-9b97-043041ca994e}</Project>
+      <Name>Contest.Business.Address</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Contest.Core.Component\Contest.Core.Component.csproj">
       <Project>{6CC897AB-E169-4F20-A56D-0BC0AF8E451D}</Project>
       <Name>Contest.Core.Component</Name>
