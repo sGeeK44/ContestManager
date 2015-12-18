@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
 using Contest.Business;
+using Contest.Core.Component;
 using Contest.Core.Helper;
 using Contest.Core.Windows.Commands;
 using Contest.Core.Windows.Mvvm;
@@ -9,6 +11,15 @@ namespace Contest.Ihm
 {
     public class ContestCreateVm : ViewModel
     {
+        #region Dependencies
+
+        [Import]
+        private IAddressFactory AddressFactory { get; set; }
+
+        #endregion
+
+        #region private field
+
         private GameSetting.TypeOfPuck _typeOfPuck;
         private GameSetting.TypeOfPlayGround _typeOfBoard;
         private Business.Contest.TypeOfGame _typeOfGame;
@@ -16,10 +27,15 @@ namespace Contest.Ihm
         private uint _countMinPlayerByTeam;
         private bool _indoor;
 
+        #endregion
+
         #region Constructors
 
         public ContestCreateVm()
         {
+            // Do MEF resolution to inject dependencies.
+            FlippingContainer.Instance.ComposeParts(this);
+
             //Load dropdown list
             AvailableTypeOfGame = new ObservableCollection<Business.Contest.TypeOfGame>(EnumHelper.GetValueList<Business.Contest.TypeOfGame>());
             AvailableTypeOfPuck = new ObservableCollection<GameSetting.TypeOfPuck>(EnumHelper.GetValueList<GameSetting.TypeOfPuck>());
@@ -35,7 +51,7 @@ namespace Contest.Ihm
             Create = new RelayCommand(
                 delegate
                     {
-                        var newContest = Business.Contest.Create(Date, PhysicalSetting.Create(Address.Create(0, Street, ZipCode, City),
+                        var newContest = Business.Contest.Create(Date, PhysicalSetting.Create(AddressFactory.Create(0, Street, ZipCode, City),
                                                                                               Indoor ? AreaType.Indoor : AreaType.Outdoor,
                                                                                               CountField),
                                                                  GameSetting.Create(TypeOfBoard, TypeOfPuck, CountMinPlayerByTeam, CountMaxPlayerByTeam));

@@ -12,7 +12,7 @@ namespace Contest.Business
     {
         #region Constructors
 
-        private Address() { }
+        internal Address() { }
 
         #endregion
 
@@ -62,28 +62,6 @@ namespace Contest.Business
         public void PrepareDelete(ISqlUnitOfWorks unitOfWorks)
         {
             throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region Factory
-
-        /// <summary>
-        /// Create a new instance (in memory and database) of <see cref="T:Business.Address"/> with specified param
-        /// </summary>
-        /// <returns>Match's instance</returns>
-        public static IAddress Create(int streetNumber, string street, string zipCode, string city)
-        {
-            var result = new Address
-            {
-                Id = Guid.NewGuid(),
-                StreetNumber = streetNumber,
-                Street = street,
-                ZipCode = zipCode,
-                City = city
-            };
-
-            return result;
         }
 
         #endregion
