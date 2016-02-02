@@ -53,6 +53,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Field.Unit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.GameSetting", "..\Contest.Business.GameSetting\Contest.Business.GameSetting.csproj", "{94336F05-1311-448B-8EF6-AEBA3069F4D9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Person", "Contest.Business.Person\Contest.Business.Person.csproj", "{F53A6D92-00CE-4C7B-A0CC-C6DBA2D6206E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +161,10 @@ Global
 		{94336F05-1311-448B-8EF6-AEBA3069F4D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94336F05-1311-448B-8EF6-AEBA3069F4D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94336F05-1311-448B-8EF6-AEBA3069F4D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F53A6D92-00CE-4C7B-A0CC-C6DBA2D6206E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F53A6D92-00CE-4C7B-A0CC-C6DBA2D6206E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F53A6D92-00CE-4C7B-A0CC-C6DBA2D6206E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F53A6D92-00CE-4C7B-A0CC-C6DBA2D6206E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

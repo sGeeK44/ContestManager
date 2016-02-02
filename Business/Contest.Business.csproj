@@ -53,7 +53,6 @@
     <Compile Include="EliminationStepSettingRepository.cs" />
     <Compile Include="QualificationStepRepository.cs" />
     <Compile Include="PhysicalSettingRepository.cs" />
-    <Compile Include="PersonRepository.cs" />
     <Compile Include="ITeamFactory.cs" />
     <Compile Include="TeamFactory.cs" />
     <Compile Include="TeamGameStepRelationshipRepository.cs" />
@@ -61,7 +60,6 @@
     <Compile Include="TeamPhaseRelationship.cs" />
     <Compile Include="EliminationStepSetting.cs" />
     <Compile Include="TeamGameStepRelationship.cs" />
-    <Compile Include="Person.cs" />
     <Compile Include="StepSetting.cs" />
     <Compile Include="QualificationStepSetting.cs" />
     <Compile Include="EliminationStep.cs" />

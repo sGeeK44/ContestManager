@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>f53a6d92-00ce-4c7b-a0cc-c6dba2d6206e</ProjectGuid>
+    <ProjectGuid>{F53A6D92-00CE-4C7B-A0CC-C6DBA2D6206E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Contest.Business.Person</RootNamespace>
@@ -30,24 +30,47 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System"/>
-    
-    <Reference Include="System.Core"/>
-    <Reference Include="System.Xml.Linq"/>
-    <Reference Include="System.Data.DataSetExtensions"/>
-    
-    
-    <Reference Include="Microsoft.CSharp"/>
-    
-    <Reference Include="System.Data"/>
-    
-    <Reference Include="System.Net.Http"/>
-    
-    <Reference Include="System.Xml"/>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Person.cs" />
+    <Compile Include="PersonRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Business.Interface\Contest.Business.Interface.csproj">
+      <Project>{1e4d7146-80a7-452e-871e-c5551d230714}</Project>
+      <Name>Contest.Business.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contest.Core.Component\Contest.Core.Component.csproj">
+      <Project>{6cc897ab-e169-4f20-a56d-0bc0af8e451d}</Project>
+      <Name>Contest.Core.Component</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
+      <Project>{1ff5796b-18d0-4bf3-919d-14166813b7b2}</Project>
+      <Name>Contest.Core.Repository.Sql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contest.Core.Windows\Contest.Core.Windows.csproj">
+      <Project>{117c2981-c2c7-4b80-ba99-a7f73b8a9b62}</Project>
+      <Name>Contest.Core.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Contest.Core.csproj">
+      <Project>{aa703556-dd37-4b27-986d-9b8c01c24040}</Project>
+      <Name>Contest.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Repository\Contest.Core.Repository.csproj">
+      <Project>{4194f8f9-57e1-4d31-b4e3-a989f0d786f0}</Project>
+      <Name>Contest.Core.Repository</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -57,5 +80,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-
- </Project>
+</Project>
