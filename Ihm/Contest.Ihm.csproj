@@ -302,6 +302,10 @@
       <Project>{117C2981-C2C7-4B80-BA99-A7F73B8A9B62}</Project>
       <Name>Contest.Core.Windows</Name>
     </ProjectReference>
+    <ProjectReference Include="Contest.Business.Person\Contest.Business.Person.csproj">
+      <Project>{f53a6d92-00ce-4c7b-a0cc-c6dba2d6206e}</Project>
+      <Name>Contest.Business.Person</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="App_GlobalResources\Pictures\Picture.png" />
