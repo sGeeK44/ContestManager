@@ -43,6 +43,9 @@ namespace Contest.Business
         private IRepository<ITeam> TeamRepository { get; set; }
 
         [Import]
+        private IFieldFactory FieldFactory { get; set; }
+
+        [Import]
         private IRepository<IField> FieldRepository { get; set; }
 
         [Import]
@@ -367,7 +370,7 @@ namespace Contest.Business
                 {
                     var result = new List<IField>();
                     for (var i = 1; i <= PhysicalSetting.CountField; i++)
-                        result.Add(Field.Create(this, i.ToString(CultureInfo.InvariantCulture)));
+                        result.Add(FieldFactory.Create(this, i.ToString(CultureInfo.InvariantCulture)));
                     return result;
                 }
             );

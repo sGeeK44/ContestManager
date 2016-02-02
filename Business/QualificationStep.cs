@@ -124,7 +124,7 @@ namespace Contest.Business
         /// Do all insert or update into repository for all of object composed.
         /// </summary>
         /// <param name="unitOfWorks">Unit of work for action</param>
-        public virtual void PrepareCommit(ISqlUnitOfWorks unitOfWorks)
+        public override void PrepareCommit(ISqlUnitOfWorks unitOfWorks)
         {
             unitOfWorks.InsertOrUpdate<IQualificationStep>(this);
             base.PrepareCommit(unitOfWorks);

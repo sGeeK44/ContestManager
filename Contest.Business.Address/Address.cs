@@ -61,7 +61,7 @@ namespace Contest.Business
         /// <param name="unitOfWorks">Unit of work for action</param>
         public void PrepareDelete(ISqlUnitOfWorks unitOfWorks)
         {
-            throw new NotImplementedException();
+            unitOfWorks.Delete<IAddress>(this);
         }
 
         #endregion

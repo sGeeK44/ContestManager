@@ -52,7 +52,6 @@
     <Compile Include="PhaseRepository.cs" />
     <Compile Include="EliminationStepRepository.cs" />
     <Compile Include="EliminationStepSettingRepository.cs" />
-    <Compile Include="FieldRepository.cs" />
     <Compile Include="QualificationStepRepository.cs" />
     <Compile Include="PhysicalSettingRepository.cs" />
     <Compile Include="PersonRepository.cs" />
@@ -73,7 +72,6 @@
     <Compile Include="GameSetting.cs" />
     <Compile Include="GameStep.cs" />
     <Compile Include="PhysicalSetting.cs" />
-    <Compile Include="Field.cs" />
     <Compile Include="Team.cs" />
     <Compile Include="Contest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -86,6 +84,10 @@
     <ProjectReference Include="..\Business.Interface\Contest.Business.Interface.csproj">
       <Project>{1e4d7146-80a7-452e-871e-c5551d230714}</Project>
       <Name>Contest.Business.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.Field\Contest.Business.Field.csproj">
+      <Project>{22fe8cf8-7973-4a27-8300-1ea82dfc133d}</Project>
+      <Name>Contest.Business.Field</Name>
     </ProjectReference>
     <ProjectReference Include="..\Contest.Core.Component\Contest.Core.Component.csproj">
       <Project>{6CC897AB-E169-4F20-A56D-0BC0AF8E451D}</Project>
