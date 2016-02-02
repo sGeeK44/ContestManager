@@ -38,6 +38,7 @@ namespace Contest.Core.Repository.Sql
         /// Get Id of first object involved
         /// </summary>
         [DataMember]
+        [SqlPrimaryKey]
         public Guid FirstItemInvolveId { get; protected set; }
 
         /// <summary>
@@ -57,6 +58,7 @@ namespace Contest.Core.Repository.Sql
         /// Get Id of second object involved
         /// </summary>
         [DataMember]
+        [SqlPrimaryKey]
         public Guid SecondItemInvolveId { get; protected set; }
 
         /// <summary>
