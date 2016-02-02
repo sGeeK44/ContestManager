@@ -46,7 +46,6 @@
     <Compile Include="ContestRepository.cs" />
     <Compile Include="TeamPhaseRelationshipRepository.cs" />
     <Compile Include="StepSettingRepository.cs" />
-    <Compile Include="GameSettingRepository.cs" />
     <Compile Include="TeamRepository.cs" />
     <Compile Include="QualificationStepSettingRepository.cs" />
     <Compile Include="PhaseRepository.cs" />
@@ -69,7 +68,6 @@
     <Compile Include="Helper.cs" />
     <Compile Include="QualificationStep.cs" />
     <Compile Include="Phase.cs" />
-    <Compile Include="GameSetting.cs" />
     <Compile Include="GameStep.cs" />
     <Compile Include="PhysicalSetting.cs" />
     <Compile Include="Team.cs" />
