@@ -46,15 +46,12 @@
     <Compile Include="ContestRepository.cs" />
     <Compile Include="TeamPhaseRelationshipRepository.cs" />
     <Compile Include="StepSettingRepository.cs" />
-    <Compile Include="TeamRepository.cs" />
     <Compile Include="QualificationStepSettingRepository.cs" />
     <Compile Include="PhaseRepository.cs" />
     <Compile Include="EliminationStepRepository.cs" />
     <Compile Include="EliminationStepSettingRepository.cs" />
     <Compile Include="QualificationStepRepository.cs" />
     <Compile Include="PhysicalSettingRepository.cs" />
-    <Compile Include="ITeamFactory.cs" />
-    <Compile Include="TeamFactory.cs" />
     <Compile Include="TeamGameStepRelationshipRepository.cs" />
     <Compile Include="GameStepRepository.cs" />
     <Compile Include="TeamPhaseRelationship.cs" />
@@ -68,7 +65,6 @@
     <Compile Include="Phase.cs" />
     <Compile Include="GameStep.cs" />
     <Compile Include="PhysicalSetting.cs" />
-    <Compile Include="Team.cs" />
     <Compile Include="Contest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

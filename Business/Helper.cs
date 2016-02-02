@@ -14,11 +14,11 @@ namespace Contest.Business
         /// </summary>
         /// <param name="teamList">Team list to randomize</param>
         /// <returns>Randomized list.</returns>
-        public static List<Team> BuildRandomList(List<Team> teamList)
+        public static List<ITeam> BuildRandomList(List<ITeam> teamList)
         {
             if (teamList == null) throw new ArgumentNullException("teamList");
 
-            var randomSort = new SortedDictionary<int, Team>();
+            var randomSort = new SortedDictionary<int, ITeam>();
             var rand = new Random();
             foreach (var team in teamList)
             {
