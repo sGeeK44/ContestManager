@@ -6,7 +6,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
     [TestFixture]
     public class RelationshipTest
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Init()
         {
             FlippingContainer.Instance.Current = new NoComposer();

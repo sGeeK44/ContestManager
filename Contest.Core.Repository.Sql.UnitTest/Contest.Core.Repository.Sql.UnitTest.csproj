@@ -35,8 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework">
-      <HintPath>..\Ihm\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.0.5813.39031, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\Ihm\packages\NUnit.3.0.1\lib\net45\nunit.framework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -53,6 +54,7 @@
   <ItemGroup>
     <Compile Include="ContextMock.cs" />
     <Compile Include="ConverterMock.cs" />
+    <Compile Include="Entity7.cs" />
     <Compile Include="Entity6.cs" />
     <Compile Include="Entity1.cs" />
     <Compile Include="Entity2.cs" />

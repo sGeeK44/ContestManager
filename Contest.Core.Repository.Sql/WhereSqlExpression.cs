@@ -144,7 +144,7 @@ namespace Contest.Core.Repository.Sql
             var count = arg.Count;
             var newArg = new Tuple<string, object, object[]>(string.Concat(MARKER, count.ToString(CultureInfo.InvariantCulture)), obj, customAttr);
             arg.Add(newArg);
-            return string.Concat("@", MARKER, count.ToString(CultureInfo.InvariantCulture));
+            return string.Concat("@", MARKER, count.ToString(CultureInfo.InvariantCulture), "@");
         }
 
         protected string ToSqlStatement(ExpressionType type)

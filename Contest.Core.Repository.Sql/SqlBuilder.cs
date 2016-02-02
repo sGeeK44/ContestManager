@@ -178,7 +178,7 @@ namespace Contest.Core.Repository.Sql
                 if (!value.Item3)
                 {
                     // Remove marker unused.
-                    arg.Remove(arg.First(_ => string.Concat("@", _.Item1) == value.Item2));
+                    arg.Remove(arg.First(_ => Marked(_.Item1) == value.Item2));
                 }
                 else
                 {
@@ -189,6 +189,11 @@ namespace Contest.Core.Repository.Sql
             }
             if (keys == null) throw new NotSupportedException(string.Format("Can not delete class without primary key. Class:{0}", item.GetType().Name));
             return string.Format(@"DELETE FROM {0} WHERE {1};", tableName, keys);
+        }
+
+        private string Marked(string paramToMark)
+        {
+            return string.Concat("@", paramToMark, "@");
         }
 
         private string GetTableName()
@@ -217,7 +222,7 @@ namespace Contest.Core.Repository.Sql
 
                 //Add sql name field and associated value.
                 result.Add(new Tuple<string, string, bool>(fieldAttribute.Name ?? prop.Name, // Sql column name
-                                                           string.Concat("@", prop.Name), // Marker to set parameter after
+                                                           Marked(prop.Name), // Marker to set parameter after
                                                            customAttr.OfType<SqlPrimaryKeyAttribute>().FirstOrDefault() != null)); // True if primary key, false else
                 arg.Add(new Tuple<string, object, object[]>(prop.Name, // Marker to set parameter after
                                                             o != null ? prop.GetValue(o, null) : null, // Value to set parameter after
