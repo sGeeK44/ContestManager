@@ -45,17 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContestRepository.cs" />
-    <Compile Include="StepSettingRepository.cs" />
-    <Compile Include="QualificationStepSettingRepository.cs" />
     <Compile Include="PhaseRepository.cs" />
     <Compile Include="EliminationStepSettingRepository.cs" />
-    <Compile Include="PhysicalSettingRepository.cs" />
     <Compile Include="EliminationStepSetting.cs" />
-    <Compile Include="StepSetting.cs" />
-    <Compile Include="QualificationStepSetting.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Phase.cs" />
-    <Compile Include="PhysicalSetting.cs" />
     <Compile Include="Contest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -95,6 +89,10 @@
     <ProjectReference Include="..\Ihm\Contest.Business.GameStep\Contest.Business.GameStep.csproj">
       <Project>{d0f224fa-5797-4c7c-87ab-4168ef306526}</Project>
       <Name>Contest.Business.GameStep</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ihm\Contest.Business.StepSetting\Contest.Business.StepSetting.csproj">
+      <Project>{13cda740-c73f-457a-9ad0-46ac2f89b542}</Project>
+      <Name>Contest.Business.StepSetting</Name>
     </ProjectReference>
     <ProjectReference Include="..\MatchSetting\Contest.Business.MatchSetting.csproj">
       <Project>{50fa9f63-d0e3-4019-8833-38e129418942}</Project>
