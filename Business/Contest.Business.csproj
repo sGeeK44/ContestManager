@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Contest.Business</RootNamespace>
     <AssemblyName>Contest.Business</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,26 +45,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContestRepository.cs" />
-    <Compile Include="TeamPhaseRelationshipRepository.cs" />
     <Compile Include="StepSettingRepository.cs" />
     <Compile Include="QualificationStepSettingRepository.cs" />
     <Compile Include="PhaseRepository.cs" />
-    <Compile Include="EliminationStepRepository.cs" />
     <Compile Include="EliminationStepSettingRepository.cs" />
-    <Compile Include="QualificationStepRepository.cs" />
     <Compile Include="PhysicalSettingRepository.cs" />
-    <Compile Include="TeamGameStepRelationshipRepository.cs" />
-    <Compile Include="GameStepRepository.cs" />
-    <Compile Include="TeamPhaseRelationship.cs" />
     <Compile Include="EliminationStepSetting.cs" />
-    <Compile Include="TeamGameStepRelationship.cs" />
     <Compile Include="StepSetting.cs" />
     <Compile Include="QualificationStepSetting.cs" />
-    <Compile Include="EliminationStep.cs" />
     <Compile Include="Helper.cs" />
-    <Compile Include="QualificationStep.cs" />
     <Compile Include="Phase.cs" />
-    <Compile Include="GameStep.cs" />
     <Compile Include="PhysicalSetting.cs" />
     <Compile Include="Contest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -81,6 +72,10 @@
       <Project>{22fe8cf8-7973-4a27-8300-1ea82dfc133d}</Project>
       <Name>Contest.Business.Field</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.Relationship\Contest.Business.Relationship.csproj">
+      <Project>{20163db4-efb9-4f0b-8b94-985a848864ae}</Project>
+      <Name>Contest.Business.Relationship</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Contest.Core.Component\Contest.Core.Component.csproj">
       <Project>{6CC897AB-E169-4F20-A56D-0BC0AF8E451D}</Project>
       <Name>Contest.Core.Component</Name>
@@ -96,6 +91,10 @@
     <ProjectReference Include="..\Contest.Core.Windows\Contest.Core.Windows.csproj">
       <Project>{117C2981-C2C7-4B80-BA99-A7F73B8A9B62}</Project>
       <Name>Contest.Core.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ihm\Contest.Business.GameStep\Contest.Business.GameStep.csproj">
+      <Project>{d0f224fa-5797-4c7c-87ab-4168ef306526}</Project>
+      <Name>Contest.Business.GameStep</Name>
     </ProjectReference>
     <ProjectReference Include="..\MatchSetting\Contest.Business.MatchSetting.csproj">
       <Project>{50fa9f63-d0e3-4019-8833-38e129418942}</Project>

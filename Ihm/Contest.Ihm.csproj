@@ -266,6 +266,10 @@
       <Project>{94336f05-1311-448b-8ef6-aeba3069f4d9}</Project>
       <Name>Contest.Business.GameSetting</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.Relationship\Contest.Business.Relationship.csproj">
+      <Project>{20163db4-efb9-4f0b-8b94-985a848864ae}</Project>
+      <Name>Contest.Business.Relationship</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Contest.Core.Component\Contest.Core.Component.csproj">
       <Project>{6CC897AB-E169-4F20-A56D-0BC0AF8E451D}</Project>
       <Name>Contest.Core.Component</Name>
@@ -301,6 +305,10 @@
     <ProjectReference Include="..\Contest.Core.Windows\Contest.Core.Windows.csproj">
       <Project>{117C2981-C2C7-4B80-BA99-A7F73B8A9B62}</Project>
       <Name>Contest.Core.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="Contest.Business.GameStep\Contest.Business.GameStep.csproj">
+      <Project>{d0f224fa-5797-4c7c-87ab-4168ef306526}</Project>
+      <Name>Contest.Business.GameStep</Name>
     </ProjectReference>
     <ProjectReference Include="Contest.Business.Person\Contest.Business.Person.csproj">
       <Project>{f53a6d92-00ce-4c7b-a0cc-c6dba2d6206e}</Project>
