@@ -16,13 +16,13 @@ namespace Contest.Ihm
         [Import]
         private IAddressFactory AddressFactory { get; set; }
 
+        [Import]
+        private IGameSettingFactory GameSettingFactory { get; set; }
+
         #endregion
 
         #region private field
-
-        private GameSetting.TypeOfPuck _typeOfPuck;
-        private GameSetting.TypeOfPlayGround _typeOfBoard;
-        private Business.Contest.TypeOfGame _typeOfGame;
+        
         private uint _countMaxPlayerByTeam;
         private uint _countMinPlayerByTeam;
         private bool _indoor;
@@ -36,13 +36,7 @@ namespace Contest.Ihm
             // Do MEF resolution to inject dependencies.
             FlippingContainer.Instance.ComposeParts(this);
 
-            //Load dropdown list
-            AvailableTypeOfGame = new ObservableCollection<Business.Contest.TypeOfGame>(EnumHelper.GetValueList<Business.Contest.TypeOfGame>());
-            AvailableTypeOfPuck = new ObservableCollection<GameSetting.TypeOfPuck>(EnumHelper.GetValueList<GameSetting.TypeOfPuck>());
-            AvailableTypeOfBoard = new ObservableCollection<GameSetting.TypeOfPlayGround>(EnumHelper.GetValueList<GameSetting.TypeOfPlayGround>());
-
             //Default values.
-            TypeOfPuck = GameSetting.TypeOfPuck.Fonte;
             CountMinPlayerByTeam = 1;
             CountMaxPlayerByTeam = 3;
             CountField = 2;
@@ -54,7 +48,7 @@ namespace Contest.Ihm
                         var newContest = Business.Contest.Create(Date, PhysicalSetting.Create(AddressFactory.Create(0, Street, ZipCode, City),
                                                                                               Indoor ? AreaType.Indoor : AreaType.Outdoor,
                                                                                               CountField),
-                                                                 GameSetting.Create(TypeOfBoard, TypeOfPuck, CountMinPlayerByTeam, CountMaxPlayerByTeam));
+                                                                 GameSettingFactory.Create(CountMinPlayerByTeam, CountMaxPlayerByTeam));
                         CloseCommand.Execute(newContest);
                     },
                 delegate
@@ -66,40 +60,6 @@ namespace Contest.Ihm
         #endregion
 
         #region Properties VM
-
-        public Business.Contest.TypeOfGame TypeOfGame
-        {
-            get { return _typeOfGame; }
-            set { Set(ref _typeOfGame, value); }
-        }
-
-        public ObservableCollection<Business.Contest.TypeOfGame> AvailableTypeOfGame { get; set; }
-
-        public GameSetting.TypeOfPuck TypeOfPuck
-        {
-            get { return _typeOfPuck; }
-            set
-            {
-                Set(ref _typeOfPuck, value);
-                OnPropertyChanged(() => Distance);
-            }
-        }
-
-        public ObservableCollection<GameSetting.TypeOfPuck> AvailableTypeOfPuck { get; set; }
-
-        public GameSetting.TypeOfPlayGround TypeOfBoard
-        {
-            get { return _typeOfBoard; }
-            set
-            {
-                Set(ref _typeOfBoard, value);
-                OnPropertyChanged(()=>Distance);
-            }
-        }
-
-        public ObservableCollection<GameSetting.TypeOfPlayGround> AvailableTypeOfBoard { get; set; }
-
-        public double? Distance { get { return GameSetting.GetDistance(TypeOfBoard, TypeOfPuck); } }
 
         public uint CountMaxPlayerByTeam
         {

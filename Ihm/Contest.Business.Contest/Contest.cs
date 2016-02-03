@@ -28,15 +28,6 @@ namespace Contest.Business
 
         #endregion
 
-        #region Enum
-
-        public enum TypeOfGame
-        {
-            [Display("Palet")] Palet
-        }
-
-        #endregion
-
         #region MEF Import
 
         [Import]

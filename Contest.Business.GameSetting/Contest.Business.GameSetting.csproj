@@ -43,6 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameSetting.cs" />
+    <Compile Include="IGameSettingFactory.cs" />
+    <Compile Include="GameSettingFactory.cs" />
     <Compile Include="GameSettingRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
