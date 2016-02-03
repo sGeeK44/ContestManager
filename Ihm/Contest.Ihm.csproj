@@ -254,10 +254,6 @@
       <Project>{1e4d7146-80a7-452e-871e-c5551d230714}</Project>
       <Name>Contest.Business.Interface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Business\Contest.Business.csproj">
-      <Project>{8329c086-e43e-4299-9fbd-02f4c7aeb6cc}</Project>
-      <Name>Contest.Business</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Contest.Business.Address\Contest.Business.Address.csproj">
       <Project>{cbaaec44-ae3c-497b-9b97-043041ca994e}</Project>
       <Name>Contest.Business.Address</Name>
@@ -305,6 +301,10 @@
     <ProjectReference Include="..\Contest.Core.Windows\Contest.Core.Windows.csproj">
       <Project>{117C2981-C2C7-4B80-BA99-A7F73B8A9B62}</Project>
       <Name>Contest.Core.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="Contest.Business.Contest\Contest.Business.Contest.csproj">
+      <Project>{4a331365-ecef-4ca0-b9b8-99e3e2011558}</Project>
+      <Name>Contest.Business.Contest</Name>
     </ProjectReference>
     <ProjectReference Include="Contest.Business.GameStep\Contest.Business.GameStep.csproj">
       <Project>{d0f224fa-5797-4c7c-87ab-4168ef306526}</Project>

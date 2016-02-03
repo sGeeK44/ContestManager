@@ -79,6 +79,10 @@
       <Project>{d0f224fa-5797-4c7c-87ab-4168ef306526}</Project>
       <Name>Contest.Business.GameStep</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.StepSetting\Contest.Business.StepSetting.csproj">
+      <Project>{13cda740-c73f-457a-9ad0-46ac2f89b542}</Project>
+      <Name>Contest.Business.StepSetting</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

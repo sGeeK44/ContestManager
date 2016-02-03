@@ -56,12 +56,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Business\Contest.Business.csproj">
-      <Project>{8329c086-e43e-4299-9fbd-02f4c7aeb6cc}</Project>
-      <Name>Contest.Business</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <Choose>
