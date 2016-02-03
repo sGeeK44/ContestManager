@@ -46,8 +46,6 @@
   <ItemGroup>
     <Compile Include="ContestRepository.cs" />
     <Compile Include="PhaseRepository.cs" />
-    <Compile Include="EliminationStepSettingRepository.cs" />
-    <Compile Include="EliminationStepSetting.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Phase.cs" />
     <Compile Include="Contest.cs" />
@@ -89,6 +87,10 @@
     <ProjectReference Include="..\Ihm\Contest.Business.GameStep\Contest.Business.GameStep.csproj">
       <Project>{d0f224fa-5797-4c7c-87ab-4168ef306526}</Project>
       <Name>Contest.Business.GameStep</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ihm\Contest.Business.PhysicalSetting\Contest.Business.PhysicalSetting.csproj">
+      <Project>{05b44680-4d87-45d4-8bd9-0ae966fe2102}</Project>
+      <Name>Contest.Business.PhysicalSetting</Name>
     </ProjectReference>
     <ProjectReference Include="..\Ihm\Contest.Business.StepSetting\Contest.Business.StepSetting.csproj">
       <Project>{13cda740-c73f-457a-9ad0-46ac2f89b542}</Project>

@@ -314,6 +314,10 @@
       <Project>{f53a6d92-00ce-4c7b-a0cc-c6dba2d6206e}</Project>
       <Name>Contest.Business.Person</Name>
     </ProjectReference>
+    <ProjectReference Include="Contest.Business.PhysicalSetting\Contest.Business.PhysicalSetting.csproj">
+      <Project>{05b44680-4d87-45d4-8bd9-0ae966fe2102}</Project>
+      <Name>Contest.Business.PhysicalSetting</Name>
+    </ProjectReference>
     <ProjectReference Include="Contest.Business.StepSetting\Contest.Business.StepSetting.csproj">
       <Project>{13cda740-c73f-457a-9ad0-46ac2f89b542}</Project>
       <Name>Contest.Business.StepSetting</Name>
