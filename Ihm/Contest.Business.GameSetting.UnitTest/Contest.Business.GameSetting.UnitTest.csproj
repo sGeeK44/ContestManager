@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{345B440A-1158-442A-A02E-23BD7B561F0B}</ProjectGuid>
+    <ProjectGuid>{D858B14C-C4E4-426C-AB77-0D4CA3DB37C7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Contest.Business.UnitTest</RootNamespace>
-    <AssemblyName>Contest.Business.UnitTest</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>Contest.Business.GameSetting.UnitTest</RootNamespace>
+    <AssemblyName>Contest.Business.GameSetting.UnitTest</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -16,6 +16,7 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,9 +36,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework">
-      <HintPath>..\Ihm\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -53,10 +51,28 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="GameSettingTest.cs" />
+    <Compile Include="GameSettingFactoryTest.cs" />
+    <Compile Include="GameSettingStub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\..\Business.Interface\Contest.Business.Interface.csproj">
+      <Project>{1E4D7146-80A7-452E-871E-C5551D230714}</Project>
+      <Name>Contest.Business.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contest.Business.GameSetting\Contest.Business.GameSetting.csproj">
+      <Project>{94336F05-1311-448B-8EF6-AEBA3069F4D9}</Project>
+      <Name>Contest.Business.GameSetting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
+      <Project>{1FF5796B-18D0-4BF3-919D-14166813B7B2}</Project>
+      <Name>Contest.Core.Repository.Sql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Repository\Contest.Core.Repository.csproj">
+      <Project>{4194F8F9-57E1-4D31-B4E3-A989F0D786F0}</Project>
+      <Name>Contest.Core.Repository</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
