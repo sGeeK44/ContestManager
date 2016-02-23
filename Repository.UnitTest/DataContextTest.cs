@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Contest.Core.Repository.Exceptions;
 using NUnit.Framework;
 
@@ -11,193 +10,247 @@ namespace Contest.Core.Repository.UnitTest
         [TestCase(null, false)]
         [TestCase("Test", false)]
         [TestCase("test", false)]
-        public void IsExistTest_EmptyContext(string itemToTest, bool isShouldExist)
+        public void IsExist_EmptyContext_ShouldReturnIsSouldExist(string itemToTest, bool isShouldExist)
         {
             // Arrange
-            var dataContext = new DataContext<string>();
+            var dataContext = new DataContext<StringTester>();
 
             // Assert
-            Assert.AreEqual(isShouldExist, dataContext.IsExist(itemToTest));
+            Assert.AreEqual(isShouldExist, dataContext.IsExist(new StringTester(itemToTest)));
         }
 
         [TestCase("Test", "Test", true)]
         [TestCase("Test", "test", false)]
-        public void IsExistTest_PopulateContext(string item, string itemToTest, bool isShouldExist)
+        public void IsExist_PopulateContext_ShouldReturnIsSouldExist(string item, string itemToTest, bool isShouldExist)
         {
             // Arrange
-            var dataContext = new DataContext<string>();
-            dataContext.Insert(item);
+            var dataContext = new DataContext<StringTester>();
+            dataContext.Insert(new StringTester(item));
 
             // Assert
-            Assert.AreEqual(isShouldExist, dataContext.IsExist(itemToTest));
+            Assert.AreEqual(isShouldExist, dataContext.IsExist(new StringTester(itemToTest)));
         }
 
         [TestCase(ExpectedException = typeof(ArgumentNullException))]
-        public void InsertNullElement()
+        public void Insert_NullElement_ShouldThrowException()
         {
             // Arrange
-            var dataContext = new DataContext<string>();
+            var dataContext = new DataContext<StringTester>();
 
             // Act
             dataContext.Insert(null);
         }
 
         [TestCase]
-        public void InsertElement_DoesntExistYet()
+        public void Insert_ItemDoesntExistYet_DataShouldAppendIt()
         {
             // Arrange
             const string ITEM = "Test";
-            var dataContext = new DataContext<string>();
+            var dataContext = new DataContext<StringTester>();
 
             // Act
-            dataContext.Insert(ITEM);
+            dataContext.Insert(new StringTester(ITEM));
 
             // Assert
-            CollectionAssert.AreEqual(new List<string> { ITEM }, dataContext.Find(_ => _ == ITEM));
+            Assert.AreEqual(1, dataContext.Count);
         }
 
         [TestCase]
-        public void InsertElementTwoElement_DoesntExistYet()
+        public void Insert_TwoItemDoesntExistYet_ShouldAppendIt()
         {
             // Arrange
             const string ITEM = "Test";
             const string ITEM2 = "test";
-            var dataContext = new DataContext<string>();
+            var dataContext = new DataContext<StringTester>();
 
             // Act
-            dataContext.Insert(ITEM);
-            dataContext.Insert(ITEM2);
+            dataContext.Insert(new StringTester(ITEM));
+            dataContext.Insert(new StringTester(ITEM2));
 
             // Assert
-            CollectionAssert.AreEqual(new List<string>{ ITEM }, dataContext.Find(_ => _ == ITEM));
-            CollectionAssert.AreEqual(new List<string>{ ITEM2 }, dataContext.Find(_ => _ == ITEM2));
+            Assert.AreEqual(2, dataContext.Count);
         }
 
         [TestCase(ExpectedException = typeof(ItemAlreadyExistException))]
-        public void InsertElement_AlreadyExistYet()
+        public void Insert_ItemAlreadyExistYet_ShouldThrowException()
         {
             // Arrange
             const string ITEM = "Test";
-            var dataContext = new DataContext<string>();
-            dataContext.Insert(ITEM);
+            var dataContext = new DataContext<StringTester>();
+            dataContext.Insert(new StringTester(ITEM));
 
             // Act
-            dataContext.Insert(ITEM);
+            dataContext.Insert(new StringTester(ITEM));
         }
 
-        [TestCase]
-        public void DeleteElement_AlreadyExistYet()
+        [TestCase(ExpectedException = typeof(ArgumentNullException))]
+        public void Update_NullElement_ShouldThrowException()
         {
             // Arrange
-            const string ITEM = "Test";
-            var dataContext = new DataContext<string>();
+            var dataContext = new DataContext<StringTester>();
 
             // Act
-            dataContext.Insert(ITEM);
-            dataContext.Delete(ITEM);
-
-            // Assert
-            CollectionAssert.IsEmpty(dataContext.Find(_ => _ == ITEM));
-        }
-
-        [TestCase]
-        public void DeleteElementTwoElement_DoesntExistYet()
-        {
-            // Arrange
-            const string ITEM = "Test";
-            const string ITEM2 = "test";
-            var dataContext = new DataContext<string>();
-            dataContext.Insert(ITEM);
-            dataContext.Insert(ITEM2);
-
-            // Act
-            dataContext.Delete(ITEM);
-            dataContext.Delete(ITEM2);
-
-            // Assert
-            CollectionAssert.IsEmpty(dataContext.Find(_ => _ == ITEM));
-            CollectionAssert.IsEmpty(dataContext.Find(_ => _ == ITEM2));
+            dataContext.Update(null);
         }
 
         [TestCase(ExpectedException = typeof(ItemNotFoundException))]
-        public void DeleteElement_DoesntExistYet()
+        public void Update_ItemDoesntExistYet_DataShouldThrowException()
         {
             // Arrange
             const string ITEM = "Test";
-            var dataContext = new DataContext<string>();
+            var dataContext = new DataContext<StringTester>();
 
             // Act
-            dataContext.Delete(ITEM);
+            dataContext.Update(new StringTester(ITEM));
         }
 
         [TestCase]
-        public void ClearCollection()
+        public void Update_ItemAlreadyExistYet_ShouldReplaceIt()
+        {
+            // Arrange
+            const string ITEM = "Test";
+            var expected = new StringTester(ITEM);
+            var dataContext = new DataContext<StringTester>();
+            dataContext.Insert(new StringTester(ITEM));
+
+            // Act
+            dataContext.Update(new StringTester(ITEM));
+        }
+
+        [TestCase]
+        public void Delete_ItemExist_ShouldRemoveItem()
+        {
+            // Arrange
+            const string ITEM = "Test";
+            var dataContext = new DataContext<StringTester>();
+            dataContext.Insert(new StringTester(ITEM));
+
+            // Act
+            dataContext.Delete(new StringTester(ITEM));
+
+            // Assert
+            Assert.AreEqual(0, dataContext.Count);
+        }
+
+        [TestCase]
+        public void Delete_TwoItemExist_ShouldRemoveThem()
         {
             // Arrange
             const string ITEM = "Test";
             const string ITEM2 = "test";
-            var dataContext = new DataContext<string>();
-            dataContext.Insert(ITEM);
-            dataContext.Insert(ITEM2);
+            var dataContext = new DataContext<StringTester>();
+            dataContext.Insert(new StringTester(ITEM));
+            dataContext.Insert(new StringTester(ITEM2));
+
+            // Act
+            dataContext.Delete(new StringTester(ITEM));
+            dataContext.Delete(new StringTester(ITEM2));
+
+            // Assert
+            Assert.AreEqual(0, dataContext.Count);
+        }
+
+        [TestCase(ExpectedException = typeof(ItemNotFoundException))]
+        public void Delete_ItemDoesntExist_ShouldThrowException()
+        {
+            // Arrange
+            const string ITEM = "Test";
+            var dataContext = new DataContext<StringTester>();
+
+            // Act
+            dataContext.Delete(new StringTester(ITEM));
+        }
+
+        [TestCase]
+        public void Clear_PopulateDataContext_ShouldBeEmpty()
+        {
+            // Arrange
+            const string ITEM = "Test";
+            const string ITEM2 = "test";
+            var dataContext = new DataContext<StringTester>();
+            dataContext.Insert(new StringTester(ITEM));
+            dataContext.Insert(new StringTester(ITEM2));
 
             // Act
             dataContext.Clear();
 
             // Assert
-            CollectionAssert.IsEmpty(dataContext.Find(_ => _ == ITEM));
-            CollectionAssert.IsEmpty(dataContext.Find(_ => _ == ITEM2));
+            Assert.AreEqual(0, dataContext.Count);
         }
 
         [TestCase]
-        public void FirstOrDefault()
+        public void FirstOrDefault_PredicateMatchOneItem_ShouldReturnItem()
         {
             // Arrange
             const string ITEM = "Test";
-            var dataContext = new DataContext<string>();
-            dataContext.Insert(ITEM);
+            var expected = new StringTester(ITEM);
+            var dataContext = new DataContext<StringTester>();
+            dataContext.Insert(expected);
             
-            // Assert
-            Assert.AreEqual(ITEM, dataContext.FirstOrDefault(_ => _ == ITEM));
-            Assert.AreEqual(null, dataContext.FirstOrDefault(_ => _ == string.Empty));
-            Assert.AreEqual(null, dataContext.FirstOrDefault(_ => _ == null));
+            // Act and Assert
+            Assert.AreEqual(expected, dataContext.FirstOrDefault(_ => _.ItemToTest == ITEM));
         }
 
         [TestCase]
-        public void Find()
+        public void FirstOrDefault_PredicateMatchZeroItem_ShouldReturnNull()
+        {
+            // Arrange
+            const string ITEM = "Test";
+            var dataContext = new DataContext<StringTester>();
+            dataContext.Insert(new StringTester(ITEM));
+
+            // Act and Assert
+            Assert.AreEqual(null, dataContext.FirstOrDefault(_ => _.ItemToTest == string.Empty));
+        }
+
+        [TestCase]
+        public void Find_PredicateMatchingZeroItem_ShouldReturnEmptyCollection()
+        {
+            // Arrange
+            const string ITEM = "Test";
+            var dataContext = new DataContext<StringTester>();
+
+            // Act
+            var result = dataContext.Find(_ => _.ItemToTest.Contains(ITEM));
+
+            // Assert
+            Assert.AreEqual(0, result.Count);
+        }
+
+        [TestCase]
+        public void Find_PredicateMatchingOneItem_ShouldReturnNewCollectionWithItemMatched()
+        {
+            // Arrange
+            const string ITEM = "Test";
+            const string ITEM2 = "Tet3";
+            var dataContext = new DataContext<StringTester>();
+            dataContext.Insert(new StringTester(ITEM));
+            dataContext.Insert(new StringTester(ITEM2));
+
+            // Act
+            var result = dataContext.Find(_ => _.ItemToTest.Contains(ITEM));
+
+            // Assert
+            Assert.AreEqual(1, result.Count);
+        }
+
+        [TestCase]
+        public void Find_PredicateMatchingTwoItem_ShouldReturnNewCollectionWithItemsMatched()
         {
             // Arrange
             const string ITEM = "Test";
             const string ITEM2 = "Test2";
-            const string ITEM3 = "Test3";
-            const string ITEM4 = "Tet3";
-            var dataContext = new DataContext<string>();
-            dataContext.Insert(ITEM);
-            dataContext.Insert(ITEM2);
-            dataContext.Insert(ITEM3);
-            dataContext.Insert(ITEM4);
+            const string ITEM3 = "Tet3";
+            var dataContext = new DataContext<StringTester>();
+            dataContext.Insert(new StringTester(ITEM));
+            dataContext.Insert(new StringTester(ITEM2));
+            dataContext.Insert(new StringTester(ITEM3));
 
             // Act
-            var result = dataContext.Find(_ => _.Contains("Test"));
+            var result = dataContext.Find(_ => _.ItemToTest.Contains(ITEM));
 
             // Assert
-            Assert.AreEqual(3, result.Count);
-            Assert.IsTrue(result.Contains(ITEM));
-            Assert.IsTrue(result.Contains(ITEM2));
-            Assert.IsTrue(result.Contains(ITEM3));
-            Assert.IsFalse(result.Contains(ITEM4));
+            Assert.AreEqual(2, result.Count);
         }
-        
-        //internal void Update(T itemToUpdate)
-        //{
-        //    T existingItem = GetItem(_itemList, itemToUpdate);
-        //    if (existingItem == null) throw new NotFoundException(typeof(T));
-
-        //    _itemList.Remove(existingItem);
-        //    _itemList.Add(itemToUpdate);
-        //}
-        //internal T GetFirstOrDefault(Func<T, bool> predicate)
-        //{
-        //    return _itemList.FirstOrDefault(predicate);
-        //}
     }
 }

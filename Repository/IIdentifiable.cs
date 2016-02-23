@@ -2,7 +2,7 @@
 
 namespace Contest.Core.Repository
 {
-    public interface IIdentifiable : IEquatable<IIdentifiable>
+    public interface IIdentifiable
     {
         /// <summary>
         /// Unique identifier

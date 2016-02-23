@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataContextTest.cs" />
+    <Compile Include="StringTester.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Contest.Core.csproj">

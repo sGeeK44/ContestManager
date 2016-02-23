@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Contest.Core.Exceptions;
+using Contest.Core.Repository.Exceptions;
 
 namespace Contest.Core.Repository
 {
@@ -9,7 +9,7 @@ namespace Contest.Core.Repository
     /// Store items to build local cache. Default equality method is used.
     /// </summary>
     /// <typeparam name="T">Type of item to store</typeparam>
-    public class DataContext<T> : IDataContext<T> where T : class
+    public class DataContext<T> : IDataContext<T> where T : class, IIdentifiable
     {
         private readonly IList<T> _itemList = new List<T>();
 
@@ -17,12 +17,12 @@ namespace Contest.Core.Repository
         /// Insert specified item from DataContext
         /// </summary>
         /// <param name="itemToInsert">Item to insert</param>
-        /// <exception cref="Exceptions.ItemAlreadyExistException">Throw when item already exist into context</exception>
+        /// <exception cref="ItemAlreadyExistException">Throw when item already exist into context</exception>
         public void Insert(T itemToInsert)
         {
             if (itemToInsert == null) throw new ArgumentNullException("itemToInsert");
             var existingItem = SingleOrDefault(_itemList, itemToInsert);
-            if (existingItem != null) throw new Exceptions.ItemAlreadyExistException();
+            if (existingItem != null) throw new ItemAlreadyExistException();
             _itemList.Add(itemToInsert);
         }
 
@@ -33,8 +33,10 @@ namespace Contest.Core.Repository
         /// <exception cref="NotFoundException">Throw when item doesn't exist into context</exception>
         public void Update(T itemToUpdate)
         {
+            if (itemToUpdate == null) throw new ArgumentNullException("itemToUpdate");
+
             var existingItem = SingleOrDefault(_itemList, itemToUpdate);
-            if (existingItem == null) throw new Exceptions.ItemNotFoundException();
+            if (existingItem == null) throw new ItemNotFoundException();
 
             _itemList.Remove(existingItem);
             _itemList.Add(itemToUpdate);
@@ -48,7 +50,7 @@ namespace Contest.Core.Repository
         public void Delete(T itemToDelete)
         {
             var item = SingleOrDefault(_itemList, itemToDelete);
-            if (item == null) throw new Exceptions.ItemNotFoundException();
+            if (item == null) throw new ItemNotFoundException();
             _itemList.Remove(item);
         }
 
@@ -97,7 +99,7 @@ namespace Contest.Core.Repository
 
         private static T SingleOrDefault(IList<T> list, T itemSearch)
         {
-            return itemSearch == null ? null : list.SingleOrDefault(itemSearch.Equals);
+            return itemSearch == null ? null : list.SingleOrDefault(itemSearch.AreSame);
         }
     }
 }
