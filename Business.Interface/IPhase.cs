@@ -5,7 +5,7 @@ using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    public interface IPhase : IIdentifiable, ISqlPersistable
+    public interface IPhase : IIdentifiable, IQueryable, ISqlPersistable
     {
         /// <summary>
         /// Get identifier of current match.

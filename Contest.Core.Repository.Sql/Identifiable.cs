@@ -36,7 +36,7 @@ namespace Contest.Core.Repository.Sql
         /// <returns>True if they are identic, false else</returns>
         public bool AreSame(object other)
         {
-            var castedOther = other as IIdentifiable;
+            var castedOther = other as Identifiable<T>;
             if (castedOther == null) return false;
 
             return Id == castedOther.Id;

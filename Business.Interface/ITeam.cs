@@ -5,7 +5,7 @@ using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    public interface ITeam : IIdentifiable, ISqlPersistable
+    public interface ITeam : IIdentifiable, IQueryable, ISqlPersistable
     {
         /// <summary>
         /// Get name of current team

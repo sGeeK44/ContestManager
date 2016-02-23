@@ -4,7 +4,7 @@ using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    public interface IPhysicalSetting : IIdentifiable, ISqlPersistable
+    public interface IPhysicalSetting : IIdentifiable, IQueryable, ISqlPersistable
     {
         /// <summary>
         /// Get address id of physical setting

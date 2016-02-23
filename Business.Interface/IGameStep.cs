@@ -5,7 +5,7 @@ using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    public interface IGameStep : IIdentifiable, ISqlPersistable
+    public interface IGameStep : IIdentifiable, IQueryable, ISqlPersistable
     {
         /// <summary>
         /// Get phase Id linked.

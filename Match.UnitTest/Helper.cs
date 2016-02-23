@@ -6,7 +6,7 @@ namespace Contest.Business.UnitTest
 {
     public static class Helper
     {
-        public static Mock<T> CreateMock<T>(string mockId) where T : class, IIdentifiable
+        public static Mock<T> CreateMock<T>(string mockId) where T : class, IIdentifiable, IQueryable
         {
             if (mockId == null) return null;
 

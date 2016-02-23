@@ -63,7 +63,7 @@ namespace Contest.Business.Fields.UnitTest
             throw new NotImplementedException();
         }
 
-        public bool Equals(IIdentifiable other)
+        public bool Equals(IQueryable other)
         {
             throw new NotImplementedException();
         }

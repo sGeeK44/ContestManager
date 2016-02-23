@@ -4,7 +4,7 @@ using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    public interface IMatch : IIdentifiable, ISqlPersistable
+    public interface IMatch : IIdentifiable, IQueryable, ISqlPersistable
     {
         /// <summary>
         /// Get game step id linked

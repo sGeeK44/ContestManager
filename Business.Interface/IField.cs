@@ -4,7 +4,7 @@ using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    public interface IField : IIdentifiable, ISqlPersistable
+    public interface IField : IIdentifiable, IQueryable, ISqlPersistable
     {
         /// <summary>
         /// Get name of current field

@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Contest.Core.Repository.Sql.UnitTest
 {
     [DataContract(Name = "ENTITY_2")]
-    public class Entity2 : IIdentifiable
+    public class Entity2 : IIdentifiable, IQueryable
     {
         [DataMember(Name = "ID")]
         [SqlPrimaryKey]

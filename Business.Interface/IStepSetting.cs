@@ -4,7 +4,7 @@ using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    public interface IStepSetting : IIdentifiable, ISqlPersistable
+    public interface IStepSetting : IIdentifiable, IQueryable, ISqlPersistable
     {
         /// <summary>
         /// Get match's setting for  step

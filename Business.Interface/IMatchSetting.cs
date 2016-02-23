@@ -3,7 +3,7 @@ using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    public interface IMatchSetting : IIdentifiable, ISqlPersistable
+    public interface IMatchSetting : IIdentifiable, IQueryable, ISqlPersistable
     {
         /// <summary>
         /// Get type of End

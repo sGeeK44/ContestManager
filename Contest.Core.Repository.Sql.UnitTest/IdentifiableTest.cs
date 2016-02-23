@@ -12,7 +12,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
             // Arrange
             var field1 = new Identifiable<string>();
 
-            Assert.IsFalse(field1.AreSame((IIdentifiable)null));
+            Assert.IsFalse(field1.AreSame((IQueryable)null));
             Assert.IsFalse(field1.AreSame((string)null));
         }
 

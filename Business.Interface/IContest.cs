@@ -5,7 +5,7 @@ using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    public interface IContest: IIdentifiable, ISqlPersistable
+    public interface IContest: IIdentifiable, IQueryable, ISqlPersistable
     {
         /// <summary>
         /// Get planned date for contest.

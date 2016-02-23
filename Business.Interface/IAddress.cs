@@ -3,7 +3,7 @@ using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    public interface IAddress : IIdentifiable, ISqlPersistable
+    public interface IAddress : IIdentifiable, IQueryable, ISqlPersistable
     {
         /// <summary>
         /// Get number in street of address

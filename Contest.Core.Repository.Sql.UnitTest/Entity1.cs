@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Contest.Core.Repository.Sql.UnitTest
 {
     [DataContract(Name = "ENTITY_1")]
-    public class Entity1 : IIdentifiable
+    public class Entity1 : IIdentifiable, IQueryable
     {
         public static Guid Guid = new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C");
         [DataMember(Name = "ID")]

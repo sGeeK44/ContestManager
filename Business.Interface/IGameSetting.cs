@@ -4,7 +4,7 @@ using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    public interface IGameSetting : IIdentifiable, ISqlPersistable
+    public interface IGameSetting : IIdentifiable, IQueryable, ISqlPersistable
     {
         /// <summary>
         /// Get minimum player register by team.

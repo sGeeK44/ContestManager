@@ -2,7 +2,7 @@
 
 namespace Contest.Core.Repository.UnitTest
 {
-    internal class StringTester : IIdentifiable
+    internal class StringTester : IQueryable
     {
         public string ItemToTest { get; set; }
 

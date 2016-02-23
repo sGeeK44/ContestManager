@@ -4,7 +4,7 @@ using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    public interface IPerson : IIdentifiable, ISqlPersistable
+    public interface IPerson : IIdentifiable, IQueryable, ISqlPersistable
     {
         string LastName { get; set; }
 
