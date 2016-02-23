@@ -31,6 +31,19 @@ namespace Contest.Business
 
         #region Methods
 
+        public override bool Equals(object other)
+        {
+            var castedObj = other as IGameSetting;
+            if (castedObj == null) return false;
+
+            return castedObj.GetHashCode() == GetHashCode();
+        }
+
+        public override int GetHashCode()
+        {
+            return MinimumPlayerByTeam.GetHashCode() + MaximumPlayerByTeam.GetHashCode();
+        }
+
         /// <summary>
         /// Do all insert or update into repository for all of object composed.
         /// </summary>
