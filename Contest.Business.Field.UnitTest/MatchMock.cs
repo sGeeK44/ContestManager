@@ -53,6 +53,11 @@ namespace Contest.Business.Fields.UnitTest
         public event MatchEvent MatchStarted;
         public event MatchEvent ScoreChanged;
 
+        public bool AreSame(object other)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Close()
         {
             throw new NotImplementedException();

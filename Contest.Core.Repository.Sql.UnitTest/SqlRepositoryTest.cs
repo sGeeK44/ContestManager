@@ -9,7 +9,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void Create()
         {
-            var repo = new SqlRepository<object, object>();
+            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>();
 
             Assert.IsNotNull(repo.QueryList);
             Assert.AreEqual(0, repo.QueryList.Count);
@@ -18,15 +18,15 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void Insert_WithoutUnitOfWork()
         {
-            var context = new ContextMock<object>();
-            var sqlBuilder = new SqlBuilderMock<object, object>();
-            var repo = new SqlRepository<object, object>
+            var context = new ContextMock<Identifiable<object>>();
+            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
+            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
             {
                 SqlBuilder = sqlBuilder,
                 Converter = new ConverterMock(),
                 Context = context
             };
-            var obj = new object();
+            var obj = new Identifiable<object>();
 
             repo.Insert(obj);
 
@@ -39,18 +39,18 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void Insert_WithUnitOfWork()
         {
-            var context = new ContextMock<object>();
-            var sqlBuilder = new SqlBuilderMock<object, object>();
+            var context = new ContextMock<Identifiable<object>>();
+            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
             var unitOfworks = new SqlUnitOfWorksMock();
 
-            var repo = new SqlRepository<object, object>
+            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
             {
                 SqlBuilder = sqlBuilder,
                 Converter = new ConverterMock(),
                 Context = context,
                 UnitOfWorks = unitOfworks
             };
-            var obj = new object();
+            var obj = new Identifiable<object>();
 
             repo.Insert(obj);
 
@@ -64,15 +64,15 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void InsertOrUpdate_WithoutUnitOfWork_1()
         {
-            var context = new ContextMock<object>();
-            var sqlBuilder = new SqlBuilderMock<object, object>();
-            var repo = new SqlRepository<object, object>
+            var context = new ContextMock<Identifiable<object>>();
+            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
+            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
             {
                 SqlBuilder = sqlBuilder,
                 Converter = new ConverterMock(),
                 Context = context
             };
-            var obj = new object();
+            var obj = new Identifiable<object>();
 
             repo.InsertOrUpdate(obj);
 
@@ -87,15 +87,15 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void InsertOrUpdate_WithoutUnitOfWork_2()
         {
-            var context = new ContextMock<object>();
-            var sqlBuilder = new SqlBuilderMock<object, object>();
-            var repo = new SqlRepository<object, object>
+            var context = new ContextMock<Identifiable<object>>();
+            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
+            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
             {
                 SqlBuilder = sqlBuilder,
                 Converter = new ConverterMock(),
                 Context = context
             };
-            var obj = new object();
+            var obj = new Identifiable<object>();
             repo.Insert(obj);
 
             repo.InsertOrUpdate(obj);
@@ -111,18 +111,18 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void InsertOrUpdate_WithUnitOfWork_1()
         {
-            var context = new ContextMock<object>();
-            var sqlBuilder = new SqlBuilderMock<object, object>();
+            var context = new ContextMock<Identifiable<object>>();
+            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
             var unitOfworks = new SqlUnitOfWorksMock();
 
-            var repo = new SqlRepository<object, object>
+            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
             {
                 SqlBuilder = sqlBuilder,
                 Converter = new ConverterMock(),
                 Context = context,
                 UnitOfWorks = unitOfworks
             };
-            var obj = new object();
+            var obj = new Identifiable<object>();
 
             repo.Insert(obj);
 
@@ -138,18 +138,18 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void InsertOrUpdate_WithUnitOfWork_2()
         {
-            var context = new ContextMock<object>();
-            var sqlBuilder = new SqlBuilderMock<object, object>();
+            var context = new ContextMock<Identifiable<object>>();
+            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
             var unitOfworks = new SqlUnitOfWorksMock();
 
-            var repo = new SqlRepository<object, object>
+            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
             {
                 SqlBuilder = sqlBuilder,
                 Converter = new ConverterMock(),
                 Context = context,
                 UnitOfWorks = unitOfworks
             };
-            var obj = new object();
+            var obj = new Identifiable<object>();
 
             repo.Insert(obj);
 
@@ -165,15 +165,15 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void Update_WithoutUnitOfWork()
         {
-            var context = new ContextMock<object>();
-            var sqlBuilder = new SqlBuilderMock<object, object>();
-            var repo = new SqlRepository<object, object>
+            var context = new ContextMock<Identifiable<object>>();
+            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
+            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
             {
                 SqlBuilder = sqlBuilder,
                 Converter = new ConverterMock(),
                 Context = context
             };
-            var obj = new object();
+            var obj = new Identifiable<object>();
 
             repo.Update(obj);
 
@@ -186,18 +186,18 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void Update_WithUnitOfWork()
         {
-            var context = new ContextMock<object>();
-            var sqlBuilder = new SqlBuilderMock<object, object>();
+            var context = new ContextMock<Identifiable<object>>();
+            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
             var unitOfworks = new SqlUnitOfWorksMock();
 
-            var repo = new SqlRepository<object, object>
+            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
             {
                 SqlBuilder = sqlBuilder,
                 Converter = new ConverterMock(),
                 Context = context,
                 UnitOfWorks = unitOfworks
             };
-            var obj = new object();
+            var obj = new Identifiable<object>();
 
             repo.Update(obj);
 
@@ -211,15 +211,15 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void Delete_WithoutUnitOfWork()
         {
-            var context = new ContextMock<object>();
-            var sqlBuilder = new SqlBuilderMock<object, object>();
-            var repo = new SqlRepository<object, object>
+            var context = new ContextMock<Identifiable<object>>();
+            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
+            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
             {
                 SqlBuilder = sqlBuilder,
                 Converter = new ConverterMock(),
                 Context = context
             };
-            var obj = new object();
+            var obj = new Identifiable<object>();
 
             repo.Delete(obj);
 
@@ -232,18 +232,18 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void Delete_WithUnitOfWork()
         {
-            var context = new ContextMock<object>();
-            var sqlBuilder = new SqlBuilderMock<object, object>();
+            var context = new ContextMock<Identifiable<object>>();
+            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
             var unitOfworks = new SqlUnitOfWorksMock();
 
-            var repo = new SqlRepository<object, object>
+            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
             {
                 SqlBuilder = sqlBuilder,
                 Converter = new ConverterMock(),
                 Context = context,
                 UnitOfWorks = unitOfworks
             };
-            var obj = new object();
+            var obj = new Identifiable<object>();
 
             repo.Delete(obj);
 
@@ -257,12 +257,12 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void FirstOrDefault_ExistInCache()
         {
-            var obj = new object();
-            var context = new ContextMock<object> { Item = new List<object> { obj } };
-            var sqlBuilder = new SqlBuilderMock<object, object>();
+            var obj = new Identifiable<object>();
+            var context = new ContextMock<Identifiable<object>> { Item = new List<Identifiable<object>> { obj } };
+            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
             var unitOfworks = new SqlUnitOfWorksMock();
 
-            var repo = new SqlRepository<object, object>
+            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
             {
                 SqlBuilder = sqlBuilder,
                 Converter = new ConverterMock(),

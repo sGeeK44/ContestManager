@@ -25,7 +25,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
             return new Entity1 { Id = Guid, Name = "Test" };
         }
 
-        public bool Equals(IIdentifiable other)
+        public bool AreSame(object other)
         {
             throw new NotImplementedException();
         }

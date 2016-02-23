@@ -8,7 +8,7 @@ namespace Contest.Core.Repository.Sql
     /// <summary>
     /// Represent a relation n to n between two object
     /// </summary>
-    public class Relationship<TIObj1, TIObj2>
+    public class Relationship<TIObj1, TIObj2> : IQueryable
         where TIObj1 : class, IIdentifiable 
         where TIObj2 : class, IIdentifiable
     {
@@ -72,6 +72,15 @@ namespace Contest.Core.Repository.Sql
                 _secondItemInvolve = new Lazy<TIObj2>(() => value);
                 SecondItemInvolveId = value != null ? value.Id : default(Guid);
             }
+        }
+
+        public bool AreSame(object other)
+        {
+            var castedObject = other as Relationship<TIObj1, TIObj2>;
+            if (castedObject == null) return false;
+
+            return FirstItemInvolve.Id == castedObject.FirstItemInvolve.Id
+                && SecondItemInvolve.Id == castedObject.SecondItemInvolve.Id;
         }
     }
 }

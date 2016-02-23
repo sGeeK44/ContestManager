@@ -68,12 +68,12 @@ namespace Contest.Business.Fields.UnitTest
         public event ContestEvent ContestStart;
         public event NextPhaseStartedEvent NewPhaseLaunch;
 
-        public void EndContest()
+        public bool AreSame(object other)
         {
             throw new NotImplementedException();
         }
 
-        public bool Equals(IIdentifiable other)
+        public void EndContest()
         {
             throw new NotImplementedException();
         }

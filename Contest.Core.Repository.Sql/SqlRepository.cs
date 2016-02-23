@@ -13,7 +13,7 @@ namespace Contest.Core.Repository.Sql
     /// <typeparam name="T">Type of repository object</typeparam>
     /// <typeparam name="TI">Type of interface object. Same object if he haven't interface. DataMember and Contract have to be specified on TI type</typeparam>
     public class SqlRepository<T, TI> : ISqlRepository<TI> where T : class, TI
-        where TI : class
+        where TI : class, IQueryable
     {
         private readonly IList<string> _queryList;
 
