@@ -7,28 +7,28 @@ namespace Contest.Core.Repository.Sql.UnitTest
     public class IdentifiableTest
     {
         [TestCase]
-        public void ShouldBeNotEqual_Null()
+        public void AreSame_CompareToNull_ShouldBeNotEqual()
         {
             // Arrange
             var field1 = new Identifiable<string>();
 
-            Assert.IsFalse(field1.Equals((IIdentifiable)null));
-            Assert.IsFalse(field1.Equals((string)null));
+            Assert.IsFalse(field1.AreSame((IIdentifiable)null));
+            Assert.IsFalse(field1.AreSame((string)null));
         }
 
         [TestCase]
-        public void ShouldBeNotEqual()
+        public void AreSame_CompareToObjectWithoutSameId_ShouldBeNotEqual()
         {
             // Arrange
             var field1 = new Identifiable<string>();
             var field2 = new Identifiable<string>();
 
-            Assert.IsFalse(field1.Equals(field2));
-            Assert.IsFalse(field2.Equals(field1));
+            Assert.IsFalse(field1.AreSame(field2));
+            Assert.IsFalse(field2.AreSame(field1));
         }
 
         [TestCase]
-        public void ShouldBeEqual()
+        public void AreSame_CompareToObjectWithSameId_ShouldBeEqual()
         {
             // Arrange
             var guid = Guid.NewGuid();
@@ -37,17 +37,17 @@ namespace Contest.Core.Repository.Sql.UnitTest
             var field3 = new Identifiable<string> { Id = guid };
 
             // Reflexive 
-            Assert.IsTrue(field1.Equals(field1));
-            Assert.IsTrue(field2.Equals(field2));
+            Assert.IsTrue(field1.AreSame(field1));
+            Assert.IsTrue(field2.AreSame(field2));
 
             // Symmetric
-            Assert.IsTrue(field1.Equals(field2));
-            Assert.IsTrue(field2.Equals(field1));
+            Assert.IsTrue(field1.AreSame(field2));
+            Assert.IsTrue(field2.AreSame(field1));
 
             // Transitive 
-            Assert.IsTrue(field1.Equals(field2));
-            Assert.IsTrue(field2.Equals(field3));
-            Assert.IsTrue(field3.Equals(field1));
+            Assert.IsTrue(field1.AreSame(field2));
+            Assert.IsTrue(field2.AreSame(field3));
+            Assert.IsTrue(field3.AreSame(field1));
         }
     }
 }

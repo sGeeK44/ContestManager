@@ -9,7 +9,7 @@ namespace Contest.Core.Repository
     /// Store items to build local cache. Default equality method is used.
     /// </summary>
     /// <typeparam name="T">Type of item to store</typeparam>
-    public class DataContext<T> : IDataContext<T> where T : class, IIdentifiable
+    public class DataContext<T> : IDataContext<T> where T : class, IQueryable
     {
         private readonly IList<T> _itemList = new List<T>();
 
