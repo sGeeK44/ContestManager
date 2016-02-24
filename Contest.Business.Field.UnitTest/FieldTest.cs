@@ -1,23 +1,22 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using System;
 using Contest.Core.Component;
+using Moq;
 using Contest.Core.Repository.Sql;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace Contest.Business.Fields.UnitTest
 {
-    [TestClass()]
+    [TestFixture]
     public class FieldTest
     {
-        [TestInitialize]
+        [OneTimeSetUp]
         public void Init()
         {
             FlippingContainer.Instance.Current = new ExecutingAssemblies();
         }
 
-        [TestMethod()]
-        public void NewTest()
+        [TestCase]
+        public void Constructor_AllFine_PropertyShouldByInitialized()
         {
             var contest = new ContestMock() { Id = Guid.NewGuid() };
             var result = new Field(contest, "name");
@@ -31,9 +30,47 @@ namespace Contest.Business.Fields.UnitTest
             Assert.AreEqual("name", result.Name);
         }
 
-        [TestMethod()]
-        [ExpectedException(typeof(ArgumentException))]
-        public void AllocateTest_OtherMatchFieldAlreadyAllocated()
+        [TestCase]
+        public void Allocate_FieldAlreadyAllocatedForSameMatch_MatchInProgressIdShouldEqualToSpecifiedMatchId()
+        {
+            var contest = new ContestMock() { Id = Guid.NewGuid() };
+            var result = new Field(contest, "name");
+            var match = new MatchMock() { Id = Guid.NewGuid() };
+            result.Allocate(match);
+
+            result.Allocate(match);
+
+            Assert.AreEqual(match.Id, result.MatchInProgessId);
+        }
+
+        [TestCase]
+        public void Allocate_FieldAlreadyAllocatedForSameMatch_MatchInProgressShouldEqualToSpecifiedMatch()
+        {
+            var contest = new ContestMock() { Id = Guid.NewGuid() };
+            var result = new Field(contest, "name");
+            var match = new MatchMock() { Id = Guid.NewGuid() };
+            result.Allocate(match);
+
+            result.Allocate(match);
+
+            Assert.AreEqual(match, result.MatchInProgess);
+        }
+
+        [TestCase]
+        public void Allocate_FieldAlreadyAllocatedForSameMatch_FieldIsAllocatedSouldBeTrue()
+        {
+            var contest = new ContestMock() { Id = Guid.NewGuid() };
+            var result = new Field(contest, "name");
+            var match = new MatchMock() { Id = Guid.NewGuid() };
+            result.Allocate(match);
+
+            result.Allocate(match);
+
+            Assert.IsTrue(result.IsAllocated);
+        }
+
+        [TestCase]
+        public void Allocate_FieldAlreadyAllocatedForOtherMatch_ShouldTrowException()
         {
             var contest = new ContestMock() { Id = Guid.NewGuid() };
             var result = new Field(contest, "name");
@@ -41,34 +78,45 @@ namespace Contest.Business.Fields.UnitTest
             var otherMatch = new MatchMock() { Id = Guid.NewGuid() };
             result.Allocate(match);
 
-            result.Allocate(otherMatch);
+            Assert.Throws<ArgumentException>(() => result.Allocate(otherMatch));
         }
 
-        [TestMethod()]
-        public void AllocateTest_SameMatchFieldAlreadyAllocated()
-        {
-            var contest = new ContestMock() { Id = Guid.NewGuid() };
-            var result = new Field(contest, "name");
-            var match = new MatchMock() { Id = Guid.NewGuid() };
-            var otherMatch = new MatchMock() { Id = Guid.NewGuid() };
-            result.Allocate(match);
-
-            result.Allocate(match);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void AllocateTest_MatchNull()
+        [TestCase]
+        public void Allocate_MatchNull_ShouldThrowException()
         {
             var contest = new ContestMock() { Id = Guid.NewGuid() };
             var result = new Field(contest, "name");
             var match = new MatchMock() { Id = Guid.NewGuid() };
 
-            result.Allocate(null);
+            Assert.Throws<ArgumentNullException>(() => result.Allocate(null));
         }
 
-        [TestMethod()]
-        public void AllocateTest_AllFine()
+        [TestCase]
+        public void Allocate_AllFine_MatchInProgressIdShouldEqualToSpecifiedMatchId()
+        {
+            var contest = new ContestMock() { Id = Guid.NewGuid() };
+            var result = new Field(contest, "name");
+            var match = new MatchMock() { Id = Guid.NewGuid() };
+
+            result.Allocate(match);
+            
+            Assert.AreEqual(match.Id, result.MatchInProgessId);
+        }
+
+        [TestCase]
+        public void Allocate_AllFine_MatchInProgressShouldEqualToSpecifiedMatch()
+        {
+            var contest = new ContestMock() { Id = Guid.NewGuid() };
+            var result = new Field(contest, "name");
+            var match = new MatchMock() { Id = Guid.NewGuid() };
+
+            result.Allocate(match);
+            
+            Assert.AreEqual(match, result.MatchInProgess);
+        }
+
+        [TestCase]
+        public void Allocate_AllFine_FieldIsAllocatedSouldBeTrue()
         {
             var contest = new ContestMock() { Id = Guid.NewGuid() };
             var result = new Field(contest, "name");
@@ -77,14 +125,42 @@ namespace Contest.Business.Fields.UnitTest
             result.Allocate(match);
 
             Assert.IsTrue(result.IsAllocated);
-            Assert.AreEqual(match, result.MatchInProgess);
-            Assert.AreEqual(match.Id, result.MatchInProgessId);
         }
 
-        [TestMethod()]
-        public void PrepareCommitTest()
+        [TestCase]
+        public void PrepareCommit_NullISqlUnitOfWorks_ShouldThrowException()
         {
-            Assert.Fail();
+            var field = new Field(new ContestMock(), "name");
+
+            Assert.Throws<ArgumentNullException>(() => field.PrepareCommit(null));
+        }
+
+        [TestCase]
+        public void PrepareCommit_ValidISqlUnitOfWorks_ShouldInsertObject()
+        {
+            var field = new Field(new ContestMock(), "name");
+            var repoMock = new Mock<ISqlUnitOfWorks>(MockBehavior.Strict);
+            repoMock.Setup(_ => _.InsertOrUpdate<IField>(field)).Verifiable();
+
+            field.PrepareCommit(repoMock.Object);
+        }
+        [TestCase]
+        public void PrepareDelete_NullISqlUnitOfWorks_ShouldThrowException()
+        {
+            var field = new Field(new ContestMock(), "name");
+
+            Assert.Throws<ArgumentNullException>(() => field.PrepareDelete(null));
+        }
+
+        [TestCase]
+        public void PrepareDelete_ValidISqlUnitOfWorks_ShouldDeleteObject()
+        {
+            var field = new Field(new ContestMock(), "name");
+
+            var repoMock = new Mock<ISqlUnitOfWorks>(MockBehavior.Strict);
+            repoMock.Setup(_ => _.Delete<IField>(field)).Verifiable();
+
+            field.PrepareDelete(repoMock.Object);
         }
     }
 }
