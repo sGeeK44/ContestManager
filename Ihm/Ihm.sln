@@ -51,23 +51,23 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Field.Unit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.GameSetting", "..\Contest.Business.GameSetting\Contest.Business.GameSetting.csproj", "{94336F05-1311-448B-8EF6-AEBA3069F4D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Person", "Contest.Business.Person\Contest.Business.Person.csproj", "{F53A6D92-00CE-4C7B-A0CC-C6DBA2D6206E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Person", "..\Contest.Business.Person\Contest.Business.Person.csproj", "{F53A6D92-00CE-4C7B-A0CC-C6DBA2D6206E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Team", "Contest.Business.Team\Contest.Business.Team.csproj", "{D7D40BAE-46CF-4CAF-8C0A-445B0D7F7260}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Team", "..\Contest.Business.Team\Contest.Business.Team.csproj", "{D7D40BAE-46CF-4CAF-8C0A-445B0D7F7260}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.GameStep", "Contest.Business.GameStep\Contest.Business.GameStep.csproj", "{D0F224FA-5797-4C7C-87AB-4168EF306526}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.GameStep", "..\Contest.Business.GameStep\Contest.Business.GameStep.csproj", "{D0F224FA-5797-4C7C-87AB-4168EF306526}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Relationship", "..\Contest.Business.Relationship\Contest.Business.Relationship.csproj", "{20163DB4-EFB9-4F0B-8B94-985A848864AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.StepSetting", "Contest.Business.StepSetting\Contest.Business.StepSetting.csproj", "{13CDA740-C73F-457A-9AD0-46AC2F89B542}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.StepSetting", "..\Contest.Business.StepSetting\Contest.Business.StepSetting.csproj", "{13CDA740-C73F-457A-9AD0-46AC2F89B542}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.PhysicalSetting", "Contest.Business.PhysicalSetting\Contest.Business.PhysicalSetting.csproj", "{05B44680-4D87-45D4-8BD9-0AE966FE2102}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.PhysicalSetting", "..\Contest.Business.PhysicalSetting\Contest.Business.PhysicalSetting.csproj", "{05B44680-4D87-45D4-8BD9-0AE966FE2102}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Phase", "Contest.Business.Phase\Contest.Business.Phase.csproj", "{315452F5-6C38-49C1-9BAD-0DD5FF8C5207}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Phase", "..\Contest.Business.Phase\Contest.Business.Phase.csproj", "{315452F5-6C38-49C1-9BAD-0DD5FF8C5207}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Contest", "Contest.Business.Contest\Contest.Business.Contest.csproj", "{4A331365-ECEF-4CA0-B9B8-99E3E2011558}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Contest", "..\Contest.Business.Contest\Contest.Business.Contest.csproj", "{4A331365-ECEF-4CA0-B9B8-99E3E2011558}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.GameSetting.UnitTest", "Contest.Business.GameSetting.UnitTest\Contest.Business.GameSetting.UnitTest.csproj", "{D858B14C-C4E4-426C-AB77-0D4CA3DB37C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.GameSetting.UnitTest", "..\Contest.Business.GameSetting.UnitTest\Contest.Business.GameSetting.UnitTest.csproj", "{D858B14C-C4E4-426C-AB77-0D4CA3DB37C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

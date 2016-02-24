@@ -302,27 +302,27 @@
       <Project>{117C2981-C2C7-4B80-BA99-A7F73B8A9B62}</Project>
       <Name>Contest.Core.Windows</Name>
     </ProjectReference>
-    <ProjectReference Include="Contest.Business.Contest\Contest.Business.Contest.csproj">
+    <ProjectReference Include="..\Contest.Business.Contest\Contest.Business.Contest.csproj">
       <Project>{4a331365-ecef-4ca0-b9b8-99e3e2011558}</Project>
       <Name>Contest.Business.Contest</Name>
     </ProjectReference>
-    <ProjectReference Include="Contest.Business.GameStep\Contest.Business.GameStep.csproj">
+    <ProjectReference Include="..\Contest.Business.GameStep\Contest.Business.GameStep.csproj">
       <Project>{d0f224fa-5797-4c7c-87ab-4168ef306526}</Project>
       <Name>Contest.Business.GameStep</Name>
     </ProjectReference>
-    <ProjectReference Include="Contest.Business.Person\Contest.Business.Person.csproj">
+    <ProjectReference Include="..\Contest.Business.Person\Contest.Business.Person.csproj">
       <Project>{f53a6d92-00ce-4c7b-a0cc-c6dba2d6206e}</Project>
       <Name>Contest.Business.Person</Name>
     </ProjectReference>
-    <ProjectReference Include="Contest.Business.PhysicalSetting\Contest.Business.PhysicalSetting.csproj">
+    <ProjectReference Include="..\Contest.Business.PhysicalSetting\Contest.Business.PhysicalSetting.csproj">
       <Project>{05b44680-4d87-45d4-8bd9-0ae966fe2102}</Project>
       <Name>Contest.Business.PhysicalSetting</Name>
     </ProjectReference>
-    <ProjectReference Include="Contest.Business.StepSetting\Contest.Business.StepSetting.csproj">
+    <ProjectReference Include="..\Contest.Business.StepSetting\Contest.Business.StepSetting.csproj">
       <Project>{13cda740-c73f-457a-9ad0-46ac2f89b542}</Project>
       <Name>Contest.Business.StepSetting</Name>
     </ProjectReference>
-    <ProjectReference Include="Contest.Business.Team\Contest.Business.Team.csproj">
+    <ProjectReference Include="..\Contest.Business.Team\Contest.Business.Team.csproj">
       <Project>{d7d40bae-46cf-4caf-8c0a-445b0d7f7260}</Project>
       <Name>Contest.Business.Team</Name>
     </ProjectReference>

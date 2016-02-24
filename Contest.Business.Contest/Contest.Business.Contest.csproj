@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{315452F5-6C38-49C1-9BAD-0DD5FF8C5207}</ProjectGuid>
+    <ProjectGuid>{4A331365-ECEF-4CA0-B9B8-99E3E2011558}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Contest.Business</RootNamespace>
-    <AssemblyName>Contest.Business.Phase</AssemblyName>
+    <AssemblyName>Contest.Business.Contest</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -42,42 +42,50 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Phase.cs" />
-    <Compile Include="PhaseRepository.cs" />
+    <Compile Include="Contest.cs" />
+    <Compile Include="ContestRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Business.Interface\Contest.Business.Interface.csproj">
+    <ProjectReference Include="..\Business.Interface\Contest.Business.Interface.csproj">
       <Project>{1e4d7146-80a7-452e-871e-c5551d230714}</Project>
       <Name>Contest.Business.Interface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Contest.Business.GameSetting\Contest.Business.GameSetting.csproj">
-      <Project>{94336f05-1311-448b-8ef6-aeba3069f4d9}</Project>
-      <Name>Contest.Business.GameSetting</Name>
+    <ProjectReference Include="..\Contest.Business.Field\Contest.Business.Field.csproj">
+      <Project>{22fe8cf8-7973-4a27-8300-1ea82dfc133d}</Project>
+      <Name>Contest.Business.Field</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Contest.Business.Relationship\Contest.Business.Relationship.csproj">
-      <Project>{20163db4-efb9-4f0b-8b94-985a848864ae}</Project>
-      <Name>Contest.Business.Relationship</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Contest.Core.Component\Contest.Core.Component.csproj">
+    <ProjectReference Include="..\Contest.Core.Component\Contest.Core.Component.csproj">
       <Project>{6cc897ab-e169-4f20-a56d-0bc0af8e451d}</Project>
       <Name>Contest.Core.Component</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
+    <ProjectReference Include="..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
       <Project>{1ff5796b-18d0-4bf3-919d-14166813b7b2}</Project>
       <Name>Contest.Core.Repository.Sql</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Contest.Core.csproj">
+    <ProjectReference Include="..\Contest.Core.Windows\Contest.Core.Windows.csproj">
+      <Project>{117c2981-c2c7-4b80-ba99-a7f73b8a9b62}</Project>
+      <Name>Contest.Core.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Contest.Core.csproj">
       <Project>{aa703556-dd37-4b27-986d-9b8c01c24040}</Project>
       <Name>Contest.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Repository\Contest.Core.Repository.csproj">
+    <ProjectReference Include="..\MatchSetting\Contest.Business.MatchSetting.csproj">
+      <Project>{50fa9f63-d0e3-4019-8833-38e129418942}</Project>
+      <Name>Contest.Business.MatchSetting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Repository\Contest.Core.Repository.csproj">
       <Project>{4194f8f9-57e1-4d31-b4e3-a989f0d786f0}</Project>
       <Name>Contest.Core.Repository</Name>
     </ProjectReference>
     <ProjectReference Include="..\Contest.Business.GameStep\Contest.Business.GameStep.csproj">
       <Project>{d0f224fa-5797-4c7c-87ab-4168ef306526}</Project>
       <Name>Contest.Business.GameStep</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.Phase\Contest.Business.Phase.csproj">
+      <Project>{315452f5-6c38-49c1-9bad-0dd5ff8c5207}</Project>
+      <Name>Contest.Business.Phase</Name>
     </ProjectReference>
     <ProjectReference Include="..\Contest.Business.StepSetting\Contest.Business.StepSetting.csproj">
       <Project>{13cda740-c73f-457a-9ad0-46ac2f89b542}</Project>

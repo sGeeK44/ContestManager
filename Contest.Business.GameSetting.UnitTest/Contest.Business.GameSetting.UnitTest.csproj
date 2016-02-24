@@ -57,19 +57,19 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Business.Interface\Contest.Business.Interface.csproj">
+    <ProjectReference Include="..\Business.Interface\Contest.Business.Interface.csproj">
       <Project>{1E4D7146-80A7-452E-871E-C5551D230714}</Project>
       <Name>Contest.Business.Interface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Contest.Business.GameSetting\Contest.Business.GameSetting.csproj">
+    <ProjectReference Include="..\Contest.Business.GameSetting\Contest.Business.GameSetting.csproj">
       <Project>{94336F05-1311-448B-8EF6-AEBA3069F4D9}</Project>
       <Name>Contest.Business.GameSetting</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
+    <ProjectReference Include="..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
       <Project>{1FF5796B-18D0-4BF3-919D-14166813B7B2}</Project>
       <Name>Contest.Core.Repository.Sql</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Repository\Contest.Core.Repository.csproj">
+    <ProjectReference Include="..\Repository\Contest.Core.Repository.csproj">
       <Project>{4194F8F9-57E1-4D31-B4E3-A989F0D786F0}</Project>
       <Name>Contest.Core.Repository</Name>
     </ProjectReference>
