@@ -26,7 +26,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
             var builder = new WhereSqlExpression<Entity1, Entity1>(_ => _.Id == ent.Id);
             IList<Tuple<string, object, object[]>> arg;
             var query = builder.ToStatement(out arg);
-            Assert.AreEqual("WHERE ID = @P0", query);
+            Assert.AreEqual("WHERE ID = @P0@", query);
             Assert.IsNotNull(arg);
             Assert.AreEqual(1, arg.Count);
             AssertArg(arg, 0, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"));
@@ -39,7 +39,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
             var builder = new WhereSqlExpression<Entity1, Entity1>(_ => _.Id == id);
             IList<Tuple<string, object, object[]>> arg;
             var query = builder.ToStatement(out arg);
-            Assert.AreEqual("WHERE ID = @P0", query);
+            Assert.AreEqual("WHERE ID = @P0@", query);
             Assert.IsNotNull(arg);
             Assert.AreEqual(1, arg.Count);
             AssertArg(arg, 0, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"));
@@ -51,7 +51,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
             var builder = new WhereSqlExpression<Entity1, Entity1>(_ => _.Name == "NameSearch");
             IList<Tuple<string, object, object[]>> arg;
             var query = builder.ToStatement(out arg);
-            Assert.AreEqual("WHERE NAME = @P0", query);
+            Assert.AreEqual("WHERE NAME = @P0@", query);
             Assert.IsNotNull(arg);
             Assert.AreEqual(1, arg.Count);
             AssertArg(arg, 0, "NameSearch");
@@ -64,7 +64,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
             var builder = new WhereSqlExpression<Entity1, Entity1>(_ => _.Id == ent.Id && _.Name == "NameSearch");
             IList<Tuple<string, object, object[]>> arg;
             var query = builder.ToStatement(out arg);
-            Assert.AreEqual("WHERE ID = @P0 AND NAME = @P1", query);
+            Assert.AreEqual("WHERE ID = @P0@ AND NAME = @P1@", query);
             Assert.IsNotNull(arg);
             Assert.AreEqual(2, arg.Count);
             AssertArg(arg, 0, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"));
@@ -78,7 +78,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
             var builder = new WhereSqlExpression<Entity1, Entity1>(_ => _.Id == ent.Id || _.Name == "NameSearch");
             IList<Tuple<string, object, object[]>> arg;
             var query = builder.ToStatement(out arg);
-            Assert.AreEqual("WHERE ID = @P0 OR NAME = @P1", query);
+            Assert.AreEqual("WHERE ID = @P0@ OR NAME = @P1@", query);
             Assert.IsNotNull(arg);
             Assert.AreEqual(2, arg.Count);
             AssertArg(arg, 0, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"));
@@ -103,7 +103,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
             var builder = new WhereSqlExpression<Entity5, IEntity5>(_ => _.Id == ent.Id);
             IList<Tuple<string, object, object[]>> arg;
             var query = builder.ToStatement(out arg);
-            Assert.AreEqual("WHERE ID = @P0", query);
+            Assert.AreEqual("WHERE ID = @P0@", query);
             Assert.IsNotNull(arg);
             Assert.AreEqual(1, arg.Count);
             AssertArg(arg, 0, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"));
@@ -116,7 +116,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
             var builder = new WhereSqlExpression<Entity5, IEntity5>(_ => _.Id == id);
             IList<Tuple<string, object, object[]>> arg;
             var query = builder.ToStatement(out arg);
-            Assert.AreEqual("WHERE ID = @P0", query);
+            Assert.AreEqual("WHERE ID = @P0@", query);
             Assert.IsNotNull(arg);
             Assert.AreEqual(1, arg.Count);
             AssertArg(arg, 0, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"));
@@ -128,7 +128,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
             var builder = new WhereSqlExpression<Entity5, IEntity5>(_ => _.Name == "NameSearch");
             IList<Tuple<string, object, object[]>> arg;
             var query = builder.ToStatement(out arg);
-            Assert.AreEqual("WHERE NAME = @P0", query);
+            Assert.AreEqual("WHERE NAME = @P0@", query);
             Assert.IsNotNull(arg);
             Assert.AreEqual(1, arg.Count);
             AssertArg(arg, 0, "NameSearch");
@@ -141,7 +141,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
             var builder = new WhereSqlExpression<Entity5, IEntity5>(_ => _.Id == ent.Id && _.Name == "NameSearch");
             IList<Tuple<string, object, object[]>> arg;
             var query = builder.ToStatement(out arg);
-            Assert.AreEqual("WHERE ID = @P0 AND NAME = @P1", query);
+            Assert.AreEqual("WHERE ID = @P0@ AND NAME = @P1@", query);
             Assert.IsNotNull(arg);
             Assert.AreEqual(2, arg.Count);
             AssertArg(arg, 0, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"));
@@ -155,7 +155,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
             var builder = new WhereSqlExpression<Entity5, IEntity5>(_ => _.Id == ent.Id || _.Name == "NameSearch");
             IList<Tuple<string, object, object[]>> arg;
             var query = builder.ToStatement(out arg);
-            Assert.AreEqual("WHERE ID = @P0 OR NAME = @P1", query);
+            Assert.AreEqual("WHERE ID = @P0@ OR NAME = @P1@", query);
             Assert.IsNotNull(arg);
             Assert.AreEqual(2, arg.Count);
             AssertArg(arg, 0, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"));
