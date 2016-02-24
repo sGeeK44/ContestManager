@@ -1,49 +1,48 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using System;
+using Contest.Core.Repository.Sql;
+using Moq;
 
 namespace Contest.Business.UnitTest
 {
-    [TestClass()]
+    [TestFixture]
     public class GameSettingTest
     {
-        [TestMethod()]
-        public void Equal_SameContentValue_ShouldBeEqual()
-        {
-            var factory = new GameSettingFactory();
-            var obj1 = factory.Create(1, 1);
-            var obj2 = factory.Create(1, 1);
 
-            Assert.IsTrue(obj1.Equals(obj2));
-            Assert.IsTrue(obj2.Equals(obj1));
+        [TestCase]
+        public void PrepareCommit_NullISqlUnitOfWorks_ShouldThrowException()
+        {
+            var field = new GameSetting();
+
+            Assert.Throws<ArgumentNullException>(() => field.PrepareCommit(null));
         }
 
-        [TestMethod()]
-        public void Equal_DifferentContentValue_ShouldNotBeEqual()
+        [TestCase]
+        public void PrepareCommit_ValidISqlUnitOfWorks_ShouldInsertObject()
         {
-            var factory = new GameSettingFactory();
-            var obj1 = factory.Create(1, 3);
-            var obj2 = factory.Create(1, 2);
+            var field = new GameSetting();
+            var repoMock = new Mock<ISqlUnitOfWorks>(MockBehavior.Strict);
+            repoMock.Setup(_ => _.InsertOrUpdate<IGameSetting>(field)).Verifiable();
 
-            Assert.IsFalse(obj1.Equals(obj2));
-            Assert.IsFalse(obj2.Equals(obj1));
+            field.PrepareCommit(repoMock.Object);
+        }
+        [TestCase]
+        public void PrepareDelete_NullISqlUnitOfWorks_ShouldThrowException()
+        {
+            var field = new GameSetting();
+
+            Assert.Throws<ArgumentNullException>(() => field.PrepareDelete(null));
         }
 
-        [TestMethod()]
-        public void Equal_NullArg_ShouldNotBeEqual()
+        [TestCase]
+        public void PrepareDelete_ValidISqlUnitOfWorks_ShouldDeleteObject()
         {
-            var factory = new GameSettingFactory();
-            var obj1 = factory.Create(5, 10);
+            var field = new GameSetting();
 
-            Assert.IsFalse(obj1.Equals(null));
-        }
+            var repoMock = new Mock<ISqlUnitOfWorks>(MockBehavior.Strict);
+            repoMock.Setup(_ => _.Delete<IGameSetting>(field)).Verifiable();
 
-        [TestMethod()]
-        public void Equal_ArgDoesNotImplementIGameSetting_ShouldNotBeEqual()
-        {
-            var factory = new GameSettingFactory();
-            var obj1 = factory.Create(5, 10);
-
-            Assert.IsFalse(obj1.Equals(new object()));
+            field.PrepareDelete(repoMock.Object);
         }
     }
 }

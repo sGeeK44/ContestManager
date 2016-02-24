@@ -14,7 +14,8 @@ namespace Contest.Business
         /// <returns>GameSetting's instance</returns>
         public IGameSetting Create(uint minimumPlayerByTeam, uint maximumPlayerByTeam)
         {
-            if (maximumPlayerByTeam < 1) throw new ArgumentException("Une équipe doit au moins pouvoir posséder un joueur");
+            if (minimumPlayerByTeam < 1) throw new ArgumentException("Une équipe doit au moins pouvoir posséder un joueur");
+            if (maximumPlayerByTeam < minimumPlayerByTeam) throw new ArgumentException(string.Format("Le nombre maximum de joueur par équipe ne peut pas être inférieur au nombre minimum. Nombre min:{0}. Nombre Max:{1}", minimumPlayerByTeam, maximumPlayerByTeam));
 
             var result = new GameSetting
             {

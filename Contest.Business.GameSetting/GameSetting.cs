@@ -31,25 +31,14 @@ namespace Contest.Business
 
         #region Methods
 
-        public override bool Equals(object other)
-        {
-            var castedObj = other as IGameSetting;
-            if (castedObj == null) return false;
-
-            return castedObj.GetHashCode() == GetHashCode();
-        }
-
-        public override int GetHashCode()
-        {
-            return MinimumPlayerByTeam.GetHashCode() + MaximumPlayerByTeam.GetHashCode();
-        }
-
         /// <summary>
         /// Do all insert or update into repository for all of object composed.
         /// </summary>
         /// <param name="unitOfWorks">Unit of work for action</param>
         public virtual void PrepareCommit(ISqlUnitOfWorks unitOfWorks)
         {
+            if (unitOfWorks == null) throw new ArgumentNullException("unitOfWorks");
+
             unitOfWorks.InsertOrUpdate<IGameSetting>(this);
         }
 
@@ -59,7 +48,9 @@ namespace Contest.Business
         /// <param name="unitOfWorks">Unit of work for action</param>
         public void PrepareDelete(ISqlUnitOfWorks unitOfWorks)
         {
-            throw new NotImplementedException();
+            if (unitOfWorks == null) throw new ArgumentNullException("unitOfWorks");
+
+            unitOfWorks.Delete<IGameSetting>(this);
         }
 
         #endregion
