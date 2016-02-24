@@ -52,6 +52,8 @@ namespace Contest.Business
         /// <param name="unitOfWorks">Unit of work for action</param>
         public virtual void PrepareCommit(ISqlUnitOfWorks unitOfWorks)
         {
+            if (unitOfWorks == null) throw new ArgumentNullException("unitOfWorks");
+
             unitOfWorks.InsertOrUpdate<IAddress>(this);
         }
 
@@ -61,6 +63,8 @@ namespace Contest.Business
         /// <param name="unitOfWorks">Unit of work for action</param>
         public void PrepareDelete(ISqlUnitOfWorks unitOfWorks)
         {
+            if (unitOfWorks == null) throw new ArgumentNullException("unitOfWorks");
+
             unitOfWorks.Delete<IAddress>(this);
         }
 

@@ -1,14 +1,22 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
 using Contest.Core.Repository.Sql;
 using Moq;
-using Contest.Core.Repository;
+using NUnit.Framework;
 
 namespace Contest.Business.UnitTest
 {
-    [TestClass()]
+    [TestFixture]
     public class AddressTest
     {
-        [TestMethod()]
+        [TestCase]
+        public void PrepareCommit_NullISqlUnitOfWorks_ShouldThrowException()
+        {
+            var address = new Address();
+
+            Assert.Throws<ArgumentNullException>(() => address.PrepareCommit(null));
+        }
+
+        [TestCase]
         public void PrepareCommit_ValidISqlUnitOfWorks_ShouldInsertObject()
         {
             var address = new Address();
@@ -17,8 +25,15 @@ namespace Contest.Business.UnitTest
 
             address.PrepareCommit(repoMock.Object);
         }
+        [TestCase]
+        public void PrepareDelete_NullISqlUnitOfWorks_ShouldThrowException()
+        {
+            var address = new Address();
 
-        [TestMethod()]
+            Assert.Throws<ArgumentNullException>(() => address.PrepareDelete(null));
+        }
+
+        [TestCase]
         public void PrepareDelete_ValidISqlUnitOfWorks_ShouldDeleteObject()
         {
             var address = new Address();
