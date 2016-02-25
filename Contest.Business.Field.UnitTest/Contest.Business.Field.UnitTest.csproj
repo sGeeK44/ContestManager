@@ -78,7 +78,7 @@
       <Project>{b40cb664-f09b-4288-9d85-3543036b735c}</Project>
       <Name>Contest.UnitTest.Kit</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Repository\Contest.Core.Repository.csproj">
+    <ProjectReference Include="..\Contest.Core.Repository\Contest.Core.Repository.csproj">
       <Project>{4194F8F9-57E1-4D31-B4E3-A989F0D786F0}</Project>
       <Name>Contest.Core.Repository</Name>
     </ProjectReference>

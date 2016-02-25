@@ -59,7 +59,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Repository\Contest.Core.Repository.csproj">
+    <ProjectReference Include="..\Contest.Core.Repository\Contest.Core.Repository.csproj">
       <Project>{4194f8f9-57e1-4d31-b4e3-a989f0d786f0}</Project>
       <Name>Contest.Core.Repository</Name>
     </ProjectReference>

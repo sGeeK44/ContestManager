@@ -61,7 +61,7 @@
       <Project>{117c2981-c2c7-4b80-ba99-a7f73b8a9b62}</Project>
       <Name>Contest.Core.Windows</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Repository\Contest.Core.Repository.csproj">
+    <ProjectReference Include="..\Contest.Core.Repository\Contest.Core.Repository.csproj">
       <Project>{4194f8f9-57e1-4d31-b4e3-a989f0d786f0}</Project>
       <Name>Contest.Core.Repository</Name>
     </ProjectReference>

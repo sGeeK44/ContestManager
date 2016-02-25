@@ -75,7 +75,7 @@
       <Project>{1FF5796B-18D0-4BF3-919D-14166813B7B2}</Project>
       <Name>Contest.Core.Repository.Sql</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Repository\Contest.Core.Repository.csproj">
+    <ProjectReference Include="..\Contest.Core.Repository\Contest.Core.Repository.csproj">
       <Project>{4194F8F9-57E1-4D31-B4E3-A989F0D786F0}</Project>
       <Name>Contest.Core.Repository</Name>
     </ProjectReference>

@@ -60,11 +60,11 @@
       <Project>{1FF5796B-18D0-4BF3-919D-14166813B7B2}</Project>
       <Name>Contest.Core.Repository.Sql</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MatchSetting\Contest.Business.MatchSetting.csproj">
+    <ProjectReference Include="..\Contest.Business.MatchSetting\Contest.Business.MatchSetting.csproj">
       <Project>{50fa9f63-d0e3-4019-8833-38e129418942}</Project>
       <Name>Contest.Business.MatchSetting</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Core\Contest.Core.csproj">
+    <ProjectReference Include="..\Contest.Core\Contest.Core.csproj">
       <Project>{aa703556-dd37-4b27-986d-9b8c01c24040}</Project>
       <Name>Contest.Core</Name>
     </ProjectReference>
@@ -72,7 +72,7 @@
       <Project>{1e4d7146-80a7-452e-871e-c5551d230714}</Project>
       <Name>Contest.Business.Interface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Repository\Contest.Core.Repository.csproj">
+    <ProjectReference Include="..\Contest.Core.Repository\Contest.Core.Repository.csproj">
       <Project>{4194F8F9-57E1-4D31-B4E3-A989F0D786F0}</Project>
       <Name>Contest.Core.Repository</Name>
     </ProjectReference>

@@ -80,7 +80,7 @@
       <Project>{6CC897AB-E169-4F20-A56D-0BC0AF8E451D}</Project>
       <Name>Contest.Core.Component</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Repository\Contest.Core.Repository.csproj">
+    <ProjectReference Include="..\Contest.Core.Repository\Contest.Core.Repository.csproj">
       <Project>{4194F8F9-57E1-4D31-B4E3-A989F0D786F0}</Project>
       <Name>Contest.Core.Repository</Name>
     </ProjectReference>

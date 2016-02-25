@@ -69,7 +69,7 @@
     <Compile Include="EndTypeConstaint.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Contest.Core.csproj">
+    <ProjectReference Include="..\Contest.Core\Contest.Core.csproj">
       <Project>{aa703556-dd37-4b27-986d-9b8c01c24040}</Project>
       <Name>Contest.Core</Name>
     </ProjectReference>
@@ -81,7 +81,7 @@
       <Project>{117C2981-C2C7-4B80-BA99-A7F73B8A9B62}</Project>
       <Name>Contest.Core.Windows</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Repository\Contest.Core.Repository.csproj">
+    <ProjectReference Include="..\Contest.Core.Repository\Contest.Core.Repository.csproj">
       <Project>{4194F8F9-57E1-4D31-B4E3-A989F0D786F0}</Project>
       <Name>Contest.Core.Repository</Name>
     </ProjectReference>
