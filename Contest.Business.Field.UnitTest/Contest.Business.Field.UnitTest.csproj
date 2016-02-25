@@ -51,11 +51,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ContestMock.cs" />
     <Compile Include="ContestRepositoryMock.cs" />
     <Compile Include="FieldFactoryTest.cs" />
     <Compile Include="FieldTest.cs" />
-    <Compile Include="MatchMock.cs" />
     <Compile Include="MatchRepositoryMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RepositoryBaseMock.cs" />

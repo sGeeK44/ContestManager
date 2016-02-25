@@ -1,63 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
+using Contest.Core.Repository;
+using Moq;
 
 namespace Contest.Business.UnitTest
 {
-    public class RepositoryBaseMock<T>
+    public class RepositoryBaseMock<T> : IRepository<T>
+        where T : class
     {
-        public List<T> Content { get; set; }
-        public int ClearCacheCount { get; private set; }
-        public int DeleteCount { get; private set; }
-        public int InsertCount { get; private set; }
-        public int InsertOrUpdateCount { get; private set; }
-        public int UpdateCount { get; private set; }
+        public Mock<IRepository<T>> RepositoryMock { get; set; }
 
         public RepositoryBaseMock()
         {
-            Content = new List<T>();
+            RepositoryMock = new Mock<IRepository<T>>();
         }
 
         public void ClearCache()
         {
-            ClearCacheCount++;
+            RepositoryMock.Object.ClearCache();
         }
 
         public void Delete(T item)
         {
-            Content.Remove(item);
-            DeleteCount++;
+            RepositoryMock.Object.Delete(item);
         }        
 
         public IList<T> Find(Expression<Func<T, bool>> predicate)
         {
-            return Content.Where(predicate.Compile()).ToList();
+            return RepositoryMock.Object.Find(predicate);
         }
 
         public T FirstOrDefault(Expression<Func<T, bool>> predicate)
         {
-            return Content.FirstOrDefault(predicate.Compile());
+            return RepositoryMock.Object.FirstOrDefault(predicate);
         }
 
         public void Insert(T item)
         {
-            Content.Add(item);
-            InsertCount++;
+            RepositoryMock.Object.Insert(item);
         }
 
         public void InsertOrUpdate(T item)
         {
-            Content.Remove(item);
-            Content.Add(item);
-            InsertOrUpdateCount++;
+            RepositoryMock.Object.InsertOrUpdate(item);
         }
 
         public void Update(T item)
         {
-            Content.Remove(item);
-            Content.Add(item);
-            UpdateCount++;
+            RepositoryMock.Object.Update(item);
         }
     }
 }

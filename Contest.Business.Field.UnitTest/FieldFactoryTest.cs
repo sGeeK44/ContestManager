@@ -1,24 +1,18 @@
 ﻿using System;
 using Contest.Core.Component;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
 namespace Contest.Business.Fields.UnitTest
 {
     [TestClass()]
     public class FieldFactoryTest
     {
-        [TestInitialize]
-        public void Init()
-        {
-            FlippingContainer.Instance.Current = new ExecutingAssemblies();
-        }
-
         [TestMethod()]
-        public void CreateTest()
+        public void Create_CorrectArg_ShouldReturnAField()
         {
-            var contest = new ContestMock();
             var factory = new FieldFactory();
-            var result = factory.Create(contest, "name");
+            var result = factory.Create(new Mock<IContest>().Object, "name");
 
             Assert.IsInstanceOfType(result, typeof(Field));
         }

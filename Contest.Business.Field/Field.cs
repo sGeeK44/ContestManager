@@ -32,7 +32,7 @@ namespace Contest.Business
 
         #region Constructor
 
-        private Field()
+        internal Field()
         {
             FlippingContainer.Instance.ComposeParts(this);
             _matchInProgess = new Lazy<IMatch>(() => MatchRepository.FirstOrDefault(_ => _.Id == MatchInProgessId));

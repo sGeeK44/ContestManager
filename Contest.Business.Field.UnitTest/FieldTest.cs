@@ -16,9 +16,17 @@ namespace Contest.Business.Fields.UnitTest
         }
 
         [TestCase]
+        public void ConstructorParamLess_AllFine_LazyShouldBeInitialize()
+        {
+            var field = new Field();
+            Assert.IsNull(field.CurrentContest);
+            Assert.IsNull(field.MatchInProgess);
+        }
+
+        [TestCase]
         public void Constructor_AllFine_PropertyShouldByInitialized()
         {
-            var contest = new ContestMock() { Id = Guid.NewGuid() };
+            var contest = CreateContestStub();
             var result = new Field(contest, "name");
 
             Assert.AreNotEqual(Guid.Empty, result.Id);
@@ -33,9 +41,9 @@ namespace Contest.Business.Fields.UnitTest
         [TestCase]
         public void Allocate_FieldAlreadyAllocatedForSameMatch_MatchInProgressIdShouldEqualToSpecifiedMatchId()
         {
-            var contest = new ContestMock() { Id = Guid.NewGuid() };
+            var contest = CreateContestStub();
             var result = new Field(contest, "name");
-            var match = new MatchMock() { Id = Guid.NewGuid() };
+            var match = CreateMatchStub();
             result.Allocate(match);
 
             result.Allocate(match);
@@ -46,9 +54,9 @@ namespace Contest.Business.Fields.UnitTest
         [TestCase]
         public void Allocate_FieldAlreadyAllocatedForSameMatch_MatchInProgressShouldEqualToSpecifiedMatch()
         {
-            var contest = new ContestMock() { Id = Guid.NewGuid() };
+            var contest = CreateContestStub();
             var result = new Field(contest, "name");
-            var match = new MatchMock() { Id = Guid.NewGuid() };
+            var match = CreateMatchStub();
             result.Allocate(match);
 
             result.Allocate(match);
@@ -59,9 +67,9 @@ namespace Contest.Business.Fields.UnitTest
         [TestCase]
         public void Allocate_FieldAlreadyAllocatedForSameMatch_FieldIsAllocatedSouldBeTrue()
         {
-            var contest = new ContestMock() { Id = Guid.NewGuid() };
+            var contest = CreateContestStub();
             var result = new Field(contest, "name");
-            var match = new MatchMock() { Id = Guid.NewGuid() };
+            var match = CreateMatchStub();
             result.Allocate(match);
 
             result.Allocate(match);
@@ -72,10 +80,10 @@ namespace Contest.Business.Fields.UnitTest
         [TestCase]
         public void Allocate_FieldAlreadyAllocatedForOtherMatch_ShouldTrowException()
         {
-            var contest = new ContestMock() { Id = Guid.NewGuid() };
+            var contest = CreateContestStub();
             var result = new Field(contest, "name");
-            var match = new MatchMock() { Id = Guid.NewGuid() };
-            var otherMatch = new MatchMock() { Id = Guid.NewGuid() };
+            var match = CreateMatchStub();
+            var otherMatch = CreateMatchStub();
             result.Allocate(match);
 
             Assert.Throws<ArgumentException>(() => result.Allocate(otherMatch));
@@ -84,9 +92,9 @@ namespace Contest.Business.Fields.UnitTest
         [TestCase]
         public void Allocate_MatchNull_ShouldThrowException()
         {
-            var contest = new ContestMock() { Id = Guid.NewGuid() };
+            var contest = CreateContestStub();
             var result = new Field(contest, "name");
-            var match = new MatchMock() { Id = Guid.NewGuid() };
+            var match = CreateMatchStub();
 
             Assert.Throws<ArgumentNullException>(() => result.Allocate(null));
         }
@@ -94,9 +102,9 @@ namespace Contest.Business.Fields.UnitTest
         [TestCase]
         public void Allocate_AllFine_MatchInProgressIdShouldEqualToSpecifiedMatchId()
         {
-            var contest = new ContestMock() { Id = Guid.NewGuid() };
+            var contest = CreateContestStub();
             var result = new Field(contest, "name");
-            var match = new MatchMock() { Id = Guid.NewGuid() };
+            var match = CreateMatchStub();
 
             result.Allocate(match);
             
@@ -106,9 +114,9 @@ namespace Contest.Business.Fields.UnitTest
         [TestCase]
         public void Allocate_AllFine_MatchInProgressShouldEqualToSpecifiedMatch()
         {
-            var contest = new ContestMock() { Id = Guid.NewGuid() };
+            var contest = CreateContestStub();
             var result = new Field(contest, "name");
-            var match = new MatchMock() { Id = Guid.NewGuid() };
+            var match = CreateMatchStub();
 
             result.Allocate(match);
             
@@ -118,9 +126,9 @@ namespace Contest.Business.Fields.UnitTest
         [TestCase]
         public void Allocate_AllFine_FieldIsAllocatedSouldBeTrue()
         {
-            var contest = new ContestMock() { Id = Guid.NewGuid() };
+            var contest = CreateContestStub();
             var result = new Field(contest, "name");
-            var match = new MatchMock() { Id = Guid.NewGuid() };
+            var match = CreateMatchStub();
 
             result.Allocate(match);
 
@@ -128,9 +136,33 @@ namespace Contest.Business.Fields.UnitTest
         }
 
         [TestCase]
+        public void Release_NotAllocated_IsAllocatedShouldBeFalse()
+        {
+            var contest = CreateContestStub();
+            var result = new Field(contest, "name");
+         
+            result.Release();
+
+            Assert.IsFalse(result.IsAllocated);
+        }
+
+        [TestCase]
+        public void Release_Allocated_IsAllocatedShouldBeFalse()
+        {
+            var contest = CreateContestStub();
+            var result = new Field(contest, "name");
+            var match = CreateMatchStub();
+            result.Allocate(match);
+
+            result.Release();
+
+            Assert.IsFalse(result.IsAllocated);
+        }
+
+        [TestCase]
         public void PrepareCommit_NullISqlUnitOfWorks_ShouldThrowException()
         {
-            var field = new Field(new ContestMock(), "name");
+            var field = new Field(new Mock<IContest>().Object, "name");
 
             Assert.Throws<ArgumentNullException>(() => field.PrepareCommit(null));
         }
@@ -138,7 +170,7 @@ namespace Contest.Business.Fields.UnitTest
         [TestCase]
         public void PrepareCommit_ValidISqlUnitOfWorks_ShouldInsertObject()
         {
-            var field = new Field(new ContestMock(), "name");
+            var field = new Field(new Mock<IContest>().Object, "name");
             var repoMock = new Mock<ISqlUnitOfWorks>(MockBehavior.Strict);
             repoMock.Setup(_ => _.InsertOrUpdate<IField>(field)).Verifiable();
 
@@ -147,7 +179,7 @@ namespace Contest.Business.Fields.UnitTest
         [TestCase]
         public void PrepareDelete_NullISqlUnitOfWorks_ShouldThrowException()
         {
-            var field = new Field(new ContestMock(), "name");
+            var field = new Field(new Mock<IContest>().Object, "name");
 
             Assert.Throws<ArgumentNullException>(() => field.PrepareDelete(null));
         }
@@ -155,12 +187,26 @@ namespace Contest.Business.Fields.UnitTest
         [TestCase]
         public void PrepareDelete_ValidISqlUnitOfWorks_ShouldDeleteObject()
         {
-            var field = new Field(new ContestMock(), "name");
+            var field = new Field(new Mock<IContest>().Object, "name");
 
             var repoMock = new Mock<ISqlUnitOfWorks>(MockBehavior.Strict);
             repoMock.Setup(_ => _.Delete<IField>(field)).Verifiable();
 
             field.PrepareDelete(repoMock.Object);
+        }
+
+        private static IMatch CreateMatchStub()
+        {
+            var match = new Mock<IMatch>();
+            match.Setup(_ => _.Id).Returns(Guid.NewGuid());
+            return match.Object;
+        }
+
+        private static IContest CreateContestStub()
+        {
+            var stub = new Mock<IContest>();
+            stub.Setup(_ => _.Id).Returns(Guid.NewGuid());
+            return stub.Object;
         }
     }
 }
