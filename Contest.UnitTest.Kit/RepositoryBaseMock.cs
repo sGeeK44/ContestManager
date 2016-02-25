@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using Contest.Core.Repository;
 using Moq;
 
-namespace Contest.Business.UnitTest
+namespace Contest.UnitTest.TestKit
 {
     public class RepositoryBaseMock<T> : IRepository<T>
         where T : class

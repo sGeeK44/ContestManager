@@ -56,7 +56,6 @@
     <Compile Include="FieldTest.cs" />
     <Compile Include="MatchRepositoryMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RepositoryBaseMock.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Business.Interface\Contest.Business.Interface.csproj">
@@ -74,6 +73,10 @@
     <ProjectReference Include="..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
       <Project>{1FF5796B-18D0-4BF3-919D-14166813B7B2}</Project>
       <Name>Contest.Core.Repository.Sql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.UnitTest.Kit\Contest.UnitTest.Kit.csproj">
+      <Project>{b40cb664-f09b-4288-9d85-3543036b735c}</Project>
+      <Name>Contest.UnitTest.Kit</Name>
     </ProjectReference>
     <ProjectReference Include="..\Repository\Contest.Core.Repository.csproj">
       <Project>{4194F8F9-57E1-4D31-B4E3-A989F0D786F0}</Project>

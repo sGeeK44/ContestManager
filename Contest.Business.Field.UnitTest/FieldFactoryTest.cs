@@ -1,6 +1,4 @@
-﻿using System;
-using Contest.Core.Component;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace Contest.Business.Fields.UnitTest
