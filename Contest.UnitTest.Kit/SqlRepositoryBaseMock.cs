@@ -2,18 +2,25 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Contest.Core.Repository;
+using Contest.Core.Repository.Sql;
 using Moq;
 
 namespace Contest.UnitTest.Kit
 {
-    public class RepositoryBaseMock<T> : IRepository<T>
+    public class SqlRepositoryBaseMock<T> : ISqlRepository<T>
         where T : class
     {
-        public Mock<IRepository<T>> RepositoryMock { get; set; }
+        public Mock<ISqlRepository<T>> RepositoryMock { get; set; }
 
-        public RepositoryBaseMock()
+        public IUnitOfWorks UnitOfWorks
         {
-            RepositoryMock = new Mock<IRepository<T>>();
+            get { return RepositoryMock.Object.UnitOfWorks; }
+            set { RepositoryMock.Object.UnitOfWorks = value; }
+        }
+
+        public SqlRepositoryBaseMock()
+        {
+            RepositoryMock = new Mock<ISqlRepository<T>>();
         }
 
         public void ClearCache()
@@ -49,6 +56,21 @@ namespace Contest.UnitTest.Kit
         public void Update(T item)
         {
             RepositoryMock.Object.Update(item);
+        }
+
+        public void CreateTable()
+        {
+            RepositoryMock.Object.CreateTable();
+        }
+
+        public void Commit()
+        {
+            RepositoryMock.Object.Commit();
+        }
+
+        public void RollBack()
+        {
+            RepositoryMock.Object.RollBack();
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.Composition;
-using Contest.UnitTest.TestKit;
+using Contest.UnitTest.Kit;
 using Contest.Core.Repository;
 
 namespace Contest.Business.Fields.UnitTest

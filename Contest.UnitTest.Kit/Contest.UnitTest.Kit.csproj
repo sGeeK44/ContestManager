@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlRepositoryBaseMock.cs" />
     <Compile Include="RepositoryBaseMock.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +60,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
+      <Project>{1ff5796b-18d0-4bf3-919d-14166813b7b2}</Project>
+      <Name>Contest.Core.Repository.Sql</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Contest.Core.Repository\Contest.Core.Repository.csproj">
       <Project>{4194f8f9-57e1-4d31-b4e3-a989f0d786f0}</Project>
       <Name>Contest.Core.Repository</Name>
