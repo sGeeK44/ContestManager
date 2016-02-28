@@ -22,7 +22,7 @@ namespace Contest.Core.Repository.Sql
         {
             arg = new List<Tuple<string, object, object[]>>();
             // To manage null for sql server... (sql server doesn't support item = NULL but support item IS NULL
-            return _expression != null ? ToStatement(_expression, arg).Replace("= NULL", "IS NULL") : string.Empty;
+            return ToStatement(_expression, arg).Replace("= NULL", "IS NULL");
         }
 
         private string ToStatement(Expression exp, IList<Tuple<string, object, object[]>> arg)
@@ -33,7 +33,6 @@ namespace Contest.Core.Repository.Sql
             {
                 case ExpressionType.Negate:
                 case ExpressionType.NegateChecked:
-                    return ToStatement(exp.NodeType, (UnaryExpression)exp, arg);
                 case ExpressionType.Not:
                     return ToStatement(exp.NodeType, (UnaryExpression)exp, arg);
                 case ExpressionType.Add:
@@ -70,7 +69,7 @@ namespace Contest.Core.Repository.Sql
 
         protected virtual string ToStatement(ExpressionType type, UnaryExpression u, IList<Tuple<string, object, object[]>> arg)
         {
-            return ToSqlStatement(type) + ToStatement(u.Operand, arg);
+            return ToSqlStatement(type) + " " + ToStatement(u.Operand, arg);
         }
 
         protected virtual string ToStatement(ExpressionType type, BinaryExpression b, IList<Tuple<string, object, object[]>> arg)

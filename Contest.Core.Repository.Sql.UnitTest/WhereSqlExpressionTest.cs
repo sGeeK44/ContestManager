@@ -162,6 +162,135 @@ namespace Contest.Core.Repository.Sql.UnitTest
             AssertArg(arg, 1, "NameSearch");
         }
 
+        [TestCase]
+        public void ToStatement_AddOperator_ShouldReturnRightWereExpression()
+        {
+            IEntity5 ent = Entity5.CreateMock();
+            int param = 5;
+            var builder = new WhereSqlExpression<Entity5, Entity5>(_ => _.Age == param + 5);
+            IList<Tuple<string, object, object[]>> arg;
+            var query = builder.ToStatement(out arg);
+            Assert.AreEqual("WHERE AGE = @P0@ + @P1@", query);
+            Assert.IsNotNull(arg);
+            Assert.AreEqual(2, arg.Count);
+            AssertArg(arg, 0, 5);
+            AssertArg(arg, 1, 5);
+        }
+
+        [TestCase]
+        public void ToStatement_SubtractOperator_ShouldReturnRightWereExpression()
+        {
+            IEntity5 ent = Entity5.CreateMock();
+            int param = 5;
+            var builder = new WhereSqlExpression<Entity5, Entity5>(_ => _.Age == param - 5);
+            IList<Tuple<string, object, object[]>> arg;
+            var query = builder.ToStatement(out arg);
+            Assert.AreEqual("WHERE AGE = @P0@ - @P1@", query);
+            Assert.IsNotNull(arg);
+        }
+
+        [TestCase]
+        public void ToStatement_NegateMember_ShouldReturnRightWereExpression()
+        {
+            IEntity5 ent = Entity5.CreateMock();
+            var builder = new WhereSqlExpression<Entity5, Entity5>(_ => -(_.Age) == 5);
+            IList<Tuple<string, object, object[]>> arg;
+            var query = builder.ToStatement(out arg);
+            Assert.AreEqual("WHERE - AGE = @P0@", query);
+        }
+
+        [TestCase]
+        public void ToStatement_MultiplyMember_ShouldReturnRightWereExpression()
+        {
+            IEntity5 ent = Entity5.CreateMock();
+            var builder = new WhereSqlExpression<Entity5, Entity5>(_ => _.Age * 5 == 5);
+            IList<Tuple<string, object, object[]>> arg;
+            var query = builder.ToStatement(out arg);
+            Assert.AreEqual("WHERE AGE * @P0@ = @P1@", query);
+        }
+
+        [TestCase]
+        public void ToStatement_DivideMember_ShouldReturnRightWereExpression()
+        {
+            IEntity5 ent = Entity5.CreateMock();
+            var builder = new WhereSqlExpression<Entity5, Entity5>(_ => _.Age / 5 == 5);
+            IList<Tuple<string, object, object[]>> arg;
+            var query = builder.ToStatement(out arg);
+            Assert.AreEqual("WHERE AGE / @P0@ = @P1@", query);
+        }
+
+        [TestCase]
+        public void ToStatement_ModuloMember_ShouldReturnRightWereExpression()
+        {
+            IEntity5 ent = Entity5.CreateMock();
+            var builder = new WhereSqlExpression<Entity5, Entity5>(_ => _.Age % 5 == 5);
+            IList<Tuple<string, object, object[]>> arg;
+            var query = builder.ToStatement(out arg);
+            Assert.AreEqual("WHERE AGE MOD @P0@ = @P1@", query);
+        }
+
+        [TestCase]
+        public void ToStatement_LessThanExpression_ShouldReturnRightWereExpression()
+        {
+            IEntity5 ent = Entity5.CreateMock();
+            var builder = new WhereSqlExpression<Entity5, Entity5>(_ => _.Age < 5);
+            IList<Tuple<string, object, object[]>> arg;
+            var query = builder.ToStatement(out arg);
+            Assert.AreEqual("WHERE AGE < @P0@", query);
+        }
+
+        [TestCase]
+        public void ToStatement_LessThanOrEqualExpression_ShouldReturnRightWereExpression()
+        {
+            IEntity5 ent = Entity5.CreateMock();
+            var builder = new WhereSqlExpression<Entity5, Entity5>(_ => _.Age <= 5);
+            IList<Tuple<string, object, object[]>> arg;
+            var query = builder.ToStatement(out arg);
+            Assert.AreEqual("WHERE AGE <= @P0@", query);
+        }
+
+        [TestCase]
+        public void ToStatement_MoreThanExpression_ShouldReturnRightWereExpression()
+        {
+            IEntity5 ent = Entity5.CreateMock();
+            var builder = new WhereSqlExpression<Entity5, Entity5>(_ => _.Age > 5);
+            IList<Tuple<string, object, object[]>> arg;
+            var query = builder.ToStatement(out arg);
+            Assert.AreEqual("WHERE AGE > @P0@", query);
+        }
+
+        [TestCase]
+        public void ToStatement_MoreThanOrEqualExpression_ShouldReturnRightWereExpression()
+        {
+            IEntity5 ent = Entity5.CreateMock();
+            var builder = new WhereSqlExpression<Entity5, Entity5>(_ => _.Age >= 5);
+            IList<Tuple<string, object, object[]>> arg;
+            var query = builder.ToStatement(out arg);
+            Assert.AreEqual("WHERE AGE >= @P0@", query);
+        }
+
+        [TestCase]
+        public void ToStatement_DifferentExpression_ShouldReturnRightWereExpression()
+        {
+            IEntity5 ent = Entity5.CreateMock();
+            var builder = new WhereSqlExpression<Entity5, Entity5>(_ => _.Age != 5);
+            IList<Tuple<string, object, object[]>> arg;
+            var query = builder.ToStatement(out arg);
+            Assert.AreEqual("WHERE AGE <> @P0@", query);
+        }
+
+        [TestCase]
+        public void ToStatement_NegateExpression_ShouldReturnRightWereExpression()
+        {
+            IEntity5 ent = Entity5.CreateMock();
+            var builder = new WhereSqlExpression<Entity5, Entity5>(_ => !_.Active);
+            IList<Tuple<string, object, object[]>> arg;
+            var query = builder.ToStatement(out arg);
+            Assert.AreEqual("WHERE NOT ACTIVE", query);
+            Assert.IsNotNull(arg);
+            Assert.AreEqual(0, arg.Count);
+        }
+
         private void AssertArg(IList<Tuple<string, object, object[]>> arg, int index, object expectedValue)
         {
             Assert.IsNotNull(arg[index]);
