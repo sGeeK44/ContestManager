@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace Contest.Core.Repository.Sql.UnitTest
@@ -273,6 +274,218 @@ namespace Contest.Core.Repository.Sql.UnitTest
             var result = repo.FirstOrDefault(_ => _ == obj);
 
             Assert.AreEqual(obj, result);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_TrueCondition_ShouldRetunrValidSqlQuery()
+        {
+            var repo = CreateRepository<Entity1>();
+            var query = repo.PrepareSqlRequest(_ => true);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1;", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_ById_ShouldRetunrValidSqlQuery()
+        {
+            var ent = Entity1.CreateMock();
+            var repo = CreateRepository<Entity1>();
+            var query = repo.PrepareSqlRequest(_ => _.Id == ent.Id);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE ID = '6A4A4F81-0C29-43C4-863E-AD10398B3A8C';", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_ByVarId_ShouldRetunrValidSqlQuery()
+        {
+            var id = Entity1.Guid;
+            var repo = CreateRepository<Entity1>();
+            var query = repo.PrepareSqlRequest(_ => _.Id == id);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE ID = '6A4A4F81-0C29-43C4-863E-AD10398B3A8C';", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_ByName_ShouldRetunrValidSqlQuery()
+        {
+            var repo = CreateRepository<Entity1>();
+            var query = repo.PrepareSqlRequest(_ => _.Name == "NameSearch");
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE NAME = 'NameSearch';", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_And_ShouldRetunrValidSqlQuery()
+        {
+            var ent = Entity1.CreateMock();
+            var repo = CreateRepository<Entity1>();
+            var query = repo.PrepareSqlRequest(_ => _.Id == ent.Id && _.Name == "NameSearch");
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE ID = '6A4A4F81-0C29-43C4-863E-AD10398B3A8C' AND NAME = 'NameSearch';", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_Or_ShouldRetunrValidSqlQuery()
+        {
+            var ent = Entity1.CreateMock();
+            var repo = CreateRepository<Entity1>();
+            var query = repo.PrepareSqlRequest(_ => _.Id == ent.Id || _.Name == "NameSearch");
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE ID = '6A4A4F81-0C29-43C4-863E-AD10398B3A8C' OR NAME = 'NameSearch';", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_TrueWithInterface_ShouldRetunrValidSqlQuery()
+        {
+            var repo = CreateRepository<Entity5, IEntity5>();
+            var query = repo.PrepareSqlRequest(_ => true);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5;", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_ByIdWithInterface_ShouldRetunrValidSqlQuery()
+        {
+            IEntity5 ent = Entity5.CreateMock();
+            var repo = CreateRepository<Entity5, IEntity5>();
+            var query = repo.PrepareSqlRequest(_ => _.Id == ent.Id);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE ID = '6A4A4F81-0C29-43C4-863E-AD10398B3A8C';", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_ByVarIdWithInterface_ShouldRetunrValidSqlQuery()
+        {
+            var id = Entity5.Guid;
+            var repo = CreateRepository<Entity5, IEntity5>();
+            var query = repo.PrepareSqlRequest(_ => _.Id == id);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE ID = '6A4A4F81-0C29-43C4-863E-AD10398B3A8C';", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_ByNameWithInterface_ShouldRetunrValidSqlQuery()
+        {
+            var repo = CreateRepository<Entity5, IEntity5>();
+            var query = repo.PrepareSqlRequest(_ => _.Name == "NameSearch");
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE NAME = 'NameSearch';", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_AndWithInterface_ShouldRetunrValidSqlQuery()
+        {
+            IEntity5 ent = Entity5.CreateMock();
+            var repo = CreateRepository<Entity5, IEntity5>();
+            var query = repo.PrepareSqlRequest(_ => _.Id == ent.Id && _.Name == "NameSearch");
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE ID = '6A4A4F81-0C29-43C4-863E-AD10398B3A8C' AND NAME = 'NameSearch';", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_OrWithInterface_ShouldRetunrValidSqlQuery()
+        {
+            IEntity5 ent = Entity5.CreateMock();
+            var repo = CreateRepository<Entity5, IEntity5>();
+            var query = repo.PrepareSqlRequest(_ => _.Id == ent.Id || _.Name == "NameSearch");
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE ID = '6A4A4F81-0C29-43C4-863E-AD10398B3A8C' OR NAME = 'NameSearch';", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_AddOperator_ShouldRetunrValidSqlQuery()
+        {
+            var repo = CreateRepository<Entity5>();
+            int param = 5;
+            var query = repo.PrepareSqlRequest(_ => _.Age == param + 5);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE = 5 + 5;", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_SubtractOperator_ShouldRetunrValidSqlQuery()
+        {
+            var repo = CreateRepository<Entity5>();
+            int param = 5;
+            var query = repo.PrepareSqlRequest(_ => _.Age == param - 5);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE = 5 - 5;", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_NegateMember_ShouldRetunrValidSqlQuery()
+        {
+            var repo = CreateRepository<Entity5>();
+            var query = repo.PrepareSqlRequest(_ => -(_.Age) == 5);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE - AGE = 5;", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_MultiplyMember_ShouldRetunrValidSqlQuery()
+        {
+            var repo = CreateRepository<Entity5>();
+            var query = repo.PrepareSqlRequest(_ => _.Age * 5 == 5);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE * 5 = 5;", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_DivideMember_ShouldRetunrValidSqlQuery()
+        {
+            var repo = CreateRepository<Entity5>();
+            var query = repo.PrepareSqlRequest(_ => _.Age / 5 == 5);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE / 5 = 5;", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_ModuloMember_ShouldRetunrValidSqlQuery()
+        {
+            var repo = CreateRepository<Entity5>();
+            var query = repo.PrepareSqlRequest(_ => _.Age % 5 == 5);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE MOD 5 = 5;", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_LessThanExpression_ShouldRetunrValidSqlQuery()
+        {
+            var repo = CreateRepository<Entity5>();
+            var query = repo.PrepareSqlRequest(_ => _.Age < 5);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE < 5;", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_LessThanOrEqualExpression_ShouldRetunrValidSqlQuery()
+        {
+            var repo = CreateRepository<Entity5>();
+            var query = repo.PrepareSqlRequest(_ => _.Age <= 5);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE <= 5;", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_MoreThanExpression_ShouldRetunrValidSqlQuery()
+        {
+            var repo = CreateRepository<Entity5>();
+            var query = repo.PrepareSqlRequest(_ => _.Age > 5);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE > 5;", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_MoreThanOrEqualExpression_ShouldRetunrValidSqlQuery()
+        {
+            var repo = CreateRepository<Entity5>();
+            var query = repo.PrepareSqlRequest(_ => _.Age >= 5);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE >= 5;", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_DifferentExpression_ShouldRetunrValidSqlQuery()
+        {
+            var repo = CreateRepository<Entity5>();
+            var query = repo.PrepareSqlRequest(_ => _.Age != 5);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE <> 5;", query);
+        }
+
+        [TestCase]
+        public void PrepareSqlRequest_NegateExpression_ShouldRetunrValidSqlQuery()
+        {
+            var repo = CreateRepository<Entity5>();
+            var query = repo.PrepareSqlRequest(_ => !_.Active);
+            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE NOT ACTIVE;", query);
+        }
+
+        private SqlRepository<T, T> CreateRepository<T>() where T : class, IQueryable
+        {
+            return new SqlRepository<T, T> { SqlBuilder = new SqlBuilder<T, T>() };
+        }
+
+        private SqlRepository<T, TI> CreateRepository<T, TI>() where T : class, TI where TI : class, IQueryable
+        {
+            return new SqlRepository<T, TI> { SqlBuilder = new SqlBuilder<T, TI>() };
         }
     }
 }

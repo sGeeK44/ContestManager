@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Contest.Core.Repository.Sql.UnitTest
 {
     [DataContract(Name = "ENTITY_5")]
-    public class Entity5 : IEntity5
+    public class Entity5 : IEntity5, IQueryable
     {
         public static Guid Guid = new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C");
 
@@ -24,6 +24,11 @@ namespace Contest.Core.Repository.Sql.UnitTest
         public static Entity5 CreateMock()
         {
             return new Entity5 { Id = Guid, Name = "Test" };
+        }
+
+        public bool AreSame(object other)
+        {
+            throw new NotImplementedException();
         }
     }
 }

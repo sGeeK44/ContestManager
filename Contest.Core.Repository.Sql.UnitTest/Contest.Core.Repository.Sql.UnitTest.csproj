@@ -73,7 +73,6 @@
     <Compile Include="SqlRepositoryTest.cs" />
     <Compile Include="SqlUnitOfWorksMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WhereSqlExpressionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Contest.Core.Component\Contest.Core.Component.csproj">
