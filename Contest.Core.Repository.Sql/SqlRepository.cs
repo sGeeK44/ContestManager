@@ -159,10 +159,7 @@ namespace Contest.Core.Repository.Sql
         /// <return>A list wich contain all item founds or an empty list</return>
         public IList<TI> Find(Expression<Func<TI, bool>> predicate)
         {
-            //Prepare request
-            IList<Tuple<string, object, object[]>> arg;
-            var request = SqlBuilder.Select(predicate, out arg);
-            request = SetValue(request, arg);
+            string request = PrepareSqlRequest(predicate);
 
             //Execute
             using (var db = Sqlite.OpenDatabase(DatabasePath))
@@ -187,6 +184,15 @@ namespace Contest.Core.Repository.Sql
 
             //Return response
             return Context.Find(predicate.Compile());
+        }
+
+        public string PrepareSqlRequest(Expression<Func<TI, bool>> predicate)
+        {
+            //Prepare request
+            IList<Tuple<string, object, object[]>> arg;
+            var request = SqlBuilder.Select(predicate, out arg);
+            request = SetValue(request, arg);
+            return request;
         }
 
         /// <summary>
