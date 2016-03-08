@@ -307,6 +307,8 @@ namespace Contest.Business
         /// <param name="unitOfWorks">Unit of work for action</param>
         public virtual void PrepareCommit(ISqlUnitOfWorks unitOfWorks)
         {
+            if (unitOfWorks == null) throw new ArgumentNullException("unitOfWorks");
+
             unitOfWorks.InsertOrUpdate<IMatch>(this);
         }
 
@@ -316,7 +318,9 @@ namespace Contest.Business
         /// <param name="unitOfWorks">Unit of work for action</param>
         public void PrepareDelete(ISqlUnitOfWorks unitOfWorks)
         {
-            throw new NotImplementedException();
+            if (unitOfWorks == null) throw new ArgumentNullException("unitOfWorks");
+
+            unitOfWorks.Delete<IMatch>(this);
         }
 
         #endregion

@@ -56,7 +56,9 @@
     <Compile Include="FieldRepositoryMock.cs" />
     <Compile Include="GameStepRepositoryMock.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="MatchTestBase.cs" />
     <Compile Include="MatchSettingRepositoryMock.cs" />
+    <Compile Include="MatchFactoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MatchTest.cs" />
     <Compile Include="TeamRepositoryMock.cs" />

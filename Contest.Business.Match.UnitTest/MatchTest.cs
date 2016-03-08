@@ -1,79 +1,62 @@
 ﻿using System;
 using Contest.Core.Component;
+using Contest.Core.Repository.Sql;
 using Moq;
 using NUnit.Framework;
 
 namespace Contest.Business.UnitTest
 {
     [TestFixture]
-    public class MatchTest
+    public class MatchTest : MatchTestBase
     {
-        [TestFixtureSetUp]
-        public void Init()
-        {
-            FlippingContainer.Instance.Current = new ExecutingAssemblies();
-        }
-
-        #region Create Match
-
-        // Game step null
-        [TestCase(null, null, null, null, ExpectedException = typeof(ArgumentNullException))]
-        // Team 1 null
-        [TestCase("00000000-0000-0000-0000-000000000001", null, null, null, ExpectedException = typeof(ArgumentNullException))]
-        // Team 2 null
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", null, null, ExpectedException = typeof(ArgumentNullException))]
-        // Match setting null
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", null, ExpectedException = typeof(ArgumentNullException))]
-        // Same team null
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", ExpectedException = typeof(ArgumentException))]
-        // All fine
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004")]
-        public void CreateMatchTest(string gameStepId, string team1Id, string team2Id, string matchSettingId)
-        {
-            // Arrange
-            var gameStep = Helper.CreateMock<IGameStep>(gameStepId);
-            var team1 = Helper.CreateMock<ITeam>(team1Id);
-            var team2 = Helper.CreateMock<ITeam>(team2Id);
-            var matchSetting = Helper.CreateMock<IMatchSetting>(matchSettingId);
-
-            // Act
-            var match = new MatchFactory().Create(Helper.GetMock(gameStep), Helper.GetMock(team1), Helper.GetMock(team2), Helper.GetMock(matchSetting));
-
-            // Assert
-            Assert.AreEqual(null, match.Beginning);
-            Assert.AreEqual(null, match.Endded);
-            if (gameStep != null) Assert.AreEqual(gameStep.Object, match.GameStep);
-            if (team1 != null) Assert.AreEqual(team1.Object, match.Team1);
-            if (team2 != null) Assert.AreEqual(team2.Object, match.Team2);
-            if (matchSetting != null) Assert.AreEqual(matchSetting.Object, match.Setting);
-            Assert.AreEqual(false, match.IsBeginning);
-            Assert.AreEqual(false, match.IsClose);
-            Assert.AreEqual(false, match.IsFinished);
-            Assert.AreEqual(null, match.MatchField);
-            Assert.AreEqual(MatchState.Planned, match.MatchState);
-            Assert.AreEqual(0, match.TeamScore1);
-            Assert.AreEqual(0, match.TeamScore2);
-            Assert.AreEqual(null, match.Winner);
-        }
-
-        #endregion
-
         #region TeamIsInvolve
 
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004")]
-        public void MatchTeamIsInvolveTest(string gameStepId, string team1Id, string team2Id, string matchSettingId)
+        [TestCase]
+        public void IsTeamInvolved_TeamIsFirstOpponentNotSameInstance_ShouldReturnFalse()
         {
-            // Arrange
-            var gameStep = Helper.CreateMock<IGameStep>(gameStepId);
-            var team1 = Helper.CreateMock<ITeam>(team1Id);
-            var team2 = Helper.CreateMock<ITeam>(team2Id);
-            var matchSetting = Helper.CreateMock<IMatchSetting>(matchSettingId);
-            var match = new MatchFactory().Create(gameStep.Object, team1.Object, team2.Object, matchSetting.Object);
-            var team3 = Helper.CreateMock<ITeam>("00000000-0000-0000-0000-000000000005");
+            var match = CreateMatch();
 
-            // Act and assert
+            Assert.AreEqual(true, match.IsTeamInvolved(match.Team1));
+        }
+
+        [TestCase]
+        public void IsTeamInvolved_TeamIsSecondOpponentNotSameInstance_ShouldReturnTrue()
+        {
+            var match = CreateMatch();
+
+            Assert.AreEqual(true, match.IsTeamInvolved(match.Team2));
+        }
+
+        [TestCase]
+        public void IsTeamInvolved_TeamIsFirstOpponent_ShouldReturnFalse()
+        {
+            var gameStep = CreateGameStepStub1();
+            var team1 = CreateTeamStub1();
+            var team2 = CreateTeamStub2();
+            var matchSetting = CreateMatchSettingStub1();
+            var match = new MatchFactory().Create(gameStep.Object, team1.Object, team2.Object, matchSetting.Object);
+            
             Assert.AreEqual(true, match.IsTeamInvolved(team1.Object));
+        }
+
+        [TestCase]
+        public void IsTeamInvolved_TeamIsSecondOpponent_ShouldReturnTrue()
+        {
+            var gameStep = CreateGameStepStub1();
+            var team1 = CreateTeamStub1();
+            var team2 = CreateTeamStub2();
+            var matchSetting = CreateMatchSettingStub1();
+            var match = new MatchFactory().Create(gameStep.Object, team1.Object, team2.Object, matchSetting.Object);
+
             Assert.AreEqual(true, match.IsTeamInvolved(team2.Object));
+        }
+
+        [TestCase]
+        public void IsTeamInvolved_TeamIsNotAnOpponent_ShouldReturnFalse()
+        {
+            var team3 = CreateTeamStub3();
+            var match = CreateMatch();
+            
             Assert.AreEqual(false, match.IsTeamInvolved(team3.Object));
         }
 
@@ -81,91 +64,151 @@ namespace Contest.Business.UnitTest
 
         #region Planned match
 
-        // No field
-        [TestCase("00000000-0000-0000-0000-000000000001",
-                  "00000000-0000-0000-0000-000000000002",
-                  "00000000-0000-0000-0000-000000000003",
-                  "00000000-0000-0000-0000-000000000004",
-                  null, false, null, null, ExpectedException = typeof(ArgumentNullException))]
-        // Field already busy
-        [TestCase("00000000-0000-0000-0000-000000000001",
-                  "00000000-0000-0000-0000-000000000002",
-                  "00000000-0000-0000-0000-000000000003",
-                  "00000000-0000-0000-0000-000000000004",
-                  "00000000-0000-0000-0000-000000000005",
-                  true, null, null, ExpectedException = typeof(ArgumentException))]
-        // Team 1 busy
-        [TestCase("00000000-0000-0000-0000-000000000001",
-                  "00000000-0000-0000-0000-000000000002",
-                  "00000000-0000-0000-0000-000000000003",
-                  "00000000-0000-0000-0000-000000000004",
-                  "00000000-0000-0000-0000-000000000005",
-                  false, "00000000-0000-0000-0000-000000000006", null, ExpectedException = typeof(NotSupportedException))]
-        // Team 2 busy
-        [TestCase("00000000-0000-0000-0000-000000000001",
-                  "00000000-0000-0000-0000-000000000002",
-                  "00000000-0000-0000-0000-000000000003",
-                  "00000000-0000-0000-0000-000000000004",
-                  "00000000-0000-0000-0000-000000000005",
-                  false, null, "00000000-0000-0000-0000-000000000006", ExpectedException = typeof(NotSupportedException))]
-        // Both team  busy null
-        [TestCase("00000000-0000-0000-0000-000000000001",
-                  "00000000-0000-0000-0000-000000000002",
-                  "00000000-0000-0000-0000-000000000003",
-                  "00000000-0000-0000-0000-000000000004",
-                  "00000000-0000-0000-0000-000000000005",
-                  false,
-                  "00000000-0000-0000-0000-000000000006",
-                  "00000000-0000-0000-0000-000000000007",
-                  ExpectedException = typeof(NotSupportedException))]
-        // All is should be ok.
-        [TestCase("00000000-0000-0000-0000-000000000001",
-                  "00000000-0000-0000-0000-000000000002",
-                  "00000000-0000-0000-0000-000000000003",
-                  "00000000-0000-0000-0000-000000000004",
-                  "00000000-0000-0000-0000-000000000005",
-                  false, null, null)]
-        public void StartPlannedMatchTest(string gameStepId, string team1Id, string team2Id, string matchSettingId, string fieldId, bool isBusy, string matchTeam1Id, string matchTeam2Id)
+        [TestCase]
+        public void Start_PlannedMatchWithNoField_ShouldThrowException()
         {
-            // Arrange
-            var gameStep = Helper.CreateMock<IGameStep>(gameStepId);
-            var team1 = Helper.CreateMock<ITeam>(team1Id);
-            var team2 = Helper.CreateMock<ITeam>(team2Id);
-            var matchSetting = Helper.CreateMock<IMatchSetting>(matchSettingId);
+            var gameStep = CreateGameStepStub1();
+            var team1 = CreateTeamStub1();
+            var team2 = CreateTeamStub2();
+            var matchSetting = CreateMatchSettingStub1();
             var match = new MatchFactory().Create(Helper.GetMock(gameStep), Helper.GetMock(team1), Helper.GetMock(team2), Helper.GetMock(matchSetting));
-            var field = Helper.CreateMock<IField>(fieldId);
-            if (field != null)
-            {
-                field.SetupGet(_ => _.IsAllocated).Returns(isBusy);
-                field.SetupGet(_ => _.MatchInProgess).Returns(Helper.CreateMock<IMatch>("00000000-0000-0000-0000-000000000010").Object);
-            }
-            if (team1 != null)
-            {
-                var matchTeam1 = Helper.CreateMock<IMatch>(matchTeam1Id);
-                if (matchTeam1 != null) team1.SetupGet(_ => _.CurrentMatch).Returns(matchTeam1.Object);
-            }
-            if (team2 != null)
-            {
-                var matchTeam2 = Helper.CreateMock<IMatch>(matchTeam2Id);
-                if (matchTeam2 != null) team2.SetupGet(_ => _.CurrentMatch).Returns(matchTeam2.Object);
-            }
+            
+            Assert.Throws<ArgumentNullException>(() => match.Start(null));
+        }
+
+        [TestCase]
+        public void Start_PlannedMatchFieldAlreadyBusy_ShouldThrowArgumentException()
+        {
+            var gameStep = CreateGameStepStub1();
+            var team1 = CreateTeamStub1();
+            var team2 = CreateTeamStub2();
+            var matchSetting = CreateMatchSettingStub1();
+            var field = CreateFieldStub1();
+            var match = new MatchFactory().Create(Helper.GetMock(gameStep), Helper.GetMock(team1), Helper.GetMock(team2), Helper.GetMock(matchSetting));
+
+            field.SetupGet(_ => _.IsAllocated).Returns(true);
+            field.SetupGet(_ => _.MatchInProgess).Returns(Helper.CreateMock<IMatch>("00000000-0000-0000-0000-000000000010").Object);
+
+            Assert.Throws<ArgumentException>(() => match.Start(field.Object));
+        }
+        
+        [TestCase]
+        public void Start_PlannedMatchTeam1AlreadyInGame()
+        {
+            var gameStep = CreateGameStepStub1();
+            var team1 = CreateTeamStub1();
+            var matchTeam1 = CreateMatchStub1();
+            team1.SetupGet(_ => _.CurrentMatch).Returns(matchTeam1.Object);
+            var team2 = CreateTeamStub2();
+            var matchSetting = CreateMatchSettingStub1();
+            var field = CreateFieldStub1();
+            field.SetupGet(_ => _.IsAllocated).Returns(false);
+            var match = new MatchFactory().Create(Helper.GetMock(gameStep), Helper.GetMock(team1), Helper.GetMock(team2), Helper.GetMock(matchSetting));
+            
+            Assert.Throws<NotSupportedException>(() => match.Start(field.Object));
+        }
+
+        [TestCase]
+        public void Start_PlannedMatchTeam2AlreadyInGame()
+        {
+            var gameStep = CreateGameStepStub1();
+            var team1 = CreateTeamStub1();
+            var team2 = CreateTeamStub2();
+            var matchTeam2 = CreateMatchStub1();
+            team2.SetupGet(_ => _.CurrentMatch).Returns(matchTeam2.Object);
+            var matchSetting = CreateMatchSettingStub1();
+            var field = CreateFieldStub1();
+            field.SetupGet(_ => _.IsAllocated).Returns(false);
+            var match = new MatchFactory().Create(Helper.GetMock(gameStep), Helper.GetMock(team1), Helper.GetMock(team2), Helper.GetMock(matchSetting));
+
+            Assert.Throws<NotSupportedException>(() => match.Start(field.Object));
+        }
+        
+        [TestCase]
+        public void Start_PlannedMatchAllFine_StartEventShouldRaised()
+        {
+            var gameStep = CreateGameStepStub1();
+            var team1 = CreateTeamStub1();
+            var team2 = CreateTeamStub2();
+            var matchSetting = CreateMatchSettingStub1();
+            var field = CreateFieldStub1();
+            field.SetupGet(_ => _.IsAllocated).Returns(false);
+            var match = new MatchFactory().Create(Helper.GetMock(gameStep), Helper.GetMock(team1), Helper.GetMock(team2), Helper.GetMock(matchSetting));
             var startEventIsRaised = false;
             match.MatchStarted += sender => startEventIsRaised = true;
 
-            // Act
             match.Start(field != null ? field.Object : null);
 
-            // Assert
             Assert.AreEqual(true, startEventIsRaised);
-            Assert.AreNotEqual(null, match.Beginning);
-            Assert.AreEqual(null, match.Endded);
-            Assert.AreEqual(true, match.IsBeginning);
-            Assert.AreEqual(false, match.IsClose);
-            Assert.AreEqual(false, match.IsFinished);
-            if (field != null) Assert.AreEqual(field.Object, match.MatchField);
-            Assert.AreEqual(MatchState.InProgress, match.MatchState);
+        }
+
+        [TestCase]
+        public void Start_PlannedMatchAllFine_MatchShouldBeInitialized()
+        {
+            var match = CreateMatch();
+            var field = CreateFieldStub1();
+            field.SetupGet(_ => _.IsAllocated).Returns(false);
+
+            match.Start(field.Object);
+            
+            Assert.AreEqual(field.Object, match.MatchField);
             Assert.AreEqual(0, match.TeamScore1);
             Assert.AreEqual(0, match.TeamScore2);
+        }
+
+        [TestCase]
+        public void GetBeginningAt_StartedMatch_ShouldReturnNotNull()
+        {
+            var match = CreateStartedMatch();
+            
+            Assert.AreNotEqual(null, match.Beginning);
+        }
+
+        [TestCase]
+        public void GetEnddedAt_StartedMatch_ShouldReturnNull()
+        {
+            var match = CreateStartedMatch();
+            
+            Assert.AreEqual(null, match.Endded);
+        }
+
+        [TestCase]
+        public void GetIsBeginning_StartedMatch_ShouldReturnTrue()
+        {
+            var match = CreateStartedMatch();
+
+            Assert.AreEqual(true, match.IsBeginning);
+        }
+
+        [TestCase]
+        public void GetIsClose_StartedMatch_ShouldReturnFalse()
+        {
+            var match = CreateStartedMatch();
+
+            Assert.AreEqual(false, match.IsClose);
+        }
+
+        [TestCase]
+        public void GetIsFInish_StartedMatch_ShouldReturnFalse()
+        {
+            var match = CreateStartedMatch();
+            
+            Assert.AreEqual(false, match.IsFinished);
+        }
+
+        [TestCase]
+        public void GetMatchState_StartedMatch_ShouldReturnInProgress()
+        {
+            var match = CreateStartedMatch();
+            
+            Assert.AreEqual(MatchState.InProgress, match.MatchState);
+        }
+
+        [TestCase]
+        public void GetWinner_StartedMatch_ShouldReturnNull()
+        {
+            var match = CreateStartedMatch();
+            
             Assert.AreEqual(null, match.Winner);
         }
 
@@ -561,6 +604,42 @@ namespace Contest.Business.UnitTest
 
             // Act and assert
             match.Close();
+        }
+
+        [TestCase]
+        public void PrepareCommit_NullISqlUnitOfWorks_ShouldThrowException()
+        {
+            var match = new Match();
+
+            Assert.Throws<ArgumentNullException>(() => match.PrepareCommit(null));
+        }
+
+        [TestCase]
+        public void PrepareCommit_ValidISqlUnitOfWorks_ShouldInsertObject()
+        {
+            var match = new Match();
+            var repoMock = new Mock<ISqlUnitOfWorks>(MockBehavior.Strict);
+            repoMock.Setup(_ => _.InsertOrUpdate<IMatch>(match)).Verifiable();
+
+            match.PrepareCommit(repoMock.Object);
+        }
+        [TestCase]
+        public void PrepareDelete_NullISqlUnitOfWorks_ShouldThrowException()
+        {
+            var match = new Match();
+
+            Assert.Throws<ArgumentNullException>(() => match.PrepareDelete(null));
+        }
+
+        [TestCase]
+        public void PrepareDelete_ValidISqlUnitOfWorks_ShouldDeleteObject()
+        {
+            var match = new Match();
+
+            var repoMock = new Mock<ISqlUnitOfWorks>(MockBehavior.Strict);
+            repoMock.Setup(_ => _.Delete<IMatch>(match)).Verifiable();
+
+            match.PrepareDelete(repoMock.Object);
         }
 
         #endregion
