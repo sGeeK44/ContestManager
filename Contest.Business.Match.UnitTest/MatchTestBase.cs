@@ -43,24 +43,29 @@ namespace Contest.Business.UnitTest
             return Helper.CreateMock<IField>("00000000-0000-0000-0003-000000000001");
         }
 
+        protected Mock<IField> CreateFieldStub2()
+        {
+            return Helper.CreateMock<IField>("00000000-0000-0000-0003-000000000002");
+        }
+
         protected Mock<IMatch> CreateMatchStub1()
         {
             return Helper.CreateMock<IMatch>("00000000-0000-0000-0004-000000000001");
         }
 
-        protected IMatch CreateMatch()
+        protected IMatch CreateMatch(Mock<IGameStep> gameStep = null, Mock<ITeam> team1 = null, Mock<ITeam> team2 = null, Mock<IMatchSetting> matchSetting = null)
         {
-            var gameStep = CreateGameStepStub1();
-            var team1 = CreateTeamStub1();
-            var team2 = CreateTeamStub2();
-            var matchSetting = CreateMatchSettingStub1();
+            gameStep = gameStep ?? CreateGameStepStub1();
+            team1 = team1?? CreateTeamStub1();
+            team2 = team2 ?? CreateTeamStub2();
+            matchSetting = matchSetting ?? CreateMatchSettingStub1();
             return new MatchFactory().Create(gameStep.Object, team1.Object, team2.Object, matchSetting.Object);
         }
 
-        protected IMatch CreateStartedMatch()
+        protected IMatch CreateStartedMatch(Mock<IGameStep> gameStep = null, Mock<ITeam> team1 = null, Mock<ITeam> team2 = null, Mock<IMatchSetting> matchSetting = null, Mock<IField> field = null)
         {
-            var result = CreateMatch();
-            var field = CreateFieldStub1();
+            var result = CreateMatch(gameStep, team1, team2, matchSetting);
+            field = field ?? CreateFieldStub1();
             field.SetupGet(_ => _.IsAllocated).Returns(false);
             result.Start(field.Object);
             return result;

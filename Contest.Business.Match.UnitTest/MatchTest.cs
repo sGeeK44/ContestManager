@@ -1,5 +1,4 @@
 ﻿using System;
-using Contest.Core.Component;
 using Contest.Core.Repository.Sql;
 using Moq;
 using NUnit.Framework;
@@ -127,17 +126,13 @@ namespace Contest.Business.UnitTest
         [TestCase]
         public void Start_PlannedMatchAllFine_StartEventShouldRaised()
         {
-            var gameStep = CreateGameStepStub1();
-            var team1 = CreateTeamStub1();
-            var team2 = CreateTeamStub2();
-            var matchSetting = CreateMatchSettingStub1();
+            var match = CreateMatch();
             var field = CreateFieldStub1();
             field.SetupGet(_ => _.IsAllocated).Returns(false);
-            var match = new MatchFactory().Create(Helper.GetMock(gameStep), Helper.GetMock(team1), Helper.GetMock(team2), Helper.GetMock(matchSetting));
             var startEventIsRaised = false;
             match.MatchStarted += sender => startEventIsRaised = true;
 
-            match.Start(field != null ? field.Object : null);
+            match.Start(field.Object);
 
             Assert.AreEqual(true, startEventIsRaised);
         }
@@ -189,7 +184,7 @@ namespace Contest.Business.UnitTest
         }
 
         [TestCase]
-        public void GetIsFInish_StartedMatch_ShouldReturnFalse()
+        public void GetIsFinish_StartedMatch_ShouldReturnFalse()
         {
             var match = CreateStartedMatch();
             
@@ -212,175 +207,343 @@ namespace Contest.Business.UnitTest
             Assert.AreEqual(null, match.Winner);
         }
 
-        [TestCase(ExpectedException = typeof(NotSupportedException))]
-        public void ClosePlannedMatchTest()
+        [TestCase]
+        public void Close_PlannedMatch_ShouldThrowException()
         {
-            // Arrange
-            var match = Helper.CreateMatch("00000000-0000-0000-0000-000000000001",
-                                              "00000000-0000-0000-0000-000000000002",
-                                              "00000000-0000-0000-0000-000000000003",
-                                              "00000000-0000-0000-0000-000000000004");
-
-            // Act and assert
-            match.Close();
+            var match = CreateMatch();
+            
+            Assert.Throws<NotSupportedException>(() => match.Close());
         }
 
-        [TestCase(ExpectedException = typeof(NotSupportedException))]
-        public void SetResultPlannedMatchTest()
+        [TestCase]
+        public void SetResult_PlannedMatchShouldThrowException()
         {
-            // Arrange
-            var match = Helper.CreateMatch("00000000-0000-0000-0000-000000000001",
-                                              "00000000-0000-0000-0000-000000000002",
-                                              "00000000-0000-0000-0000-000000000003",
-                                              "00000000-0000-0000-0000-000000000004");
+            var match = CreateMatch();
 
-            // Act and assert
-            match.SetResult(0, 0);
+            Assert.Throws<NotSupportedException>(() => match.SetResult(0, 0));
         }
 
-        [TestCase(ExpectedException = typeof(NotSupportedException))]
-        public void UpdateScorePlannedMatchTest()
+        [TestCase]
+        public void UpdateScore_PlannedMatch_ShouldThrowException()
         {
-            // Arrange
-            var match = Helper.CreateMatch("00000000-0000-0000-0000-000000000001",
-                                              "00000000-0000-0000-0000-000000000002",
-                                              "00000000-0000-0000-0000-000000000003",
-                                              "00000000-0000-0000-0000-000000000004");
+            var match = CreateMatch();
 
-            // Act and assert
-            match.UpdateScore(0, 0);
+            Assert.Throws<NotSupportedException>(() => match.UpdateScore(0, 0));
         }
 
         #endregion
 
         #region InProgress match
 
-        [TestCase(ExpectedException = typeof(NotSupportedException))]
-        public void StartInProgressMatchTest()
+        [TestCase]
+        public void Start_InProgressMatch_ShouldThrowException()
         {
-            // Arrange
-            var match = Helper.CreateMatch("00000000-0000-0000-0000-000000000001",
-                                              "00000000-0000-0000-0000-000000000002",
-                                              "00000000-0000-0000-0000-000000000003",
-                                              "00000000-0000-0000-0000-000000000004",
-                                              true, EndTypeConstaint.Point, null, 1);
-            var field = Helper.CreateMock<IField>("00000000-0000-0000-0000-000000000005");
-            match.Start(field.Object);
-
-            // Act and assert
-            match.Start(field.Object);
+            var field = CreateFieldStub2();
+            var match = CreateStartedMatch();
+            
+            Assert.Throws<NotSupportedException>(() => match.Start(field.Object));
         }
 
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 0, 14, false, 0, true, 1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 0, 0, 14, false, true, 1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 0, 0, true, 0, true, 0)]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 0, 5, true, 5, true, 1)]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 0, 13, true, 13, true, 1)]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 0, 13, true, 13, true, 1)]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 0, 13, true, 0, true, 1)]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 0, 0, true, 13, true, 1)]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 13, 13, 13, true, 13, true, 1)]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 13, 0, 13, true, 0, true, 1)]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 13, 0, true, 13, true, 1)]
-        public void UpdateScoreStartedMatchTest(string gameStepId, string team1Id, string team2Id, string matchSettingId, string fieldId,
-                                                int initialTeamScore1, int initialTeamScore2, int teamScore1, bool isValidScore1, int teamScore2, bool isValidScore2, int countRaiseEvent)
+        [TestCase(14, 0)]
+        [TestCase(14, 1)]
+        public void UpdateScore_InProgressMatchUnvalidTeamResult_ShouldThrowException(int teamScore1, int teamScore2)
         {
-            // Arrange
-            var matchSetting = Helper.CreateMock<IMatchSetting>(matchSettingId);
             string mess;
-            matchSetting.Setup(_ => _.IsValidScore((ushort)teamScore1, out mess)).Returns(isValidScore1);
-            matchSetting.Setup(_ => _.IsValidScore((ushort)teamScore2, out mess)).Returns(isValidScore2);
-            var match = Helper.CreateMatch(gameStepId, team1Id, team2Id, matchSetting.Object);
-            var field = Helper.CreateMock<IField>(fieldId);
-            match.Start(field.Object);
+            ushort ts1 = (ushort)teamScore1;
+            ushort ts2 = (ushort)teamScore2;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(ts1, out mess)).Returns(false);
+            matchSetting.Setup(_ => _.IsValidScore(ts2, out mess)).Returns(false);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
+            Assert.Throws<ArgumentException>(() => match.UpdateScore(ts1, ts2));
+        }
+        
+        [TestCase]
+        public void UpdateScore_InProgressMatchValidTeamResult_UpdateEventShouldBeRaiseOnce()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
             var updateEventIsRaised = 0;
             match.ScoreChanged += sender => updateEventIsRaised++;
+            
+            match.UpdateScore(5, 0);
+            
+            Assert.AreEqual(1, updateEventIsRaised);
+        }
 
-            //Act
-            match.UpdateScore((ushort)initialTeamScore1, (ushort)initialTeamScore2);
-            match.UpdateScore((ushort)teamScore1, (ushort)teamScore2);
+        [TestCase]
+        public void UpdateScore_InProgressMatchValidTeam1Result_Team1ScoreShouldBeEqualToSpecifiedValid()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
 
-            //Assert
-            Assert.AreEqual(countRaiseEvent, updateEventIsRaised);
-            Assert.IsTrue(match.TeamScore1 == teamScore1);
-            Assert.IsTrue(match.TeamScore2 == teamScore2);
+            match.UpdateScore(5, 0);
+            
+            Assert.AreEqual(5, match.TeamScore1);
+        }
+
+        [TestCase]
+        public void UpdateScore_InProgressMatchValidTeam2Result_Team2ScoreShouldBeEqualToSpecifiedValid()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
+            match.UpdateScore(0, 5);
+
+            Assert.AreEqual(5, match.TeamScore2);
+        }
+
+        [TestCase]
+        public void UpdateScore_InProgressMatchValidResult_MatchShouldBeNotNull()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
+            match.UpdateScore(0, 5);
+
             Assert.IsNotNull(match.MatchField);
+        }
+
+        [TestCase]
+        public void UpdateScore_InProgressMatchValidResult_EndAtShouldBeNull()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
+            match.UpdateScore(0, 5);
+
             Assert.IsNull(match.Endded);
+        }
+
+        [TestCase]
+        public void UpdateScore_InProgressMatchValidResult_StateShouldBeEqualInProgress()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
+            match.UpdateScore(0, 5);
+
             Assert.AreEqual(MatchState.InProgress, match.MatchState);
         }
-
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 0, 14, false, 0, true, false, 0, 1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 0, 0, true, 14, false, false, 0, 1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 0, 0, true, 0, true, false, 0, 0, ExpectedException = typeof(ArgumentException))]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 0, 5, true, 5, true, false, 0, 1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 0, 13, true, 13, true, false, 0, 1, ExpectedException = typeof(ArgumentException))]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 0, 13, true, 13, true, true, 0, 1)]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 0, 13, true, 0, true, true, 1, 1)]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 0, 0, true, 13, true, true, 2, 1)]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 13, 13, 13, true, 13, true, true, 0, 0)]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 13, 0, 13, true, 0, true, true, 1, 0)]
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 13, 0, true, 13, true, true, 2, 0)]
-        public void SetResultInProgressMatchTest(string gameStepId, string team1Id, string team2Id, string matchSettingId, string fieldId,
-                                                 int initialTeamScore1, int initialTeamScore2, int teamScore1, bool isValidScore1, int teamScore2, bool isValidScore2, bool isValidFinishedScore, int exceptedWinner, int exceptedScoreUpdateRaised)
+        
+        [TestCase]
+        public void SetResult_InProgressMatchUnvalidTeamResult_ShouldThrowException()
         {
-            // Arrange
-            var matchSetting = Helper.CreateMock<IMatchSetting>(matchSettingId);
             string mess;
-            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(isValidScore1);
-            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(isValidScore2);
-            string message;
-            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out message)).Returns(isValidFinishedScore);
-            var match = Helper.CreateMatch(gameStepId, team1Id, team2Id, matchSetting.Object);
-            var field = Helper.CreateMock<IField>(fieldId);
-            match.Start(field.Object);
-            match.UpdateScore((ushort)initialTeamScore1, (ushort)initialTeamScore2);
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out mess)).Returns(false);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
+            Assert.Throws<ArgumentException>(() => match.SetResult(14, 14));
+        }
+
+        [TestCase]
+        public void SetResult_InProgressMatchValidTeamResult_UpdateEventShouldBeRaiseOnce()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
             var updateEventIsRaised = 0;
             match.ScoreChanged += sender => updateEventIsRaised++;
+
+            match.SetResult(5, 0);
+            
+            Assert.AreEqual(1, updateEventIsRaised);
+        }
+
+        [TestCase]
+        public void SetResult_InProgressMatchValidTeamResult_EndEventShouldBeRaiseOnce()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
             var endEventIsRaised = 0;
             match.MatchEnded += sender => endEventIsRaised++;
 
-            //Act
-            match.SetResult((ushort)teamScore1, (ushort)teamScore2);
-
-            //Assert
-            Assert.AreEqual(exceptedScoreUpdateRaised, updateEventIsRaised);
+            match.SetResult(5, 0);
+            
             Assert.AreEqual(1, endEventIsRaised);
-            Assert.IsTrue(match.TeamScore1 == teamScore1);
-            Assert.IsTrue(match.TeamScore2 == teamScore2);
-            switch (exceptedWinner)
-            {
-                case 1:
-                    Assert.AreEqual(match.Team1, match.Winner);
-                    break;
-                case 2:
-                    Assert.AreEqual(match.Team2, match.Winner);
-                    break;
-                default:
-                    Assert.IsNull(match.Winner);
-                    break;
-            }
+        }
+
+        [TestCase]
+        public void SetResult_InProgressMatchValidTeam1Result_Team1ScoreShouldBeEqualToSpecifiedValid()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
+            match.SetResult(5, 0);
+
+            Assert.AreEqual(5, match.TeamScore1);
+        }
+
+        [TestCase]
+        public void SetResult_InProgressMatchValidTeam2Result_Team2ScoreShouldBeEqualToSpecifiedValid()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
+            match.SetResult(0, 5);
+
+            Assert.AreEqual(5, match.TeamScore2);
+        }
+
+        [TestCase]
+        public void SetResult_InProgressMatchValidResult_MatchShouldBeNull()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
+            match.SetResult(0, 5);
+
             Assert.IsNull(match.MatchField);
+        }
+
+        [TestCase]
+        public void SetResult_InProgressMatchValidResult_EndAtShouldBeNull()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
+            match.SetResult(0, 5);
+
             Assert.IsNotNull(match.Endded);
+        }
+
+        [TestCase]
+        public void SetResult_InProgressMatchValidResult_StateShouldBeEqualInProgress()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
+            match.SetResult(0, 5);
+
             Assert.AreEqual(MatchState.Finished, match.MatchState);
-            Assert.AreEqual(false, match.IsClose);
+        }
+
+        [TestCase]
+        public void SetResult_InProgressMatchValidResult_IsBeginningShouldReturnTrue()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
+            match.SetResult(0, 5);
+            
             Assert.AreEqual(true, match.IsBeginning);
+        }
+
+        [TestCase]
+        public void SetResult_InProgressMatchValidResult_IsFinishShouldReturnTrue()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
+            match.SetResult(0, 5);
+            
             Assert.AreEqual(true, match.IsFinished);
         }
 
-        [TestCase(ExpectedException = typeof(NotSupportedException))]
-        public void CloseInProgressMatchTest()
+        [TestCase]
+        public void SetResult_InProgressMatchValidResult_IsCloseShouldReturnFalse()
         {
-            // Arrange
-            var match = Helper.CreateMatch("00000000-0000-0000-0000-000000000001",
-                                              "00000000-0000-0000-0000-000000000002",
-                                              "00000000-0000-0000-0000-000000000003",
-                                              "00000000-0000-0000-0000-000000000004",
-                                              true, EndTypeConstaint.Point, null, 1);
-            var field = Helper.CreateMock<IField>("00000000-0000-0000-0000-000000000005");
-            match.Start(field.Object);
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
 
-            // Act and assert
-            match.Close();
+            match.SetResult(0, 5);
+        
+            Assert.AreEqual(false, match.IsClose);
+        }
+
+        [TestCase]
+        public void SetResult_InProgressMatchValidResultTeam1Win_WinnerShouldReturnTeam1()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
+            match.SetResult(5, 0);
+
+            Assert.AreEqual(match.Team1, match.Winner);
+        }
+
+        [TestCase]
+        public void SetResult_InProgressMatchValidResultTeam2Win_WinnerShouldReturnTeam2()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
+            match.SetResult(0, 5);
+
+            Assert.AreEqual(match.Team2, match.Winner);
+        }
+
+        [TestCase]
+        public void SetResult_InProgressMatchValidResultDUce_WinnerShouldReturnNull()
+        {
+            string mess;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out mess)).Returns(true);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
+            match.SetResult(5, 5);
+
+            Assert.IsNull(match.Winner);
+        }
+
+        [TestCase]
+        public void Close_InProgressMatch_ShouldThrowException()
+        {
+            var match = CreateStartedMatch();
+            
+            Assert.Throws<NotSupportedException>(() => match.Close());
         }
 
         #endregion
