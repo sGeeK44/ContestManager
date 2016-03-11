@@ -70,5 +70,16 @@ namespace Contest.Business.UnitTest
             result.Start(field.Object);
             return result;
         }
+
+        protected IMatch CreateFinishedMatch(Mock<IGameStep> gameStep = null, Mock<ITeam> team1 = null, Mock<ITeam> team2 = null, Mock<IMatchSetting> matchSetting = null, Mock<IField> field = null)
+        {
+            string mess;
+            matchSetting = matchSetting ?? new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out mess)).Returns(true);
+            var result = CreateStartedMatch(matchSetting: matchSetting);
+            result.SetResult(1, 0);
+            return result;
+        }
     }
 }

@@ -551,19 +551,11 @@ namespace Contest.Business.UnitTest
         #region Finished match
 
         [TestCase(ExpectedException = typeof(NotSupportedException))]
-        public void StartFinishedMatchTest()
+        public void Start_FinishedMatch_ShouldThrowException()
         {
-            // Arrange
-            var match = Helper.CreateMatch("00000000-0000-0000-0000-000000000001",
-                                              "00000000-0000-0000-0000-000000000002",
-                                              "00000000-0000-0000-0000-000000000003",
-                                              "00000000-0000-0000-0000-000000000004",
-                                              true, EndTypeConstaint.Point, null, 1);
-            var field = Helper.CreateMock<IField>("00000000-0000-0000-0000-000000000005");
-            match.Start(field.Object);
-            match.SetResult(0, 1);
-
-            // Act and assert
+            var field = new Mock<IField>();
+            var match = CreateFinishedMatch();
+            
             match.Start(field.Object);
         }
 
