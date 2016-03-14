@@ -73,13 +73,43 @@ namespace Contest.Business.UnitTest
 
         protected IMatch CreateFinishedMatch(Mock<IGameStep> gameStep = null, Mock<ITeam> team1 = null, Mock<ITeam> team2 = null, Mock<IMatchSetting> matchSetting = null, Mock<IField> field = null)
         {
-            string mess;
-            matchSetting = matchSetting ?? new Mock<IMatchSetting>();
-            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
-            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out mess)).Returns(true);
-            var result = CreateStartedMatch(matchSetting: matchSetting);
+            matchSetting = GetDefaultMatchSettingIfNull(matchSetting);
+            var result = CreateStartedMatch(gameStep, team1, team2, matchSetting, field);
             result.SetResult(1, 0);
             return result;
+        }
+
+        protected IMatch CreateClosedMatch(Mock<IGameStep> gameStep = null, Mock<ITeam> team1 = null, Mock<ITeam> team2 = null, Mock<IMatchSetting> matchSetting = null, Mock<IField> field = null)
+        {
+            var result = CreateFinishedMatch(gameStep, team1, team2, matchSetting, field);
+            result.Close();
+            return result;
+        }
+
+        protected IMatch CreateFinishedMatch(ushort scoreTeam1, ushort scoreTeam2)
+        {
+            var matchSetting = GetDefaultMatchSetting();
+            string mess;
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(scoreTeam1, scoreTeam2, out mess)).Returns(true);
+            return CreateFinishedMatch(matchSetting: matchSetting);
+        }
+
+        protected Mock<IMatchSetting> GetDefaultMatchSetting()
+        {
+            string mess;
+            var matchSetting = CreateMatchSettingStub1();
+            matchSetting.Setup(_ => _.IsValidScore(1, out mess)).Returns(true);
+            matchSetting.Setup(_ => _.IsValidScore(0, out mess)).Returns(true);
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(1, 0, out mess)).Returns(true);
+
+            return matchSetting;
+        }
+
+        private Mock<IMatchSetting> GetDefaultMatchSettingIfNull(Mock<IMatchSetting> matchSetting)
+        {
+            if (matchSetting != null) return matchSetting;
+
+            return GetDefaultMatchSetting();
         }
     }
 }

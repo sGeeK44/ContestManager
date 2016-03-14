@@ -559,107 +559,185 @@ namespace Contest.Business.UnitTest
             match.Start(field.Object);
         }
 
-        // Update score team 1 overflow
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 13, 0, 14, false, 0, true, false, 0, 0, ExpectedException = typeof(ArgumentException))]
-        // Update score team 2 overflow
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 13, 0, 0, true, 14, false, false, 0, 0, ExpectedException = typeof(ArgumentException))]
-        // Update score with no match point
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 13, 0, 0, true, 0, true, false, 0, 1, ExpectedException = typeof(ArgumentException))]
-        // Update score with no match point
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 13, 0, 5, true, 5, true, false, 0, 1, ExpectedException = typeof(ArgumentException))]
-        // Try to put duce when no duce is setted
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 13, 0, 13, true, 13, true, false, 0, 1, ExpectedException = typeof(ArgumentException))]
-        // Duce match
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 13, 0, 13, true, 13, true, true, 0, 1)]
-        // No update
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 13, 0, 13, true, 0, true, true, 1, 0)]
-        // Change winner
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 13, 0, 0, true, 13, true, true, 2, 1)]
-        // No update
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 13, 13, 13, true, 13, true, true, 0, 0)]
-        // Change winner
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 0, 13, 13, true, 0, true, true, 1, 1)]
-        // Change winner
-        [TestCase("00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002", "00000000-0000-0000-0000-000000000003", "00000000-0000-0000-0000-000000000004", "00000000-0000-0000-0000-000000000005", 13, 0, 0, true, 13, true, true, 2, 1)]
-        public void UpdateScoreFinishedMatchTest(string gameStepId, string team1Id, string team2Id, string matchSettingId, string fieldId,
-                                                 int initialTeamScore1, int initialTeamScore2, int teamScore1, bool isValidScore1, int teamScore2, bool isValidScore2, bool isValidFinishedScore, int exceptedWinner, int countRaiseEvent)
+        [TestCase]
+        public void UpdateScore_FinishedScoreIsNotValid_ShouldThrowException()
         {
-            // Arrange
-            var matchSetting = Helper.CreateMock<IMatchSetting>(matchSettingId);
+            var matchSetting = GetDefaultMatchSetting();
             string mess;
-            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(isValidScore1);
-            matchSetting.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(isValidScore2);
-            string message;
-            matchSetting.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out message)).Returns(isValidFinishedScore);
-            var match = Helper.CreateMatch(gameStepId, team1Id, team2Id, matchSetting.Object);
-            var field = Helper.CreateMock<IField>(fieldId);
-            match.Start(field.Object);
-            match.SetResult((ushort)initialTeamScore1, (ushort)initialTeamScore2);
-            var updateEventIsRaised = 0;
-            match.ScoreChanged += sender => updateEventIsRaised++;
-
-            //Act
-            match.UpdateScore((ushort)teamScore1, (ushort)teamScore2);
-
-            //Assert
-            Assert.AreEqual(countRaiseEvent, updateEventIsRaised);
-            Assert.IsTrue(match.TeamScore1 == teamScore1);
-            Assert.IsTrue(match.TeamScore2 == teamScore2);
-            switch (exceptedWinner)
-            {
-                case 1:
-                    Assert.AreEqual(match.Team1, match.Winner);
-                    break;
-                case 2:
-                    Assert.AreEqual(match.Team2, match.Winner);
-                    break;
-                default:
-                    Assert.IsNull(match.Winner);
-                    break;
-            }
-            Assert.IsNull(match.MatchField);
-            Assert.IsNotNull(match.Endded);
-            Assert.AreEqual(MatchState.Finished, match.MatchState);
-        }
-
-        [TestCase(ExpectedException = typeof(NotSupportedException))]
-        public void SetResultFinishedMatchTest()
-        {
-            // Arrange
-            var match = Helper.CreateMatch("00000000-0000-0000-0000-000000000001",
-                                              "00000000-0000-0000-0000-000000000002",
-                                              "00000000-0000-0000-0000-000000000003",
-                                              "00000000-0000-0000-0000-000000000004",
-                                              true, EndTypeConstaint.Point, null, 1);
-            var field = Helper.CreateMock<IField>("00000000-0000-0000-0000-000000000005");
-            match.Start(field.Object);
-            match.SetResult(0, 1);
-
-            //Act
-            match.SetResult(1, 0);
+            matchSetting.Setup(_ => _.IsValidToFinishedMatch(14, 0, out mess)).Returns(false);
+            var match = CreateFinishedMatch(matchSetting : matchSetting);
+            
+            Assert.Throws<ArgumentException>(() => match.UpdateScore(14, 0));
         }
 
         [TestCase]
-        public void CloseFinishedMatchTest()
+        public void UpdateScore_FinishedChangeWinner_WinnerShouldBeChange()
         {
-            // Arrange
-            var match = Helper.CreateMatch("00000000-0000-0000-0000-000000000001",
-                                              "00000000-0000-0000-0000-000000000002",
-                                              "00000000-0000-0000-0000-000000000003",
-                                              "00000000-0000-0000-0000-000000000004",
-                                              true, EndTypeConstaint.Point, null, 1);
-            var field = Helper.CreateMock<IField>("00000000-0000-0000-0000-000000000005");
-            match.Start(field.Object);
-            match.SetResult(0, 1);
+            var match = CreateFinishedMatch(5, 14);
 
-            //Act
+            match.UpdateScore(5, 14);
+
+            Assert.AreEqual(match.Team2, match.Winner);
+        }
+
+        [TestCase]
+        public void UpdateScore_FinishedValidScore_TeamScore1ShouldBeUpdated()
+        {
+            var match = CreateFinishedMatch(14, 5);
+            
+            match.UpdateScore(14, 5);
+
+            Assert.AreEqual(14, match.TeamScore1);
+        }
+
+        [TestCase]
+        public void UpdateScore_FinishedValidScore_TeamScore2ShouldBeUpdated()
+        {
+            var match = CreateFinishedMatch(14, 5);
+
+            match.UpdateScore(14, 5);
+
+            Assert.AreEqual(5, match.TeamScore2);
+        }
+
+        [TestCase]
+        public void UpdateScore_FinishedSameValidScore_UpdateEventShouldNotBeRaise()
+        {
+            var match = CreateFinishedMatch();
+            var updateEventIsRaised = 0;
+            match.ScoreChanged += sender => updateEventIsRaised++;
+
+            match.UpdateScore(1, 0);
+
+            Assert.AreEqual(0, updateEventIsRaised);
+        }
+
+        [TestCase]
+        public void UpdateScore_FinishedValidScore_UpdateEventShouldBeRaise()
+        {
+            var match = CreateFinishedMatch(14, 5);
+            var updateEventIsRaised = 0;
+            match.ScoreChanged += sender => updateEventIsRaised++;
+
+            match.UpdateScore(14, 5);
+
+            Assert.AreEqual(1, updateEventIsRaised);
+        }
+
+        [TestCase]
+        public void UpdateScore_FinishedTeam1WinValidScore_WinnerShouldBeTeam1()
+        {
+            var match = CreateFinishedMatch(14, 5);
+
+            match.UpdateScore(14, 5);
+
+            Assert.AreEqual(match.Team1, match.Winner);
+        }
+
+        [TestCase]
+        public void UpdateScore_FinishedTeam2WinValidScore_WinnerShouldBeTeam2()
+        {
+            var match = CreateFinishedMatch(5, 14);
+
+            match.UpdateScore(5, 14);
+
+            Assert.AreEqual(match.Team2, match.Winner);
+        }
+
+        [TestCase]
+        public void UpdateScore_FinishedDuceValidScore_WinnerShouldBeNull()
+        {
+            var match = CreateFinishedMatch(14, 14);
+
+            match.UpdateScore(14, 14);
+
+            Assert.IsNull(match.Winner);
+        }
+
+        [TestCase]
+        public void UpdateScore_FinishedValidScore_MatchFIeldShouldBeNull()
+        {
+            var match = CreateFinishedMatch(13, 5);
+
+            match.UpdateScore(13, 5);
+
+            Assert.IsNull(match.MatchField);
+        }
+
+        [TestCase]
+        public void UpdateScore_FinishedValidScore_EndDateAtShouldNotNull()
+        {
+            var match = CreateFinishedMatch(13, 5);
+
+            match.UpdateScore(13, 5);
+
+            Assert.IsNotNull(match.Endded);
+        }
+
+        [TestCase]
+        public void UpdateScore_FinishedValidScore_MatchStateShouldEqualFinished()
+        {
+            var match = CreateFinishedMatch(13, 5);
+
+            match.UpdateScore(13, 5);
+
+            Assert.AreEqual(MatchState.Finished, match.MatchState);
+        }
+
+        [TestCase]
+        public void SetScore_FinishedSetValidScoreTwice_ShouldThrowException()
+        {
+            var match = CreateFinishedMatch();
+            Assert.Throws<NotSupportedException>(() => match.SetResult(13, 5));
+        }
+
+        [TestCase]
+        public void Close_FinishedMatch_EndedAtShouldBeNotNull()
+        {
+            var match = CreateFinishedMatch();
+            
+            match.Close();
+            
+            Assert.IsNotNull(match.Endded);
+        }
+
+        [TestCase]
+        public void Close_FinishedMatch_StateShouldEqualInternal()
+        {
+            var match = CreateFinishedMatch();
+
+            match.Close();
+            
+            Assert.AreEqual(MatchState.Closed, match.MatchState);
+        }
+
+        [TestCase]
+        public void Close_FinishedMatch_IsCloseShouldReturnTrue()
+        {
+            var match = CreateFinishedMatch();
+
             match.Close();
 
-            // Assert
-            Assert.IsNotNull(match.Endded);
-            Assert.AreEqual(MatchState.Closed, match.MatchState);
-            Assert.AreEqual(true, match.IsClose);
+            Assert.IsTrue(match.IsClose);
+        }
+
+        [TestCase]
+        public void Close_FinishedMatch_IsBeginningShouldReturnTrue()
+        {
+            var match = CreateFinishedMatch();
+
+            match.Close();
+
             Assert.AreEqual(true, match.IsBeginning);
+        }
+
+        [TestCase]
+        public void Close_FinishedMatch_IsFinishedShouldBeTrue()
+        {
+            var match = CreateFinishedMatch();
+
+            match.Close();
+
             Assert.AreEqual(true, match.IsFinished);
         }
 
@@ -667,98 +745,37 @@ namespace Contest.Business.UnitTest
 
         #region Closed match
 
-        [TestCase(1, 1, 0, true)]
-        [TestCase(1, 0, 1, false)]
-        [TestCase(1, 1, 1, null)]
-        public void WinnerClosedMatchTest(int matchPoint, int score1, int score2, bool? isWinner1)
+        [TestCase]
+        public void Start_ClosedMatch_ShouldThrowException()
         {
-            // Arrange
-            var match = Helper.CreateMatch("00000000-0000-0000-0000-000000000001",
-                                              "00000000-0000-0000-0000-000000000002",
-                                              "00000000-0000-0000-0000-000000000003",
-                                              "00000000-0000-0000-0000-000000000004",
-                                              true, EndTypeConstaint.Point, null, (ushort)matchPoint);
-            var field = Helper.CreateMock<IField>("00000000-0000-0000-0000-000000000005");
-            match.Start(field.Object);
-            match.SetResult((ushort)score1, (ushort)score2);
-            match.Close();
+            var match = CreateClosedMatch();
+            var field = new Mock<IField>().Object;
 
-            // Assert
-            if (isWinner1 == null) Assert.IsNull(match.Winner);
-            else if (isWinner1.Value) Assert.AreEqual(new Guid("00000000-0000-0000-0000-000000000002"), match.Winner.Id);
-            else Assert.AreEqual(new Guid("00000000-0000-0000-0000-000000000003"), match.Winner.Id);
+            Assert.Throws<NotSupportedException>(() => match.Start(field));
         }
 
-        [TestCase(ExpectedException = typeof(NotSupportedException))]
-        public void StartClosedMatchTest()
+        [TestCase]
+        public void UpdateScore_ClosedMatch_ShouldThrowException()
         {
-            // Arrange
-            var match = Helper.CreateMatch("00000000-0000-0000-0000-000000000001",
-                                              "00000000-0000-0000-0000-000000000002",
-                                              "00000000-0000-0000-0000-000000000003",
-                                              "00000000-0000-0000-0000-000000000004",
-                                              true, EndTypeConstaint.Point, null, 1);
-            var field = Helper.CreateMock<IField>("00000000-0000-0000-0000-000000000005");
-            match.Start(field.Object);
-            match.SetResult(0, 1);
-            match.Close();
+            var match = CreateClosedMatch();
 
-            // Act and assert
-            match.Start(field.Object);
+            Assert.Throws<NotSupportedException>(() => match.UpdateScore(0, 0));
         }
 
-        [TestCase(ExpectedException = typeof(NotSupportedException))]
-        public void UpdateScoreClosedMatchTest()
+        [TestCase]
+        public void SetResult_ClosedMatch_ShouldThrowException()
         {
-            // Arrange
-            var match = Helper.CreateMatch("00000000-0000-0000-0000-000000000001",
-                                              "00000000-0000-0000-0000-000000000002",
-                                              "00000000-0000-0000-0000-000000000003",
-                                              "00000000-0000-0000-0000-000000000004",
-                                              true, EndTypeConstaint.Point, null, 1);
-            var field = Helper.CreateMock<IField>("00000000-0000-0000-0000-000000000005");
-            match.Start(field.Object);
-            match.SetResult(0, 1);
-            match.Close();
+            var match = CreateClosedMatch();
 
-            // Act and assert
-            match.UpdateScore(0, 0);
+            Assert.Throws<NotSupportedException>(() => match.SetResult(0, 0));
         }
 
-        [TestCase(ExpectedException = typeof(NotSupportedException))]
-        public void SetResultClosedMatchTest()
+        [TestCase]
+        public void Close_ClosedMatch_ShouldThrowException()
         {
-            // Arrange
-            var match = Helper.CreateMatch("00000000-0000-0000-0000-000000000001",
-                                              "00000000-0000-0000-0000-000000000002",
-                                              "00000000-0000-0000-0000-000000000003",
-                                              "00000000-0000-0000-0000-000000000004",
-                                              true, EndTypeConstaint.Point, null, 1);
-            var field = Helper.CreateMock<IField>("00000000-0000-0000-0000-000000000005");
-            match.Start(field.Object);
-            match.SetResult(0, 1);
-            match.Close();
+            var match = CreateClosedMatch();
 
-            // Act and assert
-            match.SetResult(0, 0);
-        }
-
-        [TestCase(ExpectedException = typeof(NotSupportedException))]
-        public void CloseClosedMatchTest()
-        {
-            // Arrange
-            var match = Helper.CreateMatch("00000000-0000-0000-0000-000000000001",
-                                              "00000000-0000-0000-0000-000000000002",
-                                              "00000000-0000-0000-0000-000000000003",
-                                              "00000000-0000-0000-0000-000000000004",
-                                              true, EndTypeConstaint.Point, null, 1);
-            var field = Helper.CreateMock<IField>("00000000-0000-0000-0000-000000000005");
-            match.Start(field.Object);
-            match.SetResult(0, 1);
-            match.Close();
-
-            // Act and assert
-            match.Close();
+            Assert.Throws<NotSupportedException>(() => match.Close());
         }
 
         [TestCase]
