@@ -168,8 +168,12 @@ namespace Contest.Business
         {
             get
             {
-                if (!IsBeginning) return null;
-                if (IsFinished) return Endded.GetValueOrDefault() - Beginning.GetValueOrDefault();
+                if (!IsBeginning)
+                    return null;
+
+                if (IsFinished)
+                    return Endded.GetValueOrDefault() - Beginning.GetValueOrDefault();
+
                 return DateTime.Now - Beginning.GetValueOrDefault();
             }
         }

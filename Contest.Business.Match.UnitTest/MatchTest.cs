@@ -13,7 +13,7 @@ namespace Contest.Business.UnitTest
         [TestCase]
         public void IsTeamInvolved_TeamIsFirstOpponentNotSameInstance_ShouldReturnFalse()
         {
-            var match = CreateMatch();
+            var match = CreatePlannedMatch();
 
             Assert.AreEqual(true, match.IsTeamInvolved(match.Team1));
         }
@@ -21,7 +21,7 @@ namespace Contest.Business.UnitTest
         [TestCase]
         public void IsTeamInvolved_TeamIsSecondOpponentNotSameInstance_ShouldReturnTrue()
         {
-            var match = CreateMatch();
+            var match = CreatePlannedMatch();
 
             Assert.AreEqual(true, match.IsTeamInvolved(match.Team2));
         }
@@ -54,7 +54,7 @@ namespace Contest.Business.UnitTest
         public void IsTeamInvolved_TeamIsNotAnOpponent_ShouldReturnFalse()
         {
             var team3 = CreateTeamStub3();
-            var match = CreateMatch();
+            var match = CreatePlannedMatch();
             
             Assert.AreEqual(false, match.IsTeamInvolved(team3.Object));
         }
@@ -126,7 +126,7 @@ namespace Contest.Business.UnitTest
         [TestCase]
         public void Start_PlannedMatchAllFine_StartEventShouldRaised()
         {
-            var match = CreateMatch();
+            var match = CreatePlannedMatch();
             var field = CreateFieldStub1();
             field.SetupGet(_ => _.IsAllocated).Returns(false);
             var startEventIsRaised = false;
@@ -140,7 +140,7 @@ namespace Contest.Business.UnitTest
         [TestCase]
         public void Start_PlannedMatchAllFine_MatchShouldBeInitialized()
         {
-            var match = CreateMatch();
+            var match = CreatePlannedMatch();
             var field = CreateFieldStub1();
             field.SetupGet(_ => _.IsAllocated).Returns(false);
 
@@ -210,7 +210,7 @@ namespace Contest.Business.UnitTest
         [TestCase]
         public void Close_PlannedMatch_ShouldThrowException()
         {
-            var match = CreateMatch();
+            var match = CreatePlannedMatch();
             
             Assert.Throws<NotSupportedException>(() => match.Close());
         }
@@ -218,7 +218,7 @@ namespace Contest.Business.UnitTest
         [TestCase]
         public void SetResult_PlannedMatchShouldThrowException()
         {
-            var match = CreateMatch();
+            var match = CreatePlannedMatch();
 
             Assert.Throws<NotSupportedException>(() => match.SetResult(0, 0));
         }
@@ -226,7 +226,7 @@ namespace Contest.Business.UnitTest
         [TestCase]
         public void UpdateScore_PlannedMatch_ShouldThrowException()
         {
-            var match = CreateMatch();
+            var match = CreatePlannedMatch();
 
             Assert.Throws<NotSupportedException>(() => match.UpdateScore(0, 0));
         }
@@ -243,22 +243,33 @@ namespace Contest.Business.UnitTest
             
             Assert.Throws<NotSupportedException>(() => match.Start(field.Object));
         }
-
-        [TestCase(14, 0)]
-        [TestCase(14, 1)]
-        public void UpdateScore_InProgressMatchUnvalidTeamResult_ShouldThrowException(int teamScore1, int teamScore2)
+        
+        [TestCase]
+        public void UpdateScore_InProgressMatchUnvalidTeam1Result_ShouldThrowException()
         {
             string mess;
-            ushort ts1 = (ushort)teamScore1;
-            ushort ts2 = (ushort)teamScore2;
+            ushort ts1 = 14;
             var matchSetting = new Mock<IMatchSetting>();
             matchSetting.Setup(_ => _.IsValidScore(ts1, out mess)).Returns(false);
+            var match = CreateStartedMatch(matchSetting: matchSetting);
+
+            Assert.Throws<ArgumentException>(() => match.UpdateScore(ts1, 0));
+        }
+        
+        [TestCase]
+        public void UpdateScore_InProgressMatchUnvalidTeam2Result_ShouldThrowException()
+        {
+            string mess;
+            ushort ts1 = 5;
+            ushort ts2 = 14;
+            var matchSetting = new Mock<IMatchSetting>();
+            matchSetting.Setup(_ => _.IsValidScore(ts1, out mess)).Returns(true);
             matchSetting.Setup(_ => _.IsValidScore(ts2, out mess)).Returns(false);
             var match = CreateStartedMatch(matchSetting: matchSetting);
 
             Assert.Throws<ArgumentException>(() => match.UpdateScore(ts1, ts2));
         }
-        
+
         [TestCase]
         public void UpdateScore_InProgressMatchValidTeamResult_UpdateEventShouldBeRaiseOnce()
         {
@@ -815,5 +826,29 @@ namespace Contest.Business.UnitTest
         }
 
         #endregion
+        
+        [TestCase]
+        public void GetTimeElapse_PlannedMatch_ShouldBeNull()
+        {
+            var match = CreatePlannedMatch();
+
+            Assert.IsNull(match.Elapse);
+        }
+
+        [TestCase]
+        public void GetTimeElapse_InProgressMatch_ShouldBeNotNull()
+        {
+            var match = CreateStartedMatch();
+
+            Assert.IsNotNull(match.Elapse);
+        }
+
+        [TestCase]
+        public void GetTimeElapse_FinishedMatch_ShouldBeNotNull()
+        {
+            var match = CreateFinishedMatch();
+
+            Assert.IsNotNull(match.Elapse);
+        }
     }
 }
