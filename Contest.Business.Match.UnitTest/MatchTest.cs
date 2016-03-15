@@ -8,6 +8,58 @@ namespace Contest.Business.UnitTest
     [TestFixture]
     public class MatchTest : MatchTestBase
     {
+        #region Set State
+
+        [TestCase]
+        public void SetCurrentState_InvalidState_ShouldThrowException()
+        {
+            var match = new Match();
+
+            Assert.Throws<InvalidOperationException>(() => match.MatchState = (MatchState)int.MaxValue);
+        }
+
+        [TestCase]
+        public void SetCurrentState_InProgressState_CurrentStateShouldReturnInProgressMatchState()
+        {
+            var match = new Match();
+
+            match.MatchState = MatchState.InProgress;
+
+            Assert.IsInstanceOf<InProgressMatchState>(match.CurrentState);
+        }
+
+        [TestCase]
+        public void SetCurrentState_InProgressState_CurrentStateShouldReturnPlannedMatchState()
+        {
+            var match = new Match();
+
+            match.MatchState = MatchState.Planned;
+
+            Assert.IsInstanceOf<PlannedMatchState>(match.CurrentState);
+        }
+
+        [TestCase]
+        public void SetCurrentState_InProgressState_CurrentStateShouldReturnFinishedMatchState()
+        {
+            var match = new Match();
+
+            match.MatchState = MatchState.Finished;
+
+            Assert.IsInstanceOf<FinishedMatchState>(match.CurrentState);
+        }
+
+        [TestCase]
+        public void SetCurrentState_InProgressState_CurrentStateShouldReturnClosedMatchState()
+        {
+            var match = new Match();
+
+            match.MatchState = MatchState.Closed;
+
+            Assert.IsInstanceOf<ClosedMatchState>(match.CurrentState);
+        }
+
+        #endregion
+
         #region TeamIsInvolve
 
         [TestCase]
