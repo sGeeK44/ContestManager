@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -73,10 +74,10 @@ namespace Contest.Ihm
         private ISqlRepository<IField> FieldRepository { get; set; }
 
         [Import]
-        private ISqlRepository<TeamGameStepRelationship> TeamGameStepRelationshipRepository { get; set; }
+        private ISqlRepository<IRelationship<ITeam, IGameStep>> TeamGameStepRelationshipRepository { get; set; }
 
         [Import]
-        private ISqlRepository<TeamPhaseRelationship>  TeamPhaseRelationship { get; set; }
+        private ISqlRepository<IRelationship<ITeam, IPhase>>  TeamPhaseRelationship { get; set; }
 
         #endregion
 
@@ -126,7 +127,10 @@ namespace Contest.Ihm
             Exit = new RelayCommand(
                 delegate
                 {
-                    if (CurrentContest != null) CloseContest.Execute(null);
+                    if (CurrentContest != null)
+                    {
+                        CloseContest.Execute(null);
+                    }
                     Application.Current.Shutdown();
                 },
                 delegate { return true; });
@@ -177,17 +181,15 @@ namespace Contest.Ihm
                 delegate { return CurrentContest == null; });
 
             SaveContest = new RelayCommand(
-                delegate
-                {
-                    if (!CurrentContest.IsStarted) ContestVm.UpdateContest();
-                    CurrentContest.PrepareCommit(UnitOfWorks);
-                    UnitOfWorks.Commit();
-                },
+                delegate { Save(); },
                 delegate { return CurrentContest != null && UnitOfWorks.IsBinded; });
 
             CloseContest = new RelayCommand(
                 delegate
                 {
+                    var result = MessageBox.Show("Voulez-vous sauvegarder la progression du tournoi ?", "Contest", MessageBoxButton.YesNo);
+                    if (result == MessageBoxResult.Yes) Save();
+
                     if (_phaseViewerWindows != null) _phaseViewerWindows.Close();
                     CurrentContest = null;
                     PlayerListVm = null;
@@ -270,6 +272,14 @@ namespace Contest.Ihm
                 });
 
             #endregion
+        }
+
+        internal void Save()
+        {
+            if (CurrentContest == null) return;
+            if (!CurrentContest.IsStarted) ContestVm.UpdateContest();
+            CurrentContest.PrepareCommit(UnitOfWorks);
+            UnitOfWorks.Commit();
         }
 
         private void DisplayContest()

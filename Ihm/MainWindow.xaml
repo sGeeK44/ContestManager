@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         d:DataContext="{d:DesignInstance ihm:MainWindowVm}"
+        Closing="Window_Closing"
         Title="Palet 44" Height="732" Width="1000" Icon="App_GlobalResources/Pictures/Picture.png">
     <Window.Resources>
         <ResourceDictionary>
