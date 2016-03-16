@@ -44,6 +44,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TeamGameStepRelationship.cs" />
+    <Compile Include="TeamPhaseRelationshipFactory.cs" />
+    <Compile Include="TeamGameStepRelationshipFactory.cs" />
     <Compile Include="TeamGameStepRelationshipRepository.cs" />
     <Compile Include="TeamPhaseRelationship.cs" />
     <Compile Include="TeamPhaseRelationshipRepository.cs" />
@@ -52,6 +54,22 @@
     <ProjectReference Include="..\Business.Interface\Contest.Business.Interface.csproj">
       <Project>{1e4d7146-80a7-452e-871e-c5551d230714}</Project>
       <Name>Contest.Business.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.GameStep\Contest.Business.GameStep.csproj">
+      <Project>{d0f224fa-5797-4c7c-87ab-4168ef306526}</Project>
+      <Name>Contest.Business.GameStep</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.Match\Contest.Business.Match.csproj">
+      <Project>{a91498d5-363d-48a6-98b2-e5120386c877}</Project>
+      <Name>Contest.Business.Match</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.Phase\Contest.Business.Phase.csproj">
+      <Project>{315452f5-6c38-49c1-9bad-0dd5ff8c5207}</Project>
+      <Name>Contest.Business.Phase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.Team\Contest.Business.Team.csproj">
+      <Project>{d7d40bae-46cf-4caf-8c0a-445b0d7f7260}</Project>
+      <Name>Contest.Business.Team</Name>
     </ProjectReference>
     <ProjectReference Include="..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
       <Project>{1ff5796b-18d0-4bf3-919d-14166813b7b2}</Project>

@@ -51,6 +51,7 @@
     <Compile Include="IGameSetting.cs" />
     <Compile Include="IGameStep.cs" />
     <Compile Include="IMatch.cs" />
+    <Compile Include="IRelationshipFactory.cs" />
     <Compile Include="IMatchFactory.cs" />
     <Compile Include="IMatchSetting.cs" />
     <Compile Include="IPerson.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="IPhysicalSetting.cs" />
     <Compile Include="IQualificationStep.cs" />
     <Compile Include="IQualificationStepSetting.cs" />
+    <Compile Include="IRelationship.cs" />
     <Compile Include="IStepSetting.cs" />
     <Compile Include="ITeam.cs" />
     <Compile Include="MatchEvent.cs" />

@@ -4,7 +4,7 @@ using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    [Export(typeof(IRepository<TeamGameStepRelationship>))]
-    [Export(typeof(ISqlRepository<TeamGameStepRelationship>))]
-    public class TeamGameStepRelationshipRepository : SqlRepository<TeamGameStepRelationship> { }
+    [Export(typeof(IRepository<IRelationship<ITeam, IGameStep>>))]
+    [Export(typeof(ISqlRepository<IRelationship<ITeam, IGameStep>>))]
+    public class TeamGameStepRelationshipRepository : SqlRepository<TeamGameStepRelationship, IRelationship<ITeam, IGameStep>> { }
 }

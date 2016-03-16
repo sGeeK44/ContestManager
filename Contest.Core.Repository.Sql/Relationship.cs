@@ -8,8 +8,10 @@ namespace Contest.Core.Repository.Sql
     /// <summary>
     /// Represent a relation n to n between two object
     /// </summary>
-    public class Relationship<TIObj1, TIObj2> : IQueryable
-        where TIObj1 : class, IIdentifiable 
+    public class Relationship<TObj1, TIObj1, TObj2, TIObj2>
+        where TObj1 : class, TIObj1
+        where TObj2 : class, TIObj2
+        where TIObj1 : class, IIdentifiable
         where TIObj2 : class, IIdentifiable
     {
         private Lazy<TIObj1> _firstItemInvolve;
@@ -30,6 +32,7 @@ namespace Contest.Core.Repository.Sql
 
         public Relationship(TIObj1 first, TIObj2 second)
         {
+            FlippingContainer.Instance.ComposeParts(this);
             FirstItemInvolve = first;
             SecondItemInvolve = second;
         }
@@ -76,7 +79,7 @@ namespace Contest.Core.Repository.Sql
 
         public bool AreSame(object other)
         {
-            var castedObject = other as Relationship<TIObj1, TIObj2>;
+            var castedObject = other as Relationship<TObj1, TIObj1, TObj2, TIObj2>;
             if (castedObject == null) return false;
 
             return FirstItemInvolve.Id == castedObject.FirstItemInvolve.Id

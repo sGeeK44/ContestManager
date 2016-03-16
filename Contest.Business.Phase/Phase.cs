@@ -14,7 +14,7 @@ namespace Contest.Business
     {
         #region Fields
 
-        private Lazy<IList<TeamPhaseRelationship>> _phaseTeamRelationshipList;
+        private Lazy<IList<IRelationship<ITeam, IPhase>>> _phaseTeamRelationshipList;
         private Lazy<IList<IGameStep>> _gameStepList;
 
         #endregion
@@ -28,16 +28,19 @@ namespace Contest.Business
         private IRepository<IEliminationStep> EliminationStepRepository { get; set; }
 
         [Import]
-        private IRepository<TeamPhaseRelationship> TeamPhaseRelationshipRepository { get; set; }
+        private IRepository<IRelationship<ITeam, IPhase>> TeamPhaseRelationshipRepository { get; set; }
+
+        [Import]
+        private IRelationshipFactory<ITeam, IPhase> TeamPhaseRelationshipFactory { get; set; }
 
         #endregion
-        
+
         #region Constructors
 
         protected Phase()
         {
             FlippingContainer.Instance.ComposeParts(this);
-            _phaseTeamRelationshipList = new Lazy<IList<TeamPhaseRelationship>>(() => TeamPhaseRelationshipRepository.Find(_ => _.SecondItemInvolveId == Id));
+            _phaseTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IPhase>>>(() => TeamPhaseRelationshipRepository.Find(_ => _.SecondItemInvolveId == Id));
             _gameStepList = new Lazy<IList<IGameStep>>(() => {
                 IList<IGameStep> result = EliminationStepRepository.Find(_ => _.PhaseId == Id)
                                                                    .Cast<IGameStep>()
@@ -75,11 +78,11 @@ namespace Contest.Business
             set
             {
                 _phaseTeamRelationshipList =
-                    new Lazy<IList<TeamPhaseRelationship>>(
+                    new Lazy<IList<IRelationship<ITeam, IPhase>>>(
                         () =>
-                            new List<TeamPhaseRelationship>(value != null
-                                ? value.Select(_ => new TeamPhaseRelationship(_, this))
-                                : new List<TeamPhaseRelationship>()));
+                            new List<IRelationship<ITeam, IPhase>>(value != null
+                                ? value.Select(_ => TeamPhaseRelationshipFactory.Create(_, this))
+                                : new List<IRelationship<ITeam, IPhase>>()));
             }
         }
 

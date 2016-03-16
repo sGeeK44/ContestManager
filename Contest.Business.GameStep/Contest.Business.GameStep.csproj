@@ -55,10 +55,6 @@
       <Project>{1e4d7146-80a7-452e-871e-c5551d230714}</Project>
       <Name>Contest.Business.Interface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Contest.Business.Relationship\Contest.Business.Relationship.csproj">
-      <Project>{20163db4-efb9-4f0b-8b94-985a848864ae}</Project>
-      <Name>Contest.Business.Relationship</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Contest.Core.Component\Contest.Core.Component.csproj">
       <Project>{6cc897ab-e169-4f20-a56d-0bc0af8e451d}</Project>
       <Name>Contest.Core.Component</Name>
@@ -79,9 +75,6 @@
       <Project>{4194f8f9-57e1-4d31-b4e3-a989f0d786f0}</Project>
       <Name>Contest.Core.Repository</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

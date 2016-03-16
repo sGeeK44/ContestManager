@@ -21,8 +21,8 @@ namespace Contest.Business
         private Lazy<IContest> _contest;
         private Lazy<IList<IPerson>> _members;
         private Lazy<IList<IMatch>> _matchList;
-        private Lazy<IList<TeamGameStepRelationship>> _gameStepTeamRelationshipList;
-        private Lazy<IList<TeamPhaseRelationship>> _phaseTeamRelationshipList;
+        private Lazy<IList<IRelationship<ITeam, IGameStep>>> _gameStepTeamRelationshipList;
+        private Lazy<IList<IRelationship<ITeam, IPhase>>> _phaseTeamRelationshipList;
 
         #endregion
 
@@ -41,10 +41,16 @@ namespace Contest.Business
         private IRepository<IContest> ContestRepository { get; set; }
 
         [Import]
-        private IRepository<TeamGameStepRelationship> TeamGameStepRelationshipRepository { get; set; }
+        private IRepository<IRelationship<ITeam, IGameStep>> TeamGameStepRelationshipRepository { get; set; }
 
         [Import]
-        private IRepository<TeamPhaseRelationship> TeamPhaseRelationshipRepository { get; set; }
+        private IRepository<IRelationship<ITeam, IPhase>> TeamPhaseRelationshipRepository { get; set; }
+
+        [Import]
+        private IRelationshipFactory<ITeam, IGameStep> TeamGameStepRelationshipFactory { get; set; }
+
+        [Import]
+        private IRelationshipFactory<ITeam, IPhase> TeamPhaseRelationshipFactory { get; set; }
 
         #endregion
 
@@ -58,8 +64,8 @@ namespace Contest.Business
                                                                       .Union(MatchRepository.Find(_ => _.Team2Id == Id))
                                                                       .ToList());
             _contest = new Lazy<IContest>(() => ContestRepository.Find(_ => _.Id == ContestId).FirstOrDefault());
-            _gameStepTeamRelationshipList = new Lazy<IList<TeamGameStepRelationship>>(() => TeamGameStepRelationshipRepository.Find(_ => _.FirstItemInvolveId == Id));
-            _phaseTeamRelationshipList = new Lazy<IList<TeamPhaseRelationship>>(() => TeamPhaseRelationshipRepository.Find(_ => _.SecondItemInvolveId == Id));
+            _gameStepTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IGameStep>>>(() => TeamGameStepRelationshipRepository.Find(_ => _.FirstItemInvolveId == Id));
+            _phaseTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IPhase>>>(() => TeamPhaseRelationshipRepository.Find(_ => _.SecondItemInvolveId == Id));
         }
 
         public Team(IContest contest, string name)
@@ -69,8 +75,8 @@ namespace Contest.Business
             Name = name;
             Members = new List<IPerson>();
             MatchList = new List<IMatch>();
-            _gameStepTeamRelationshipList = new Lazy<IList<TeamGameStepRelationship>>(() => new List<TeamGameStepRelationship>());
-            _phaseTeamRelationshipList = new Lazy<IList<TeamPhaseRelationship>>(() => new List<TeamPhaseRelationship>());
+            _gameStepTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IGameStep>>>(() => new List<IRelationship<ITeam, IGameStep>>());
+            _phaseTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IPhase>>>(() => new List<IRelationship<ITeam, IPhase>>());
         }
 
         #endregion
@@ -142,7 +148,7 @@ namespace Contest.Business
                 _gameStepTeamRelationshipList.Value.Clear();
                 foreach (var gamestep in value)
                 {
-                    _gameStepTeamRelationshipList.Value.Add(new TeamGameStepRelationship(this, gamestep));
+                    _gameStepTeamRelationshipList.Value.Add(TeamGameStepRelationshipFactory.Create(this, gamestep));
                 }
             }
         }
@@ -158,7 +164,7 @@ namespace Contest.Business
                 _phaseTeamRelationshipList.Value.Clear();
                 foreach (var phase in value)
                 {
-                    _phaseTeamRelationshipList.Value.Add(new TeamPhaseRelationship(this, phase));
+                    _phaseTeamRelationshipList.Value.Add(TeamPhaseRelationshipFactory.Create(this, phase));
                 }
             }
         }

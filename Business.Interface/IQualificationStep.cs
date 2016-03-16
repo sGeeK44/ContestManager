@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Contest.Business
 {
-    public interface IQualificationStep :IGameStep
+    public interface IQualificationStep : IGameStep
     {
         /// <summary>
         /// Get number of qualification group

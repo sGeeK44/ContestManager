@@ -16,7 +16,7 @@ namespace Contest.Business
         private Lazy<IPhase> _phase;
         private Lazy<IMatchSetting> _currentMatchSetting;
         private Lazy<IList<IMatch>> _matchList;
-        private Lazy<IList<TeamGameStepRelationship>> _gameStepTeamRelationshipList;
+        private Lazy<IList<IRelationship<ITeam, IGameStep>>> _gameStepTeamRelationshipList;
 
         #endregion
 
@@ -29,10 +29,13 @@ namespace Contest.Business
         private IRepository<IMatchSetting> MatchSettingRepository { get; set; }
 
         [Import]
-        private IRepository<TeamGameStepRelationship> TeamGameStepRelationshipRepository { get; set; }
+        private IRepository<IRelationship<ITeam, IGameStep>> TeamGameStepRelationshipRepository { get; set; }
 
         [Import]
         private IRepository<IMatch> MatchRepository { get; set; }
+
+        [Import]
+        private IRelationshipFactory<ITeam, IGameStep> RelationshipFactory { get; set; }
 
         #endregion
 
@@ -43,7 +46,7 @@ namespace Contest.Business
             FlippingContainer.Instance.ComposeParts(this);
             _phase = new Lazy<IPhase>(() => PhaseRepository.FirstOrDefault(_ => _.Id == PhaseId));
             _currentMatchSetting = new Lazy<IMatchSetting>(() => MatchSettingRepository.FirstOrDefault(_ => _.Id == CurrentMatchSettingId));
-            _gameStepTeamRelationshipList = new Lazy<IList<TeamGameStepRelationship>>(() => TeamGameStepRelationshipRepository.Find(_ => _.SecondItemInvolveId == Id));
+            _gameStepTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IGameStep>>>(() => TeamGameStepRelationshipRepository.Find(_ => _.SecondItemInvolveId == Id));
             _matchList = new Lazy<IList<IMatch>>(() =>
             {
                 IList<IMatch> result = MatchRepository.Find(_ => _.GameStepId == Id).ToList();
@@ -137,12 +140,11 @@ namespace Contest.Business
             get { return _gameStepTeamRelationshipList.Value.Select(_ => _.FirstItemInvolve).ToList(); }
             set
             {
-                _gameStepTeamRelationshipList =
-                    new Lazy<IList<TeamGameStepRelationship>>(
+                _gameStepTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IGameStep>>>(
                         () =>
-                            new List<TeamGameStepRelationship>(value != null
-                                ? value.Select(_ => new TeamGameStepRelationship(_, this))
-                                : new List<TeamGameStepRelationship>()));
+                            new List<IRelationship<ITeam, IGameStep>>(value != null
+                                ? value.Select(_ => RelationshipFactory.Create(_, this))
+                                : new List<IRelationship<ITeam, IGameStep>>()));
             }
         }
 

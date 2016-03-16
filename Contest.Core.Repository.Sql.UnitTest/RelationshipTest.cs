@@ -17,7 +17,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
         {
             var first = new Entity1();
             var second = new Entity2();
-            var relationship = new Relationship<Entity1,Entity2>(first, second);
+            var relationship = new Relationship<Entity1, Entity1, Entity2, Entity2>(first, second);
 
             Assert.AreEqual(first, relationship.FirstItemInvolve);
             Assert.AreEqual(first.Id, relationship.FirstItemInvolveId);
@@ -30,7 +30,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
         {
             var first = new Entity1();
             var second = new Entity2();
-            var relationship = new Relationship<Entity1, Entity2>();
+            var relationship = new Relationship<Entity1, Entity1, Entity2, Entity2>();
             var repositoryMock1 = new SqlRepositoryMock<Entity1>();
             repositoryMock1.Add(first);
             relationship.FirstItemRepository = repositoryMock1;

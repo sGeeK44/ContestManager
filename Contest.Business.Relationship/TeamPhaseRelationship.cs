@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
@@ -7,7 +8,7 @@ namespace Contest.Business
     /// Represent a relation between a Team and a Phase
     /// </summary>
     [DataContract(Name = "TEAM_PHASE_RELATION")]
-    public class TeamPhaseRelationship : Relationship<ITeam, IPhase>
+    public class TeamPhaseRelationship : Relationship<Team, ITeam, Phase, IPhase>, IRelationship<ITeam, IPhase>
     {
         protected TeamPhaseRelationship() { }
 
@@ -25,7 +26,16 @@ namespace Contest.Business
         /// <param name="unitOfWorks">Unit of work for action</param>
         public virtual void PrepareCommit(ISqlUnitOfWorks unitOfWorks)
         {
-            unitOfWorks.InsertOrUpdate(this);
+            unitOfWorks.InsertOrUpdate<IRelationship<ITeam, IPhase>>(this);
+        }
+        
+        /// <summary>
+        /// Do all delete into repository for all of object composed.
+        /// </summary>
+        /// <param name="unitOfWorks">Unit of work for action</param>
+        public void PrepareDelete(ISqlUnitOfWorks unitOfWorks)
+        {
+            throw new NotImplementedException();
         }
     }
 }
