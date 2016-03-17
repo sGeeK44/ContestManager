@@ -51,11 +51,16 @@ namespace Contest.Business
             for (var i = 0; i < TeamList.Count; i += 2)  CreateMatch(TeamList[i], TeamList[i+1]);
         }
 
+        public override IList<ITeam> GetDirectQualifiedTeam()
+        {
+            throw new NotSupportedException();
+        }
+
         /// <summary>
         /// Do all insert or update into repository for all of object composed.
         /// </summary>
         /// <param name="unitOfWorks">Unit of work for action</param>
-        public virtual void PrepareCommit(ISqlUnitOfWorks unitOfWorks)
+        public override void PrepareCommit(ISqlUnitOfWorks unitOfWorks)
         {
             base.PrepareCommit(unitOfWorks);
             unitOfWorks.InsertOrUpdate<IEliminationStep>(this);

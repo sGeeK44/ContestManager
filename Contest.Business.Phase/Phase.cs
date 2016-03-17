@@ -181,6 +181,14 @@ namespace Contest.Business
             game.GameStepEnded += sender => { if (IsFinished) RaisePhaseEvent(PhaseEnded); };
         }
 
+        private void BuildMatch()
+        {
+            foreach (var gameStep in GameStepList)
+            {
+                gameStep.BuildMatch();
+            }
+        }
+
         #endregion
 
         #region Event
@@ -217,7 +225,7 @@ namespace Contest.Business
         /// <param name="type">Type of phase</param>
         /// <param name="setting">Set setting for new phase</param>
         /// <returns>Match's instance</returns>
-        public static IPhase Create(IContest contest, PhaseType type, IList<ITeam> teamList, IStepSetting setting)
+        private static Phase Create(IContest contest, PhaseType type, IList<ITeam> teamList, IStepSetting setting)
         {
             if (contest == null) throw new ArgumentNullException("contest");
             if (setting == null) throw new ArgumentNullException("setting");
@@ -231,48 +239,114 @@ namespace Contest.Business
                 TeamList = teamList,
             };
 
-            switch (result.Type)
-            {
-                case PhaseType.Qualification:
-                    var qualificationSetting = setting as QualificationStepSetting;
-                    if (qualificationSetting == null) throw new ArgumentException("Setting can not be null or a differnet type of QualificationStepSetting", "setting");
-                    var teamindex = 0;
-                    for (var i = 0; i < qualificationSetting.CountGroup; i++)
-                    {
-                        //Compute number of team for current qualification step.
-                        var rest = result.TeamList.Count%qualificationSetting.CountGroup;
-                        var numberOfTeam = result.TeamList.Count / qualificationSetting.CountGroup + //Min number of team per group
-                                           (rest != 0 && i < rest ? 1 : 0); //Add one if has rest of division and position qualification group is lower than rest
-                        
-                        //Build team list for current step.
-                        var groupTeamList = new List<ITeam>();
-                        for (var j = 0; j < numberOfTeam && teamindex + j < result.TeamList.Count; j++) groupTeamList.Add(result.TeamList.ElementAt(teamindex + j));
-                        teamindex += numberOfTeam; 
+            return result;
+        }
 
-                        //Create and add new game step.
-                        var newQualificationStep = QualificationStep.Create(result, groupTeamList, qualificationSetting, i + 1);
-                        result.RegisterHandler(newQualificationStep);
-                        result.GameStepList.Add(newQualificationStep);
-                    }
-                    break;
-                case PhaseType.Consoling:
-                case PhaseType.Main:
-                    var eliminationSetting = setting as EliminationStepSetting;
-                    if (eliminationSetting == null) throw new ArgumentException("Setting can not be null or a differnet type of QualificationStepSetting", "setting");
-                    //Create and add new game step
-                    var newEliminationStep = EliminationStep.Create(result, result.TeamList, setting.MatchSetting, eliminationSetting.FirstStep);
-                    result.RegisterHandler(newEliminationStep);
-                    result.GameStepList.Add(newEliminationStep);
-                    break;
-                default: throw new NotSupportedException(string.Format("Le type de phase n'est pas supporté par l'application. Type:{0}.", result.Type));
-            }
+        /// <summary>
+        /// Create a new instance (in memory and database) of <see cref="T:Business.Phase"/> with specified param
+        /// </summary>
+        /// <param name="teamList">A dictionnary of involved team for this phase. The usigned integer is used to build group.</param>
+        /// <param name="contest">Contest linked to this phase</param>
+        /// <param name="setting">Set setting for new phase</param>
+        /// <returns>Match's instance</returns>
+        public static IPhase CreateMainEliminationPhase(IContest contest, IList<ITeam> teamList, IEliminationStepSetting setting)
+        {
+            return CreateEliminationPhase(contest, PhaseType.Main, teamList, setting);
+        }
 
-            foreach (var gameStep in result.GameStepList)
-            {
-                gameStep.BuildMatch();
-            }
+        /// <summary>
+        /// Create a new instance (in memory and database) of <see cref="T:Business.Phase"/> with specified param
+        /// </summary>
+        /// <param name="teamList">A dictionnary of involved team for this phase. The usigned integer is used to build group.</param>
+        /// <param name="contest">Contest linked to this phase</param>
+        /// <param name="type">Type of phase</param>
+        /// <param name="setting">Set setting for new phase</param>
+        /// <returns>Match's instance</returns>
+        public static IPhase CreateConsolingEliminationPhase(IContest contest, IList<ITeam> teamList, IEliminationStepSetting setting)
+        {
+            return CreateEliminationPhase(contest, PhaseType.Consoling, teamList, setting);
+        }
+
+        /// <summary>
+        /// Create a new instance (in memory and database) of <see cref="T:Business.Phase"/> with specified param
+        /// </summary>
+        /// <param name="teamList">A dictionnary of involved team for this phase. The usigned integer is used to build group.</param>
+        /// <param name="contest">Contest linked to this phase</param>
+        /// <param name="type">Type of phase</param>
+        /// <param name="setting">Set setting for new phase</param>
+        /// <returns>Match's instance</returns>
+        private static IPhase CreateEliminationPhase(IContest contest, PhaseType type, IList<ITeam> teamList, IEliminationStepSetting setting)
+        {
+            var result = Create(contest, type, teamList, setting);
+
+            //Create and add new game step
+            var newEliminationStep = EliminationStep.Create(result, result.TeamList, setting.MatchSetting, setting.FirstStep);
+            result.RegisterHandler(newEliminationStep);
+            result.GameStepList.Add(newEliminationStep);
+
+            result.BuildMatch();
 
             return result;
+        }
+
+        /// <summary>
+        /// Create a new instance (in memory and database) of <see cref="T:Business.Phase"/> with specified param
+        /// </summary>
+        /// <param name="teamList">A dictionnary of involved team for this phase. The usigned integer is used to build group.</param>
+        /// <param name="contest">Contest linked to this phase</param>
+        /// <param name="type">Type of phase</param>
+        /// <param name="setting">Set setting for new phase</param>
+        /// <returns>Match's instance</returns>
+        public static IPhase CreateQualificationPhase(IContest contest, IList<ITeam> teamList, IQualificationStepSetting setting)
+        {
+            var result = Create(contest, PhaseType.Qualification, teamList, setting);
+            
+            var teamindex = 0;
+            for (var i = 0; i < setting.CountGroup; i++)
+            {
+                int numberOfTeam = ComputeNumberOfTeam(setting, result, i);
+                
+                List<ITeam> groupTeamList = BuildTeamList(result, ref teamindex, numberOfTeam);
+
+                CreateAndAddNewGameStep(setting, result, i, groupTeamList);
+            }
+
+            result.BuildMatch();
+
+            return result;
+        }
+
+        private static int ComputeNumberOfTeam(IQualificationStepSetting setting, Phase result, int i)
+        {
+            var rest = result.TeamList.Count % setting.CountGroup;
+            var numberOfTeam = result.TeamList.Count / setting.CountGroup + //Min number of team per group
+                                (rest != 0 && i < rest ? 1 : 0); //Add one if has rest of division and position qualification group is lower than rest
+            return numberOfTeam;
+        }
+
+        private static List<ITeam> BuildTeamList(Phase result, ref int teamindex, int numberOfTeam)
+        {
+            var groupTeamList = new List<ITeam>();
+            for (var j = 0; j < numberOfTeam && teamindex + j < result.TeamList.Count; j++) groupTeamList.Add(result.TeamList.ElementAt(teamindex + j));
+            teamindex += numberOfTeam;
+            return groupTeamList;
+        }
+
+        private static void CreateAndAddNewGameStep(IQualificationStepSetting setting, Phase result, int i, List<ITeam> groupTeamList)
+        {
+            var newQualificationStep = QualificationStep.Create(result, groupTeamList, setting, i + 1);
+            result.RegisterHandler(newQualificationStep);
+            result.GameStepList.Add(newQualificationStep);
+        }
+
+        public IList<ITeam> GetDirectQualifiedTeam()
+        {
+            return GameStepList.SelectMany(_ => _.GetDirectQualifiedTeam()).ToList();
+        }
+
+        public IList<IMatch> GetAllMatch()
+        {
+            return GameStepList.SelectMany(_ => _.MatchList).ToList();
         }
 
         #endregion

@@ -56,5 +56,17 @@ namespace Contest.Business
         /// This event occurs when current phase is ended
         /// </summary>
         event NextStepStartedEvent NextStepStarted;
+
+        /// <summary>
+        /// Return Team whose directly qualified for next phase
+        /// </summary>
+        /// <returns></returns>
+        IList<ITeam> GetDirectQualifiedTeam();
+
+        /// <summary>
+        /// Return all match of current Phase
+        /// </summary>
+        /// <returns></returns>
+        IList<IMatch> GetAllMatch();
     }
 }

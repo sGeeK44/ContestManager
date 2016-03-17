@@ -236,6 +236,8 @@ namespace Contest.Business
             if (@event != null) @event(this);
         }
 
+        public abstract IList<ITeam> GetDirectQualifiedTeam();
+
         /// <summary>
         /// This event occurs when current game step is ended
         /// </summary>

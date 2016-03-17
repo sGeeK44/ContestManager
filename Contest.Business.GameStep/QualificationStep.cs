@@ -120,6 +120,11 @@ namespace Contest.Business
             return result.Select(item => item.Key).ToList();
         }
 
+        public override IList<ITeam> GetDirectQualifiedTeam()
+        {
+            return Rank.Take(NumberOfQualifiedTeam).ToList();
+        }
+
         /// <summary>
         /// Do all insert or update into repository for all of object composed.
         /// </summary>

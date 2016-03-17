@@ -81,5 +81,11 @@ namespace Contest.Business
         /// This event occurs when current game step is ended
         /// </summary>
         event GameStepEvent RankChanged;
+
+        /// <summary>
+        /// Return team qualified for next step
+        /// </summary>
+        /// <returns></returns>
+        IList<ITeam> GetDirectQualifiedTeam();
     }
 }

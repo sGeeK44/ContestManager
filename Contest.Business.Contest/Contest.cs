@@ -367,8 +367,8 @@ namespace Contest.Business
             );
             TeamList.Shuffle();
             var newPhase = WithQualificationPhase
-                           ? Phase.Create(this, PhaseType.Qualification, TeamList, QualificationSetting)
-                           : Phase.Create(this, PhaseType.Main, TeamList, EliminationSetting);
+                           ? Phase.CreateQualificationPhase(this, TeamList, QualificationSetting)
+                           : Phase.CreateMainEliminationPhase(this, TeamList, EliminationSetting);
             
             PhaseList.Add(newPhase);
             BeginningDate = DateTime.Now;
@@ -382,12 +382,12 @@ namespace Contest.Business
                 step.EndGameStep();
             }
 
-            IList<ITeam> directQualifiedTeam = QualificationPhase.GameStepList.Cast<QualificationStep>().SelectMany(_ => _.Rank.Take(_.NumberOfQualifiedTeam)).ToList();
-            IList<IMatch> matchList = QualificationPhase.GameStepList.SelectMany(_ => _.MatchList).ToList();
+            IList<ITeam> directQualifiedTeam = QualificationPhase.GetDirectQualifiedTeam();
+            IList<IMatch> matchList = QualificationPhase.GetAllMatch();
             IList<ITeam> allQualifiedTeam = directQualifiedTeam.Union(QualificationStep.SortRank(TeamList.Where(team => !directQualifiedTeam.Contains(team)).ToList(), matchList)
-                                                                 .Take(QualificationSetting.CountTeamFished)).ToList();
+                                                                                       .Take(QualificationSetting.CountTeamFished)).ToList();
             allQualifiedTeam.Shuffle();
-            var main = Phase.Create(this, PhaseType.Main, allQualifiedTeam, EliminationSetting);
+            var main = Phase.CreateMainEliminationPhase(this, allQualifiedTeam, EliminationSetting);
 
             PhaseList.Add(main);
             RaiseNewPhaseStartedEvent(NewPhaseLaunch, main);
@@ -401,7 +401,7 @@ namespace Contest.Business
                                                          .ToList();
             consolingTeam.Shuffle();
 
-            var consoling = Phase.Create(this, PhaseType.Consoling, consolingTeam, ConsolingEliminationSetting);
+            var consoling = Phase.CreateConsolingEliminationPhase(this, consolingTeam, ConsolingEliminationSetting);
 
             PhaseList.Add(consoling);
             RaiseNewPhaseStartedEvent(NewPhaseLaunch, consoling);
