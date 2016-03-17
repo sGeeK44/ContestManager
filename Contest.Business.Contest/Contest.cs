@@ -369,11 +369,7 @@ namespace Contest.Business
             var newPhase = WithQualificationPhase
                            ? Phase.Create(this, PhaseType.Qualification, TeamList, QualificationSetting)
                            : Phase.Create(this, PhaseType.Main, TeamList, EliminationSetting);
-
-            foreach (var gameStep in newPhase.GameStepList)
-            {
-                gameStep.BuildMatch();
-            }
+            
             PhaseList.Add(newPhase);
             BeginningDate = DateTime.Now;
             RaiseContestEvent(ContestStart);
@@ -392,10 +388,6 @@ namespace Contest.Business
                                                                  .Take(QualificationSetting.CountTeamFished)).ToList();
             allQualifiedTeam.Shuffle();
             var main = Phase.Create(this, PhaseType.Main, allQualifiedTeam, EliminationSetting);
-            foreach (var gameStep in main.GameStepList)
-            {
-                gameStep.BuildMatch();
-            }
 
             PhaseList.Add(main);
             RaiseNewPhaseStartedEvent(NewPhaseLaunch, main);
@@ -410,10 +402,6 @@ namespace Contest.Business
             consolingTeam.Shuffle();
 
             var consoling = Phase.Create(this, PhaseType.Consoling, consolingTeam, ConsolingEliminationSetting);
-            foreach (var gameStep in consoling.GameStepList)
-            {
-                gameStep.BuildMatch();
-            }
 
             PhaseList.Add(consoling);
             RaiseNewPhaseStartedEvent(NewPhaseLaunch, consoling);

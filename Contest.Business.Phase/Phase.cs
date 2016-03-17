@@ -267,6 +267,11 @@ namespace Contest.Business
                 default: throw new NotSupportedException(string.Format("Le type de phase n'est pas supporté par l'application. Type:{0}.", result.Type));
             }
 
+            foreach (var gameStep in result.GameStepList)
+            {
+                gameStep.BuildMatch();
+            }
+
             return result;
         }
 
