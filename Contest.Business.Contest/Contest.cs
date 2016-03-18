@@ -8,7 +8,6 @@ using Contest.Core.Component;
 using Contest.Core.FrameworkExtension;
 using Contest.Core.Repository;
 using Contest.Core.Repository.Sql;
-using Contest.Core.Windows;
 
 namespace Contest.Business
 {
@@ -58,7 +57,7 @@ namespace Contest.Business
 
         #region Constructors
 
-        private Contest()
+        internal Contest()
         {
             FlippingContainer.Instance.ComposeParts(this);
             _gameSetting = new Lazy<IGameSetting>(() => GameSettingRepository.FirstOrDefault(_ => _.Id == GameSettingId));
