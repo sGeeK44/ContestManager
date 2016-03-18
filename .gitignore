@@ -3,3 +3,6 @@
 Ihm/packages/
 **/*.user
 **/*.suo
+*.ncrunchproject
+*.cache
+*.ncrunchsolution
