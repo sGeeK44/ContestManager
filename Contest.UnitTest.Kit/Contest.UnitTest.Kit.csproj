@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -42,6 +43,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FieldFactoryMock.cs" />
+    <Compile Include="RepositoryPhaseMock.cs" />
+    <Compile Include="RepositoryQualificationStepSettingMock.cs" />
+    <Compile Include="RepositoryEliminationStepSettingMock.cs" />
+    <Compile Include="RepositoryGameSettingMock.cs" />
+    <Compile Include="RepositoryPhysicalSettingMock.cs" />
+    <Compile Include="RepositoryFieldMock.cs" />
+    <Compile Include="RepositoryTeamMock.cs" />
     <Compile Include="SqlRepositoryBaseMock.cs" />
     <Compile Include="RepositoryBaseMock.cs" />
   </ItemGroup>
@@ -60,6 +69,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Business.Interface\Contest.Business.Interface.csproj">
+      <Project>{1e4d7146-80a7-452e-871e-c5551d230714}</Project>
+      <Name>Contest.Business.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.Field\Contest.Business.Field.csproj">
+      <Project>{22fe8cf8-7973-4a27-8300-1ea82dfc133d}</Project>
+      <Name>Contest.Business.Field</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
       <Project>{1ff5796b-18d0-4bf3-919d-14166813b7b2}</Project>
       <Name>Contest.Core.Repository.Sql</Name>
