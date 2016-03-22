@@ -36,13 +36,13 @@ namespace Contest.Business
 
         #region Methods
 
-        public virtual void PrepareCommit(ISqlUnitOfWorks unitOfWorks)
+        public override void PrepareCommit(ISqlUnitOfWorks unitOfWorks)
         {
             base.PrepareCommit(unitOfWorks);
             unitOfWorks.InsertOrUpdate<IEliminationStepSetting>(this);
         }
 
-        public virtual void PrepareDelete(ISqlUnitOfWorks unitOfWorks)
+        public override void PrepareDelete(ISqlUnitOfWorks unitOfWorks)
         {
             throw new NotFiniteNumberException();
         }

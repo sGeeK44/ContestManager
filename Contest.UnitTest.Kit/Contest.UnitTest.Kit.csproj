@@ -44,7 +44,19 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FieldFactoryMock.cs" />
+    <Compile Include="RelationshipFactoryBaseMock.cs" />
+    <Compile Include="RelationshipFactoryTeamPhaseMock.cs" />
+    <Compile Include="MatchFactoryMock.cs" />
+    <Compile Include="RepositoryContestMock.cs" />
+    <Compile Include="RepositoryMatchMock.cs" />
+    <Compile Include="RepositoryGameStepMock.cs" />
+    <Compile Include="RelationshipFactoryTeamGameStepMock.cs" />
+    <Compile Include="RepositoryIRelationshipTeamGameStepMock.cs" />
+    <Compile Include="RepositoryMatchSettingMock.cs" />
     <Compile Include="RepositoryPhaseMock.cs" />
+    <Compile Include="RepositoryEliminationStepMock.cs" />
+    <Compile Include="RepositoryIRelationshipTeamPhaseMock.cs" />
+    <Compile Include="RepositoryQualificationStepMock.cs" />
     <Compile Include="RepositoryQualificationStepSettingMock.cs" />
     <Compile Include="RepositoryEliminationStepSettingMock.cs" />
     <Compile Include="RepositoryGameSettingMock.cs" />

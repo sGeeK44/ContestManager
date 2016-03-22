@@ -3,6 +3,7 @@ using System;
 using Contest.Core.Component;
 using Moq;
 using Contest.Core.Repository.Sql;
+using Contest.UnitTest.Kit;
 
 namespace Contest.Business.Fields.UnitTest
 {
@@ -12,7 +13,10 @@ namespace Contest.Business.Fields.UnitTest
         [OneTimeSetUp]
         public void Init()
         {
-            FlippingContainer.Instance.Current = new ExecutingAssemblies();
+            var customComposer = new CustomComposer();
+            customComposer.AddType(typeof(RepositoryContestMock));
+            customComposer.AddType(typeof(RepositoryMatchMock));
+            FlippingContainer.Instance.Current = customComposer;
         }
 
         [TestCase]

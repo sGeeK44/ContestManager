@@ -420,16 +420,20 @@ namespace Contest.Business
         /// <param name="unitOfWorks">Unit of work for action</param>
         public virtual void PrepareCommit(ISqlUnitOfWorks unitOfWorks)
         {
+            if (unitOfWorks == null) throw new ArgumentNullException();
+
             unitOfWorks.InsertOrUpdate<IContest>(this);
-            GameSetting.PrepareCommit(unitOfWorks);
-            PhysicalSetting.PrepareCommit(unitOfWorks);
+            if (GameSetting != null) GameSetting.PrepareCommit(unitOfWorks);
+            if (PhysicalSetting != null) PhysicalSetting.PrepareCommit(unitOfWorks);
             if (EliminationSetting != null) EliminationSetting.PrepareCommit(unitOfWorks);
             if (ConsolingEliminationSetting != null) ConsolingEliminationSetting.PrepareCommit(unitOfWorks);
             if (QualificationSetting != null) QualificationSetting.PrepareCommit(unitOfWorks);
+
             foreach (var team in TeamList)
             {
                 team.PrepareCommit(unitOfWorks);
             }
+
             foreach (var phase in PhaseList)
             {
                 phase.PrepareCommit(unitOfWorks);
@@ -442,7 +446,28 @@ namespace Contest.Business
 
         public void PrepareDelete(ISqlUnitOfWorks unitOfWorks)
         {
-            throw new NotImplementedException();
+            if (unitOfWorks == null) throw new ArgumentNullException();
+
+            unitOfWorks.Delete<IContest>(this);
+            if (GameSetting != null) GameSetting.PrepareDelete(unitOfWorks);
+            if (PhysicalSetting != null) PhysicalSetting.PrepareDelete(unitOfWorks);
+            if (EliminationSetting != null) EliminationSetting.PrepareDelete(unitOfWorks);
+            if (ConsolingEliminationSetting != null) ConsolingEliminationSetting.PrepareDelete(unitOfWorks);
+            if (QualificationSetting != null) QualificationSetting.PrepareDelete(unitOfWorks);
+
+            foreach (var team in TeamList)
+            {
+                team.PrepareDelete(unitOfWorks);
+            }
+
+            foreach (var phase in PhaseList)
+            {
+                phase.PrepareDelete(unitOfWorks);
+            }
+            foreach (var field in FieldList)
+            {
+                field.PrepareDelete(unitOfWorks);
+            }
         }
 
         #endregion
@@ -507,7 +532,6 @@ namespace Contest.Business
         {
             var result = new Contest
                 {
-                    Id = Guid.NewGuid(),
                     DatePlanned = datePlanned,
                     PhysicalSetting = physicalSetting,
                     GameSetting = gameSetting,

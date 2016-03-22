@@ -64,7 +64,7 @@ namespace Contest.Business
             foreach (var team in teamList)
             {
                 var count = teamList.Count(item => item == team);
-                if (count != 1) throw new ArgumentException(String.Format("La liste des équipes ne peut pas contenir plus deux fois la même équipe. Equipe:{0}. Count:{1}.", team.Id, count));
+                if (count != 1) throw new ArgumentException(string.Format("La liste des équipes ne peut pas contenir plus deux fois la même équipe. Equipe:{0}. Count:{1}.", team.Id, count));
             }
 
             Phase = phase;
@@ -141,10 +141,7 @@ namespace Contest.Business
             set
             {
                 _gameStepTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IGameStep>>>(
-                        () =>
-                            new List<IRelationship<ITeam, IGameStep>>(value != null
-                                ? value.Select(_ => RelationshipFactory.Create(_, this))
-                                : new List<IRelationship<ITeam, IGameStep>>()));
+                        () => RelationshipFactory.CreateFromFirstItemList(value, this));
             }
         }
 

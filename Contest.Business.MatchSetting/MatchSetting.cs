@@ -43,7 +43,6 @@ namespace Contest.Business
 
         private MatchSetting(bool canBeDuce, ushort pointForWin, ushort pointForLoose, ushort pointForDuce)
         {
-            Id = Guid.NewGuid();
             EndBy = EndTypeConstaint.None;
             CanBeDuce = canBeDuce;
             PointForWin = pointForWin;

@@ -10,7 +10,7 @@ namespace Contest.Business
     [DataContract(Name = "TEAM_PHASE_RELATION")]
     public class TeamPhaseRelationship : Relationship<Team, ITeam, Phase, IPhase>, IRelationship<ITeam, IPhase>
     {
-        protected TeamPhaseRelationship() { }
+        public TeamPhaseRelationship() { }
 
         /// <summary>
         /// Instance a new relation

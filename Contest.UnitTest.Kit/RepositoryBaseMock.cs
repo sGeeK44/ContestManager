@@ -28,7 +28,7 @@ namespace Contest.UnitTest.Kit
 
         public IList<T> Find(Expression<Func<T, bool>> predicate)
         {
-            return RepositoryMock.Object.Find(predicate);
+            return RepositoryMock.Object.Find(predicate) ?? new List<T>();
         }
 
         public T FirstOrDefault(Expression<Func<T, bool>> predicate)

@@ -41,7 +41,6 @@ namespace Contest.Business
         {
             if (matchSetting == null) throw new ArgumentNullException("matchSetting");
 
-            Id = Guid.NewGuid();
             MatchSetting = matchSetting;
         }
 

@@ -181,7 +181,8 @@ namespace Contest.Business
             if (teamList == null) throw new ArgumentNullException("teamList");
             if (matchSetting == null) throw new ArgumentNullException("matchSetting");
 
-            if (teamList.Count != ((ushort)firstStep)*2) throw new ArgumentException("La première étape de la phase éliminatoire ne correspond pas au nombre équipe fourni.");
+            var requiredTeam = ((ushort)firstStep) * 2;
+            if (teamList.Count != requiredTeam) throw new ArgumentException(string.Format("La première étape de la phase éliminatoire ne correspond pas au nombre équipe fourni. Nombre d'équipe requise:{0}. Nombre d'équipe:{1}", requiredTeam, teamList.Count));
             
             var result = new EliminationStep(phase, teamList, matchSetting)
             {

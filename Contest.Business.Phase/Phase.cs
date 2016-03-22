@@ -77,12 +77,7 @@ namespace Contest.Business
             get { return _phaseTeamRelationshipList.Value.Select(_ => _.FirstItemInvolve).ToList(); }
             set
             {
-                _phaseTeamRelationshipList =
-                    new Lazy<IList<IRelationship<ITeam, IPhase>>>(
-                        () =>
-                            new List<IRelationship<ITeam, IPhase>>(value != null
-                                ? value.Select(_ => TeamPhaseRelationshipFactory.Create(_, this))
-                                : new List<IRelationship<ITeam, IPhase>>()));
+                _phaseTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IPhase>>>(() => TeamPhaseRelationshipFactory.CreateFromFirstItemList(value, this));
             }
         }
 

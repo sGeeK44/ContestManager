@@ -1,5 +1,6 @@
 ﻿using System;
 using Contest.Core.Component;
+using Contest.UnitTest.Kit;
 using Moq;
 using NUnit.Framework;
 
@@ -10,7 +11,12 @@ namespace Contest.Business.UnitTest
         [TestFixtureSetUp]
         public void Init()
         {
-            FlippingContainer.Instance.Current = new ExecutingAssemblies();
+            var customComposer = new CustomComposer();
+            customComposer.AddType(typeof(RepositoryTeamMock));
+            customComposer.AddType(typeof(RepositoryFieldMock));
+            customComposer.AddType(typeof(RepositoryMatchSettingMock));
+            customComposer.AddType(typeof(RepositoryGameStepMock));
+            FlippingContainer.Instance.Current = customComposer;
         }
 
         protected Mock<IGameStep> CreateGameStepStub1()

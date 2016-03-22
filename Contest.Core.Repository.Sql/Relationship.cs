@@ -18,10 +18,10 @@ namespace Contest.Core.Repository.Sql
         private Lazy<TIObj2> _secondItemInvolve;
 
         [Import]
-        internal ISqlRepository<TIObj1> FirstItemRepository { get; set; }
+        internal IRepository<TIObj1> FirstItemRepository { get; set; }
 
         [Import]
-        internal ISqlRepository<TIObj2> SecondItemRepository { get; set; }
+        internal IRepository<TIObj2> SecondItemRepository { get; set; }
 
         public Relationship()
         {

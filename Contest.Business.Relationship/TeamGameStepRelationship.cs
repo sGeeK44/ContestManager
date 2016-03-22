@@ -10,7 +10,7 @@ namespace Contest.Business
     [DataContract(Name = "TEAM_GAME_STEP_RELATION")]
     public class TeamGameStepRelationship : Relationship<Team, ITeam, GameStep, IGameStep>, IRelationship<ITeam, IGameStep>
     {
-        protected TeamGameStepRelationship()
+        public TeamGameStepRelationship()
         { }
 
         /// <summary>

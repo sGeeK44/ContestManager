@@ -1,4 +1,6 @@
 ﻿using System;
+using Contest.Core.Component;
+using Contest.UnitTest.Kit;
 using NUnit.Framework;
 
 namespace Contest.Business.UnitTest

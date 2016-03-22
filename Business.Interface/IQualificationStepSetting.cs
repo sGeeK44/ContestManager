@@ -28,11 +28,6 @@
         ushort MinTeamRegister { get; }
 
         /// <summary>
-        /// Get match's setting for  step
-        /// </summary>
-        IMatchSetting MatchSetting { get; }
-
-        /// <summary>
         /// Set value of CountGroup, CountQualifiedTeam and CountFishedTeam in according with business rules
         /// </summary>
         /// <param name="mainEliminationStep">First eliminiation step for main phase</param>
