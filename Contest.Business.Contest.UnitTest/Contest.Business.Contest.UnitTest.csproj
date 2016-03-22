@@ -70,6 +70,22 @@
       <Project>{4a331365-ecef-4ca0-b9b8-99e3e2011558}</Project>
       <Name>Contest.Business.Contest</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.Field\Contest.Business.Field.csproj">
+      <Project>{22fe8cf8-7973-4a27-8300-1ea82dfc133d}</Project>
+      <Name>Contest.Business.Field</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.Match\Contest.Business.Match.csproj">
+      <Project>{a91498d5-363d-48a6-98b2-e5120386c877}</Project>
+      <Name>Contest.Business.Match</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.Relationship\Contest.Business.Relationship.csproj">
+      <Project>{20163db4-efb9-4f0b-8b94-985a848864ae}</Project>
+      <Name>Contest.Business.Relationship</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Core.Component\Contest.Core.Component.csproj">
+      <Project>{6cc897ab-e169-4f20-a56d-0bc0af8e451d}</Project>
+      <Name>Contest.Core.Component</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
       <Project>{1FF5796B-18D0-4BF3-919D-14166813B7B2}</Project>
       <Name>Contest.Core.Repository.Sql</Name>
@@ -77,6 +93,10 @@
     <ProjectReference Include="..\Contest.Core.Repository\Contest.Core.Repository.csproj">
       <Project>{4194F8F9-57E1-4D31-B4E3-A989F0D786F0}</Project>
       <Name>Contest.Core.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.UnitTest.Kit\Contest.UnitTest.Kit.csproj">
+      <Project>{b40cb664-f09b-4288-9d85-3543036b735c}</Project>
+      <Name>Contest.UnitTest.Kit</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
