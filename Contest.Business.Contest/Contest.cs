@@ -354,24 +354,25 @@ namespace Contest.Business
         {
             if (EliminationSetting == null) throw new NotSupportedException("Elimination setting have to be set before start contest.");
 
-            _fieldList = new Lazy<IList<IField>>
-            (
-                () =>
-                {
-                    var result = new List<IField>();
-                    for (var i = 1; i <= PhysicalSetting.CountField; i++)
-                        result.Add(FieldFactory.Create(this, i.ToString(CultureInfo.InvariantCulture)));
-                    return result;
-                }
-            );
+            _fieldList = new Lazy<IList<IField>>(() => CreateField());
+
             TeamList.Shuffle();
+
             var newPhase = WithQualificationPhase
-                           ? Phase.CreateQualificationPhase(this, TeamList, QualificationSetting)
-                           : Phase.CreateMainEliminationPhase(this, TeamList, EliminationSetting);
+                         ? Phase.CreateQualificationPhase(this, TeamList, QualificationSetting)
+                         : Phase.CreateMainEliminationPhase(this, TeamList, EliminationSetting);
             
             PhaseList.Add(newPhase);
             BeginningDate = DateTime.Now;
             RaiseContestEvent(ContestStart);
+        }
+
+        private IList<IField> CreateField()
+        {
+            var result = new List<IField>();
+            for (var i = 1; i <= PhysicalSetting.CountField; i++)
+                result.Add(FieldFactory.Create(this, i.ToString(CultureInfo.InvariantCulture)));
+            return result;
         }
 
         public void LaunchNextPhase()
