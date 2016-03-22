@@ -154,6 +154,80 @@ namespace Contest.Business.UnitTest
             Assert.IsFalse(contest.IsFinished);
         }
 
+        [TestCase]
+        public void Register_TeamNotRegister_TeamListShouldContainsOneElement()
+        {
+            var contest = CreatePlannedContest();
+            var team = new Mock<ITeam>();
+
+            contest.Register(team.Object);
+
+            Assert.AreEqual(1, contest.TeamList.Count);
+        }
+
+        [TestCase]
+        public void Register_TeamAlreadyRegister_ShouldThowException()
+        {
+            var contest = CreatePlannedContest();
+            var team = new Mock<ITeam>();
+            contest.Register(team.Object);
+
+            Assert.Throws<ArgumentException>(() => contest.Register(team.Object));
+        }
+
+        [TestCase]
+        public void UnRegister_TeamRegister_TeamListShouldContainsZeroElement()
+        {
+            var contest = CreatePlannedContest();
+            var team = new Mock<ITeam>();
+            contest.Register(team.Object);
+
+            contest.UnRegister(team.Object);
+
+            Assert.AreEqual(0, contest.TeamList.Count);
+        }
+
+        [TestCase]
+        public void UnRegister_TeamNoRegister_ShouldThowException()
+        {
+            var contest = CreatePlannedContest();
+            var team = new Mock<ITeam>();
+
+            Assert.Throws<ArgumentException>(() => contest.UnRegister(team.Object));
+        }
+
+        [TestCase]
+        public void Register_OtherTeamWithSameNameAlreadyRegister_ShouldThowException()
+        {
+            var contest = CreatePlannedContest();
+            var team1 = new Mock<ITeam>();
+            team1.Setup(_ => _.Name).Returns("Name");
+            contest.Register(team1.Object);
+            var team2 = new Mock<ITeam>();
+            team2.Setup(_ => _.Name).Returns("name");
+
+            Assert.Throws<ArgumentException>(() => contest.Register(team2.Object));
+        }
+
+        [TestCase]
+        public void IsRegister_TeamNotRegister_ShouldReturnFalse()
+        {
+            var contest = CreatePlannedContest();
+            var team = new Mock<ITeam>();            
+            
+            Assert.IsFalse(contest.IsRegister(team.Object));
+        }
+
+        [TestCase]
+        public void IsRegister_TeamRegistered_ShouldReturnTrue()
+        {
+            var contest = CreatePlannedContest();
+            var team = new Mock<ITeam>();
+            contest.Register(team.Object);
+
+            Assert.IsTrue(contest.IsRegister(team.Object));
+        }
+
         private static IContest CreatePlannedContest(Mock<IPhysicalSetting> physicalSetting = null, Mock<IGameSetting> gameSetting = null)
         {
             physicalSetting = physicalSetting ?? new Mock<IPhysicalSetting>();

@@ -321,7 +321,7 @@ namespace Contest.Business
         public bool IsRegister(ITeam team)
         {
             if (team == null) throw new ArgumentNullException("team");
-            return TeamList.Count(item => item == team) != 0;
+            return TeamList.Any(item => item == team);
         }
 
         /// <summary>
