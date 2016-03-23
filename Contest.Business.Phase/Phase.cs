@@ -295,7 +295,9 @@ namespace Contest.Business
         public static IPhase CreateQualificationPhase(IContest contest, IList<ITeam> teamList, IQualificationStepSetting setting)
         {
             var result = Create(contest, PhaseType.Qualification, teamList, setting);
-            
+
+            if (setting.CountGroup == 0) throw new ArgumentException("La phase qualificative doit au moins contenir un groupe.");
+
             var teamindex = 0;
             for (var i = 0; i < setting.CountGroup; i++)
             {

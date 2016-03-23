@@ -77,6 +77,80 @@ namespace Contest.Business.UnitTest
         }
 
         [TestCase]
+        public void Register_TeamNotRegister_TeamListShouldContainsOneElement()
+        {
+            var contest = CreatePlannedContest();
+            var team = new Mock<ITeam>();
+
+            contest.Register(team.Object);
+
+            Assert.AreEqual(1, contest.TeamList.Count);
+        }
+
+        [TestCase]
+        public void Register_TeamAlreadyRegister_ShouldThowException()
+        {
+            var contest = CreatePlannedContest();
+            var team = new Mock<ITeam>();
+            contest.Register(team.Object);
+
+            Assert.Throws<ArgumentException>(() => contest.Register(team.Object));
+        }
+
+        [TestCase]
+        public void UnRegister_TeamRegister_TeamListShouldContainsZeroElement()
+        {
+            var contest = CreatePlannedContest();
+            var team = new Mock<ITeam>();
+            contest.Register(team.Object);
+
+            contest.UnRegister(team.Object);
+
+            Assert.AreEqual(0, contest.TeamList.Count);
+        }
+
+        [TestCase]
+        public void UnRegister_TeamNoRegister_ShouldThowException()
+        {
+            var contest = CreatePlannedContest();
+            var team = new Mock<ITeam>();
+
+            Assert.Throws<ArgumentException>(() => contest.UnRegister(team.Object));
+        }
+
+        [TestCase]
+        public void Register_OtherTeamWithSameNameAlreadyRegister_ShouldThowException()
+        {
+            var contest = CreatePlannedContest();
+            var team1 = new Mock<ITeam>();
+            team1.Setup(_ => _.Name).Returns("Name");
+            contest.Register(team1.Object);
+            var team2 = new Mock<ITeam>();
+            team2.Setup(_ => _.Name).Returns("name");
+
+            Assert.Throws<ArgumentException>(() => contest.Register(team2.Object));
+        }
+
+        [TestCase]
+        public void IsRegister_TeamNotRegister_ShouldReturnFalse()
+        {
+            var contest = CreatePlannedContest();
+            var team = new Mock<ITeam>();
+
+            Assert.IsFalse(contest.IsRegister(team.Object));
+        }
+
+        [TestCase]
+        public void IsRegister_TeamRegistered_ShouldReturnTrue()
+        {
+            var contest = CreatePlannedContest();
+            var team = new Mock<ITeam>();
+            contest.Register(team.Object);
+
+            Assert.IsTrue(contest.IsRegister(team.Object));
+        }
+
+        [TestCase]
         public void StartContest_With10Field_FieldShouldContains10Occurs()
         {
             var physicalSetting = new Mock<IPhysicalSetting>();
@@ -91,9 +165,7 @@ namespace Contest.Business.UnitTest
         [TestCase]
         public void StartContest_WithQualification_PhaseListShouldContainsnewQualificationPhase()
         {
-            var contest = CreateReadyToStartContest();
-            var qualificationSetting = new Mock<IQualificationStepSetting>();
-            contest.QualificationSetting = qualificationSetting.Object;
+            var contest = CreateReadyToStartContestWithQualification();
 
             contest.StartContest();
 
@@ -155,77 +227,63 @@ namespace Contest.Business.UnitTest
         }
 
         [TestCase]
-        public void Register_TeamNotRegister_TeamListShouldContainsOneElement()
+        public void LaunchNextPhase_ContestWithoutQualificationPhase_ShouldThrowException()
         {
             var contest = CreatePlannedContest();
-            var team = new Mock<ITeam>();
 
-            contest.Register(team.Object);
-
-            Assert.AreEqual(1, contest.TeamList.Count);
+            Assert.Throws<NotSupportedException>(() => contest.LaunchNextPhase());
         }
 
         [TestCase]
-        public void Register_TeamAlreadyRegister_ShouldThowException()
+        public void LaunchNextPhase_ContestWithQualificationNotStart_ShouldThrowException()
         {
-            var contest = CreatePlannedContest();
-            var team = new Mock<ITeam>();
-            contest.Register(team.Object);
+            var contest = CreateReadyToStartContestWithQualification();
 
-            Assert.Throws<ArgumentException>(() => contest.Register(team.Object));
+            Assert.Throws<NotSupportedException>(() => contest.LaunchNextPhase());
         }
 
         [TestCase]
-        public void UnRegister_TeamRegister_TeamListShouldContainsZeroElement()
+        public void LaunchNextPhase_ContestWithQualificationPhaseNotEnded_ShouldThrowException()
         {
-            var contest = CreatePlannedContest();
-            var team = new Mock<ITeam>();
-            contest.Register(team.Object);
+            var contest = CreateReadyToStartContestWithQualification();
+            contest.StartContest();
 
-            contest.UnRegister(team.Object);
-
-            Assert.AreEqual(0, contest.TeamList.Count);
+            Assert.Throws<NotSupportedException>(() => contest.LaunchNextPhase());
         }
 
         [TestCase]
-        public void UnRegister_TeamNoRegister_ShouldThowException()
+        public void PrepareCommit_NullISqlUnitOfWorks_ShouldThrowException()
         {
-            var contest = CreatePlannedContest();
-            var team = new Mock<ITeam>();
+            var contest = new Contest();
 
-            Assert.Throws<ArgumentException>(() => contest.UnRegister(team.Object));
+            Assert.Throws<ArgumentNullException>(() => contest.PrepareCommit(null));
         }
 
         [TestCase]
-        public void Register_OtherTeamWithSameNameAlreadyRegister_ShouldThowException()
+        public void PrepareCommit_ValidISqlUnitOfWorks_ShouldInsertObject()
         {
-            var contest = CreatePlannedContest();
-            var team1 = new Mock<ITeam>();
-            team1.Setup(_ => _.Name).Returns("Name");
-            contest.Register(team1.Object);
-            var team2 = new Mock<ITeam>();
-            team2.Setup(_ => _.Name).Returns("name");
+            var contest = new Contest();
+            var repoMock = new Mock<ISqlUnitOfWorks>(MockBehavior.Strict);
+            repoMock.Setup(_ => _.InsertOrUpdate<IContest>(contest)).Verifiable();
 
-            Assert.Throws<ArgumentException>(() => contest.Register(team2.Object));
+            contest.PrepareCommit(repoMock.Object);
+        }
+        [TestCase]
+        public void PrepareDelete_NullISqlUnitOfWorks_ShouldThrowException()
+        {
+            var contest = new Contest();
+
+            Assert.Throws<ArgumentNullException>(() => contest.PrepareDelete(null));
         }
 
         [TestCase]
-        public void IsRegister_TeamNotRegister_ShouldReturnFalse()
+        public void PrepareDelete_ValidISqlUnitOfWorks_ShouldDeleteObject()
         {
-            var contest = CreatePlannedContest();
-            var team = new Mock<ITeam>();            
-            
-            Assert.IsFalse(contest.IsRegister(team.Object));
-        }
+            var contest = new Contest();
+            var repoMock = new Mock<ISqlUnitOfWorks>(MockBehavior.Strict);
+            repoMock.Setup(_ => _.Delete<IContest>(contest)).Verifiable();
 
-        [TestCase]
-        public void IsRegister_TeamRegistered_ShouldReturnTrue()
-        {
-            var contest = CreatePlannedContest();
-            var team = new Mock<ITeam>();
-            contest.Register(team.Object);
-
-            Assert.IsTrue(contest.IsRegister(team.Object));
+            contest.PrepareDelete(repoMock.Object);
         }
 
         private static IContest CreatePlannedContest(Mock<IPhysicalSetting> physicalSetting = null, Mock<IGameSetting> gameSetting = null)
@@ -243,6 +301,34 @@ namespace Contest.Business.UnitTest
             return contest;
         }
 
+        private static IContest CreateReadyToStartContestWithQualification(int countTeamRegister = 16, Mock<IPhysicalSetting> physicalSetting = null, Mock<IGameSetting> gameSetting = null, Mock<IQualificationStepSetting> qualificationSetting = null)
+        {
+            var result = CreateReadyToStartContest(countTeamRegister, physicalSetting, gameSetting);
+            qualificationSetting = qualificationSetting ?? GetDefaultQualificationSettingMock();
+            result.QualificationSetting = qualificationSetting.Object;
+            return result;
+        }
+
+        private static Mock<IQualificationStepSetting> GetDefaultQualificationSettingMock()
+        {
+            var result = new Mock<IQualificationStepSetting>();
+            result.Setup(_ => _.CountGroup).Returns(2);
+            result.Setup(_ => _.CountTeamFished).Returns(0);
+            result.Setup(_ => _.CountTeamQualified).Returns(4);
+            result.Setup(_ => _.MatchSetting).Returns(GetDefaultMatchSetting().Object);
+            return result;
+        }
+
+        private static Mock<IMatchSetting> GetDefaultMatchSetting()
+        {
+            var result = new Mock<IMatchSetting>();
+            result.Setup(_ => _.MatchPoint).Returns(1);
+            string mess;
+            result.Setup(_ => _.IsValidScore(It.IsAny<ushort>(), out mess)).Returns(true);
+            result.Setup(_ => _.IsValidToFinishedMatch(It.IsAny<ushort>(), It.IsAny<ushort>(), out mess)).Returns(true);
+            return result;
+        }
+
         private static void RegisterTeam(IContest contest, int countTeamToRegister)
         {
             for (var i = 1; i <= countTeamToRegister; i++)
@@ -252,84 +338,9 @@ namespace Contest.Business.UnitTest
         private static Mock<ITeam> CreateTeamStub(int num)
         {
             var team = new Mock<ITeam>();
-            team.Setup(_ => _.Id).Returns(new Guid("00000000-0000-0000-0000-00000000000" + num));
+            team.Setup(_ => _.Id).Returns(new Guid("00000000-0000-0000-0000-0000000000" + num.ToString("D2")));
             team.Setup(_ => _.Name).Returns("Team " + num);
             return team;
-        }
-
-        private static ITeam CreateTeamStub1()
-        {
-            return CreateTeamStub(1).Object;
-        }
-
-        private static ITeam CreateTeamStub2()
-        {
-            return CreateTeamStub(2).Object;
-        }
-
-        private static ITeam CreateTeamStub3()
-        {
-            return CreateTeamStub(3).Object;
-        }
-
-        private static ITeam CreateTeamStub4()
-        {
-            return CreateTeamStub(4).Object;
-        }
-
-        private static ITeam CreateTeamStub5()
-        {
-            return CreateTeamStub(5).Object;
-        }
-
-        private static ITeam CreateTeamStub6()
-        {
-            return CreateTeamStub(6).Object;
-        }
-
-        private static ITeam CreateTeamStub7()
-        {
-            return CreateTeamStub(7).Object;
-        }
-
-        private static ITeam CreateTeamStub8()
-        {
-            return CreateTeamStub(8).Object;
-        }
-
-        [TestCase]
-        public void PrepareCommit_NullISqlUnitOfWorks_ShouldThrowException()
-        {
-            var address = new Contest();
-
-            Assert.Throws<ArgumentNullException>(() => address.PrepareCommit(null));
-        }
-
-        [TestCase]
-        public void PrepareCommit_ValidISqlUnitOfWorks_ShouldInsertObject()
-        {
-            var address = new Contest();
-            var repoMock = new Mock<ISqlUnitOfWorks>(MockBehavior.Strict);
-            repoMock.Setup(_ => _.InsertOrUpdate<IContest>(address)).Verifiable();
-
-            address.PrepareCommit(repoMock.Object);
-        }
-        [TestCase]
-        public void PrepareDelete_NullISqlUnitOfWorks_ShouldThrowException()
-        {
-            var address = new Contest();
-
-            Assert.Throws<ArgumentNullException>(() => address.PrepareDelete(null));
-        }
-
-        [TestCase]
-        public void PrepareDelete_ValidISqlUnitOfWorks_ShouldDeleteObject()
-        {
-            var address = new Contest();
-            var repoMock = new Mock<ISqlUnitOfWorks>(MockBehavior.Strict);
-            repoMock.Setup(_ => _.Delete<IContest>(address)).Verifiable();
-
-            address.PrepareDelete(repoMock.Object);
         }
     }
 }

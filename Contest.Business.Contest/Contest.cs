@@ -377,6 +377,8 @@ namespace Contest.Business
 
         public void LaunchNextPhase()
         {
+            if (QualificationPhase == null) throw new NotSupportedException();
+
             foreach (var step in QualificationPhase.GameStepList)
             {
                 step.EndGameStep();
