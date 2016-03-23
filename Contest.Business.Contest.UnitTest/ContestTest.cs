@@ -252,6 +252,26 @@ namespace Contest.Business.UnitTest
         }
 
         [TestCase]
+        public void LaunchNextPhase_ContestWithout_PrincipalPhaseShouldBeNotNull()
+        {
+            var contest = CreateContestWithQualificationReadyToEnd();
+
+            contest.LaunchNextPhase();
+
+            Assert.IsNotNull(contest.PrincipalPhase);
+        }
+
+        [TestCase]
+        public void LaunchNextPhase_ContestWithout_ConsolingPhaseShouldBeNull()
+        {
+            var contest = CreateContestWithQualificationReadyToEnd();
+
+            contest.LaunchNextPhase();
+
+            Assert.IsNull(contest.ConsolingPhase);
+        }
+
+        [TestCase]
         public void PrepareCommit_NullISqlUnitOfWorks_ShouldThrowException()
         {
             var contest = new Contest();
@@ -306,6 +326,21 @@ namespace Contest.Business.UnitTest
             var result = CreateReadyToStartContest(countTeamRegister, physicalSetting, gameSetting);
             qualificationSetting = qualificationSetting ?? GetDefaultQualificationSettingMock();
             result.QualificationSetting = qualificationSetting.Object;
+            return result;
+        }
+
+        private static IContest CreateContestWithQualificationReadyToEnd(int countTeamRegister = 16, Mock<IPhysicalSetting> physicalSetting = null, Mock<IGameSetting> gameSetting = null, Mock<IQualificationStepSetting> qualificationSetting = null)
+        {            
+            var result = CreateReadyToStartContestWithQualification(countTeamRegister, physicalSetting, gameSetting, qualificationSetting);
+            result.StartContest();
+            foreach(var gameStep in result.QualificationPhase.GameStepList)
+            {
+                foreach(var match in gameStep.MatchList)
+                {
+                    match.Start(new Mock<IField>().Object);
+                    match.SetResult(1, 0);
+                }
+            }
             return result;
         }
 
