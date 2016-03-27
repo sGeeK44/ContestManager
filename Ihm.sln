@@ -3,73 +3,73 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Ihm", "Contest.Ihm.csproj", "{B39A4F9E-0484-4346-95A9-3AF5D62236BB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Ihm", "Ihm\Contest.Ihm.csproj", "{B39A4F9E-0484-4346-95A9-3AF5D62236BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core", "..\Contest.Core\Contest.Core.csproj", "{AA703556-DD37-4B27-986D-9B8C01C24040}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core", "Contest.Core\Contest.Core.csproj", "{AA703556-DD37-4B27-986D-9B8C01C24040}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Control", "..\Control\Contest.Control.csproj", "{396A76D7-D178-4BDD-A9FF-A4AF9FC21818}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Control", "Control\Contest.Control.csproj", "{396A76D7-D178-4BDD-A9FF-A4AF9FC21818}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.UnitTest", "..\Core.UnitTest\Contest.Core.UnitTest.csproj", "{FEAF6E7B-7317-4C3F-B75F-320663C82FBF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.UnitTest", "Core.UnitTest\Contest.Core.UnitTest.csproj", "{FEAF6E7B-7317-4C3F-B75F-320663C82FBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Match.UnitTest", "..\Contest.Business.Match.UnitTest\Contest.Business.Match.UnitTest.csproj", "{9908D02F-6E18-4121-AC3B-FD09E2B252BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Match.UnitTest", "Contest.Business.Match.UnitTest\Contest.Business.Match.UnitTest.csproj", "{9908D02F-6E18-4121-AC3B-FD09E2B252BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Interface", "..\Business.Interface\Contest.Business.Interface.csproj", "{1E4D7146-80A7-452E-871E-C5551D230714}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Interface", "Business.Interface\Contest.Business.Interface.csproj", "{1E4D7146-80A7-452E-871E-C5551D230714}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Match", "..\Contest.Business.Match\Contest.Business.Match.csproj", "{A91498D5-363D-48A6-98B2-E5120386C877}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Match", "Contest.Business.Match\Contest.Business.Match.csproj", "{A91498D5-363D-48A6-98B2-E5120386C877}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.MatchSetting", "..\Contest.Business.MatchSetting\Contest.Business.MatchSetting.csproj", "{50FA9F63-D0E3-4019-8833-38E129418942}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.MatchSetting", "Contest.Business.MatchSetting\Contest.Business.MatchSetting.csproj", "{50FA9F63-D0E3-4019-8833-38E129418942}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.MatchSetting.UnitTest", "..\Contest.Business.MatchSetting.UnitTest\Contest.Business.MatchSetting.UnitTest.csproj", "{59AA8328-9FC6-480E-9487-6C43C62A84F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.MatchSetting.UnitTest", "Contest.Business.MatchSetting.UnitTest\Contest.Business.MatchSetting.UnitTest.csproj", "{59AA8328-9FC6-480E-9487-6C43C62A84F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Repository", "..\Contest.Core.Repository\Contest.Core.Repository.csproj", "{4194F8F9-57E1-4D31-B4E3-A989F0D786F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Repository", "Contest.Core.Repository\Contest.Core.Repository.csproj", "{4194F8F9-57E1-4D31-B4E3-A989F0D786F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Repository.UnitTest", "..\Contest.Core.Repository.UnitTest\Contest.Core.Repository.UnitTest.csproj", "{C18F4CB2-B200-48CB-93F6-C75D6DC74E17}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Repository.UnitTest", "Contest.Core.Repository.UnitTest\Contest.Core.Repository.UnitTest.csproj", "{C18F4CB2-B200-48CB-93F6-C75D6DC74E17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Component", "..\Contest.Core.Component\Contest.Core.Component.csproj", "{6CC897AB-E169-4F20-A56D-0BC0AF8E451D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Component", "Contest.Core.Component\Contest.Core.Component.csproj", "{6CC897AB-E169-4F20-A56D-0BC0AF8E451D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Converters", "..\Contest.Core.Converters\Contest.Core.Converters.csproj", "{AE46A224-2C96-4F3C-AF4D-960CAB831457}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Converters", "Contest.Core.Converters\Contest.Core.Converters.csproj", "{AE46A224-2C96-4F3C-AF4D-960CAB831457}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Windows", "..\Contest.Core.Windows\Contest.Core.Windows.csproj", "{117C2981-C2C7-4B80-BA99-A7F73B8A9B62}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Windows", "Contest.Core.Windows\Contest.Core.Windows.csproj", "{117C2981-C2C7-4B80-BA99-A7F73B8A9B62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Exceptions", "..\Contest.Core.Exceptions\Contest.Core.Exceptions.csproj", "{0B7C9EAB-E419-4DA4-BEE0-8FD3F4ADB324}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Exceptions", "Contest.Core.Exceptions\Contest.Core.Exceptions.csproj", "{0B7C9EAB-E419-4DA4-BEE0-8FD3F4ADB324}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Serialization", "..\Contest.Core.Serialization\Contest.Core.Serialization.csproj", "{8719BBF7-2B85-425D-9605-7D2DE6AEB907}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Serialization", "Contest.Core.Serialization\Contest.Core.Serialization.csproj", "{8719BBF7-2B85-425D-9605-7D2DE6AEB907}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Repository.Sql", "..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj", "{1FF5796B-18D0-4BF3-919D-14166813B7B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Repository.Sql", "Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj", "{1FF5796B-18D0-4BF3-919D-14166813B7B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Repository.Sql.UnitTest", "..\Contest.Core.Repository.Sql.UnitTest\Contest.Core.Repository.Sql.UnitTest.csproj", "{8B54910B-B726-4B01-B5F1-8935FAD4AA9D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.Repository.Sql.UnitTest", "Contest.Core.Repository.Sql.UnitTest\Contest.Core.Repository.Sql.UnitTest.csproj", "{8B54910B-B726-4B01-B5F1-8935FAD4AA9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Address", "..\Contest.Business.Address\Contest.Business.Address.csproj", "{CBAAEC44-AE3C-497B-9B97-043041CA994E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Address", "Contest.Business.Address\Contest.Business.Address.csproj", "{CBAAEC44-AE3C-497B-9B97-043041CA994E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Address.UnitTest", "..\Contest.Business.Address.UnitTest\Contest.Business.Address.UnitTest.csproj", "{4BC87D9E-F103-4692-B029-101DCE7AA32C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Address.UnitTest", "Contest.Business.Address.UnitTest\Contest.Business.Address.UnitTest.csproj", "{4BC87D9E-F103-4692-B029-101DCE7AA32C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Field", "..\Contest.Business.Field\Contest.Business.Field.csproj", "{22FE8CF8-7973-4A27-8300-1EA82DFC133D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Field", "Contest.Business.Field\Contest.Business.Field.csproj", "{22FE8CF8-7973-4A27-8300-1EA82DFC133D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Field.UnitTest", "..\Contest.Business.Field.UnitTest\Contest.Business.Field.UnitTest.csproj", "{70262575-B762-4EA7-8579-F2D5F8A67F01}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Field.UnitTest", "Contest.Business.Field.UnitTest\Contest.Business.Field.UnitTest.csproj", "{70262575-B762-4EA7-8579-F2D5F8A67F01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.GameSetting", "..\Contest.Business.GameSetting\Contest.Business.GameSetting.csproj", "{94336F05-1311-448B-8EF6-AEBA3069F4D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.GameSetting", "Contest.Business.GameSetting\Contest.Business.GameSetting.csproj", "{94336F05-1311-448B-8EF6-AEBA3069F4D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Person", "..\Contest.Business.Person\Contest.Business.Person.csproj", "{F53A6D92-00CE-4C7B-A0CC-C6DBA2D6206E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Person", "Contest.Business.Person\Contest.Business.Person.csproj", "{F53A6D92-00CE-4C7B-A0CC-C6DBA2D6206E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Team", "..\Contest.Business.Team\Contest.Business.Team.csproj", "{D7D40BAE-46CF-4CAF-8C0A-445B0D7F7260}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Team", "Contest.Business.Team\Contest.Business.Team.csproj", "{D7D40BAE-46CF-4CAF-8C0A-445B0D7F7260}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.GameStep", "..\Contest.Business.GameStep\Contest.Business.GameStep.csproj", "{D0F224FA-5797-4C7C-87AB-4168EF306526}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.GameStep", "Contest.Business.GameStep\Contest.Business.GameStep.csproj", "{D0F224FA-5797-4C7C-87AB-4168EF306526}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Relationship", "..\Contest.Business.Relationship\Contest.Business.Relationship.csproj", "{20163DB4-EFB9-4F0B-8B94-985A848864AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Relationship", "Contest.Business.Relationship\Contest.Business.Relationship.csproj", "{20163DB4-EFB9-4F0B-8B94-985A848864AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.StepSetting", "..\Contest.Business.StepSetting\Contest.Business.StepSetting.csproj", "{13CDA740-C73F-457A-9AD0-46AC2F89B542}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.StepSetting", "Contest.Business.StepSetting\Contest.Business.StepSetting.csproj", "{13CDA740-C73F-457A-9AD0-46AC2F89B542}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.PhysicalSetting", "..\Contest.Business.PhysicalSetting\Contest.Business.PhysicalSetting.csproj", "{05B44680-4D87-45D4-8BD9-0AE966FE2102}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.PhysicalSetting", "Contest.Business.PhysicalSetting\Contest.Business.PhysicalSetting.csproj", "{05B44680-4D87-45D4-8BD9-0AE966FE2102}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Phase", "..\Contest.Business.Phase\Contest.Business.Phase.csproj", "{315452F5-6C38-49C1-9BAD-0DD5FF8C5207}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Phase", "Contest.Business.Phase\Contest.Business.Phase.csproj", "{315452F5-6C38-49C1-9BAD-0DD5FF8C5207}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Contest", "..\Contest.Business.Contest\Contest.Business.Contest.csproj", "{4A331365-ECEF-4CA0-B9B8-99E3E2011558}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Contest", "Contest.Business.Contest\Contest.Business.Contest.csproj", "{4A331365-ECEF-4CA0-B9B8-99E3E2011558}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.GameSetting.UnitTest", "..\Contest.Business.GameSetting.UnitTest\Contest.Business.GameSetting.UnitTest.csproj", "{D858B14C-C4E4-426C-AB77-0D4CA3DB37C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.GameSetting.UnitTest", "Contest.Business.GameSetting.UnitTest\Contest.Business.GameSetting.UnitTest.csproj", "{D858B14C-C4E4-426C-AB77-0D4CA3DB37C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.UnitTest.Kit", "..\Contest.UnitTest.Kit\Contest.UnitTest.Kit.csproj", "{B40CB664-F09B-4288-9D85-3543036B735C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.UnitTest.Kit", "Contest.UnitTest.Kit\Contest.UnitTest.Kit.csproj", "{B40CB664-F09B-4288-9D85-3543036B735C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Contest.UnitTest", "..\Contest.Business.Contest.UnitTest\Contest.Business.Contest.UnitTest.csproj", "{1E890A06-5FB2-4ADB-B4C3-4FFC131FC064}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Contest.UnitTest", "Contest.Business.Contest.UnitTest\Contest.Business.Contest.UnitTest.csproj", "{1E890A06-5FB2-4ADB-B4C3-4FFC131FC064}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
