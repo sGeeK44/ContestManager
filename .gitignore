@@ -6,3 +6,4 @@ Ihm/packages/
 *.ncrunchproject
 *.cache
 *.ncrunchsolution
+/packages/*
