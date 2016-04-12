@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Contest.Core.Converters;
+using Moq;
 using NUnit.Framework;
 
 namespace Contest.Core.Repository.Sql.UnitTest
@@ -7,6 +9,28 @@ namespace Contest.Core.Repository.Sql.UnitTest
     [TestFixture]
     public class SqlRepositoryTest
     {
+        private Mock<IDataContext<Identifiable<object>>> Context { get; set; }
+        private Mock<ISqlBuilder<Identifiable<object>, Identifiable<object>>> SqlBuilder { get; set; }
+        private Mock<ISqlUnitOfWorks> UnitOfWork { get; set; }
+        private Mock<IConverter> Converter { get; set; }
+        private SqlRepository<Identifiable<object>, Identifiable<object>> SqlRepository { get; set; }
+
+        [OneTimeSetUp]
+        public void Init()
+        {
+            Context = new Mock<IDataContext<Identifiable<object>>>();
+            SqlBuilder = new Mock<ISqlBuilder<Identifiable<object>, Identifiable<object>>>();
+            UnitOfWork = new Mock<ISqlUnitOfWorks>();
+            Converter = new Mock<IConverter>();
+            SqlRepository = new SqlRepository<Identifiable<object>, Identifiable<object>>
+            {
+                SqlBuilder = SqlBuilder.Object,
+                Converter = Converter.Object,
+                Context = Context.Object,
+                UnitOfWorks = UnitOfWork.Object
+            };
+        }
+
         [TestCase]
         public void Create()
         {
@@ -231,9 +255,23 @@ namespace Contest.Core.Repository.Sql.UnitTest
         }
 
         [TestCase]
-        public void Delete_WithUnitOfWork()
+        public void Delete_WithUnitOfWork_ShouldUpdateContext()
         {
-            var context = new ContextMock<Identifiable<object>>();
+            var obj = new Identifiable<object>();
+            Context.Setup(_ => _.Delete(obj));
+            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
+            var unitOfworks = new SqlUnitOfWorksMock();
+            
+            SqlRepository.Delete(obj);
+
+            Context.Verify();
+        }
+
+        [TestCase]
+        public void Delete_WithUnitOfWork_ShouldUpdateQueryList()
+        {
+            var obj = new Identifiable<object>();
+            Context.Setup(_ => _.Delete(obj));
             var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
             var unitOfworks = new SqlUnitOfWorksMock();
 
@@ -241,14 +279,36 @@ namespace Contest.Core.Repository.Sql.UnitTest
             {
                 SqlBuilder = sqlBuilder,
                 Converter = new ConverterMock(),
-                Context = context,
+                Context = Context.Object,
                 UnitOfWorks = unitOfworks
             };
-            var obj = new Identifiable<object>();
 
             repo.Delete(obj);
 
-            Assert.AreEqual(1, context.CountDeleteCall);
+            Assert.AreEqual(1, sqlBuilder.CountDeleteCall);
+            Assert.IsNotNull(repo.QueryList);
+            Assert.AreEqual(0, repo.QueryList.Count);
+            Assert.AreEqual(1, unitOfworks.CountAddRequestCall);
+        }
+
+        [TestCase]
+        public void Delete_WithUnitOfWork_ShouldUpdateUnitOfWork()
+        {
+            var obj = new Identifiable<object>();
+            Context.Setup(_ => _.Delete(obj));
+            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
+            var unitOfworks = new SqlUnitOfWorksMock();
+
+            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
+            {
+                SqlBuilder = sqlBuilder,
+                Converter = new ConverterMock(),
+                Context = Context.Object,
+                UnitOfWorks = unitOfworks
+            };
+
+            repo.Delete(obj);
+
             Assert.AreEqual(1, sqlBuilder.CountDeleteCall);
             Assert.IsNotNull(repo.QueryList);
             Assert.AreEqual(0, repo.QueryList.Count);

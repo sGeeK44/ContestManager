@@ -112,6 +112,7 @@ namespace Contest.Core.Repository.Sql
 
         private string SetValue(string request, IEnumerable<Tuple<string, object, object[]>> arg)
         {
+            if (arg == null) return request;
             return arg.Aggregate(request, (current, tuple) => current.Replace("@" + tuple.Item1 + "@", ToSqlValue(tuple.Item2, tuple.Item3)));
         }
 
