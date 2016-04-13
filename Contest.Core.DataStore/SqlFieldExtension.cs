@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 
 namespace Contest.Core.Repository.Sql
 {
-    public static class SqlObjectExtension
+    public static class SqlFieldExtension
     {
         public static string ColumnName<TObj, TPropOrField>(this TObj obj, Expression<Func<TObj, TPropOrField>> propertyorFieldExpression)
         {

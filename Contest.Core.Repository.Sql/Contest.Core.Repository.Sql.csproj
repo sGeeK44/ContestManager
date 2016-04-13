@@ -64,15 +64,10 @@
     <Compile Include="ISqlPersistable.cs" />
     <Compile Include="ISqlRepository.cs" />
     <Compile Include="ISqlUnitOfWorks.cs" />
-    <Compile Include="SqlField.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Relationship.cs" />
     <Compile Include="SqlBuilder.cs" />
     <Compile Include="SqlBuilderT.cs" />
-    <Compile Include="SqlObjectExtension.cs" />
-    <Compile Include="SqlPrimaryKeyAttribute.cs" />
-    <Compile Include="SqlReferenceManyToOne.cs" />
-    <Compile Include="SqlReferenceOneToMany.cs" />
     <Compile Include="SqlRepository.cs" />
     <Compile Include="SqlRepositoryT.cs" />
     <Compile Include="SqlUnitOfWorks.cs" />

@@ -39,7 +39,7 @@ namespace Contest.Core.Repository.Sql
             var activator = realObjectType.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[0], null);
             if (activator == null) throw new Exception(string.Format("Class which you want to deserialize doesn't contains default constructor. Class:{0}", typeof(TI).Name));
             var result = (TI)activator.Invoke(null);
-            foreach (var propertyInfo in SqlObjectExtension.GetPropertiesList<T>())
+            foreach (var propertyInfo in SqlFieldExtension.GetPropertiesList<T>())
             {
                 var fieldAttribute = propertyInfo.GetCustomAttributes(typeof (DataMemberAttribute), true)
                                                                  .Cast<DataMemberAttribute>()
@@ -79,7 +79,7 @@ namespace Contest.Core.Repository.Sql
         private string GetStringEnumPivotValue(Type enumPivot, IDataReader row)
         {
             //Iterate all potential properties to find same type as enumPivot
-            foreach (var prop in SqlObjectExtension.GetPropertiesList<T>())
+            foreach (var prop in SqlFieldExtension.GetPropertiesList<T>())
             {
                 // If we found a property with same type as enum pivot
                 if (prop.PropertyType != enumPivot) continue;
@@ -95,7 +95,7 @@ namespace Contest.Core.Repository.Sql
         public string CreateTable()
         {
             var tableName  = GetTableName();
-            var fieldList = (from propertyInfo in SqlObjectExtension.GetPropertiesList<T>()
+            var fieldList = (from propertyInfo in SqlFieldExtension.GetPropertiesList<T>()
                              let fieldAttribute = propertyInfo.GetCustomAttributes(typeof(DataMemberAttribute), true)
                                                              .Cast<DataMemberAttribute>()
                                                              .FirstOrDefault()
@@ -118,7 +118,7 @@ namespace Contest.Core.Repository.Sql
             var tableName = GetTableName();
             StringBuilder columns = null;
 
-            arg = SqlObjectExtension.GetSqlField<T>(null);
+            arg = SqlFieldExtension.GetSqlField<T>(null);
             foreach (var value in arg)
             {
                 //Add marker to set clause
@@ -136,7 +136,7 @@ namespace Contest.Core.Repository.Sql
             var tableName = GetTableName();
             StringBuilder columnsName = null;
             StringBuilder columnsValue = null;
-            arg = SqlObjectExtension.GetSqlField<T>(item);
+            arg = SqlFieldExtension.GetSqlField<T>(item);
             foreach (var value in arg)
             {
                 //Add field name
@@ -155,7 +155,7 @@ namespace Contest.Core.Repository.Sql
             var tableName = GetTableName();
             StringBuilder values = null;
             StringBuilder keys = null;
-            arg = SqlObjectExtension.GetSqlField<T>(item);
+            arg = SqlFieldExtension.GetSqlField<T>(item);
             foreach (var value in arg)
             {
                 if (value.IsPrimaryKey)
@@ -178,7 +178,7 @@ namespace Contest.Core.Repository.Sql
         public string Delete(TI item, out IList<SqlField> arg)
         {
             var tableName = GetTableName();
-            arg = SqlObjectExtension.GetSqlField<T>(item).Where(_ => _.IsPrimaryKey).ToList();
+            arg = SqlFieldExtension.GetSqlField<T>(item).Where(_ => _.IsPrimaryKey).ToList();
             StringBuilder keys = null;
             //For each primary keys
             foreach (var value in arg)
