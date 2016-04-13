@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Contest.Core.DataStore.UnitTest
 {
     [TestFixture]
-    public class SqlBuilderTest
+    public class SqlDataStoreBaseTest
     {
         [TestCase]
         public void ToSqlType_WithUnsignedShortType_ShouldCallGetUnsignedShortColumnType()

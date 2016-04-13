@@ -55,7 +55,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="SqlBuilderTest.cs" />
+    <Compile Include="SqlDataStoreBaseTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlDataStoreBaseTester.cs" />
   </ItemGroup>
