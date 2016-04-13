@@ -1,22 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Contest.Core.DataStore;
+using Contest.Core.DataStore.Sqlite;
 
 namespace Contest.Core.Repository.Sql
 {
     public class SqlUnitOfWorks : ISqlUnitOfWorks
     {
         private readonly IList<string> _queryList;
-        private readonly string _databasePath;
+        //private readonly string _databasePath;
         private readonly IDictionary<Type, object> _repositoryList = new Dictionary<Type, object>();
+
+        private ISqlDataStore SqlDataStore { get; set; }
         
         /// <summary>
         /// Create a new Unit of Works
         /// </summary>
         public SqlUnitOfWorks(string path)
         {
-            _databasePath = path;
             _queryList = new List<string>();
+            SqlDataStore = new SqliteDataStore(path);
+            SqlDataStore.OpenDatabase();
         }
         
         /// <summary>
@@ -125,7 +130,7 @@ namespace Contest.Core.Repository.Sql
         /// </summary>
         public void Commit()
         {
-            Sqlite.Execute(_databasePath, _queryList);
+            SqlDataStore.Execute(_queryList);
         }
 
         /// <summary>
@@ -176,7 +181,7 @@ namespace Contest.Core.Repository.Sql
         /// </summary>
         public bool IsBinded
         {
-            get { return !string.IsNullOrEmpty(_databasePath); }
+            get { return SqlDataStore != null; }
         }
     }
 }

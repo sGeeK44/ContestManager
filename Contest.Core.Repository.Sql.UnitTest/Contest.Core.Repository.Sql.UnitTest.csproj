@@ -68,6 +68,8 @@
     <Compile Include="IEntity4.cs" />
     <Compile Include="IEntity5.cs" />
     <Compile Include="IId.cs" />
+    <Compile Include="ManyToOneEntity.cs" />
+    <Compile Include="OneToManyEntity.cs" />
     <Compile Include="RelationshipTest.cs" />
     <Compile Include="SqlBuilderMock.cs" />
     <Compile Include="SqlBuilderTest.cs" />

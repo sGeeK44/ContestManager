@@ -6,10 +6,6 @@ namespace Contest.Core.Repository.Sql.UnitTest
     public class Entity4 : IEntity4
     {
         [DataMember]
-        public string Field1;
-        [DataMember(Name = "FIELD2")]
-        public string Field2;
-        [DataMember]
         public string Prop1 { get; set; }
         [DataMember(Name = "PROP2")]
         public string Prop2 { get; set; }

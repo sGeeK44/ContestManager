@@ -9,10 +9,9 @@ namespace Contest.Core.Repository.Sql
     {
         TI CreateInstance(IDataReader row);
         string CreateTable();
-        string Select(Expression<Func<TI, bool>> predicate, out IList<Tuple<string, object, object[]>> arg);
-        string Insert(TI item, out IList<Tuple<string, object, object[]>> arg);
-        string Update(TI item, out IList<Tuple<string, object, object[]>> arg);
-        string Delete(TI item, out IList<Tuple<string, object, object[]>> arg);
-        string ToSqlType(Type objectType);
+        string Select(Expression<Func<TI, bool>> predicate, out IList<SqlField> arg);
+        string Insert(TI item, out IList<SqlField> arg);
+        string Update(TI item, out IList<SqlField> arg);
+        string Delete(TI item, out IList<SqlField> arg);
     }
 }

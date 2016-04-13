@@ -1,4 +1,4 @@
-﻿using Contest.Core.Repository.Sql;
+﻿using System.Data;
 
 namespace Contest.Core.DataStore.UnitTest
 {
@@ -15,17 +15,37 @@ namespace Contest.Core.DataStore.UnitTest
         public bool GetShortColumnTypeHasCalled { get; set; }
         public bool GetUnsignedShortColumnTypeHasCalled { get; set; }
         public bool GetStringColumnTypeHasCalled { get; set; }
-        
-        public override string GetDefaultColumnType() { GetDefaultColumnTypeHasCalled = true; return null; }
-        public override string GetDecimalColumnType() { GetDecimalColumnTypeHasCalled = true; return null; }
-        public override string GetFloatColumnType() { GetFloatColumnTypeHasCalled = true; return null; }
-        public override string GetDoubleColumnType() { GetDoubleColumnTypeHasCalled = true; return null; }
-        public override string GetLongColumnType() { GetLongColumnTypeHasCalled = true; return null; }
-        public override string GetUnsignedLongColumnType() { GetUnsignedLongColumnTypeHasCalled = true; return null; }
-        public override string GetUnsignedIntColumnType() { GetUnsignedIntColumnTypeHasCalled = true; return null; }
-        public override string GetIntColumnType() { GetIntColumnTypeHasCalled = true; return null; }
-        public override string GetShortColumnType() { GetShortColumnTypeHasCalled = true; return null; }
-        public override string GetUnsignedShortColumnType() { GetUnsignedShortColumnTypeHasCalled = true; return null; }
-        public override string GetStringColumnType() { GetStringColumnTypeHasCalled = true; return null; }
+
+        public override IDataReader Execute(string request)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected override string GetDefaultColumnType() { GetDefaultColumnTypeHasCalled = true; return null; }
+        protected override string GetDecimalColumnType() { GetDecimalColumnTypeHasCalled = true; return null; }
+        protected override string GetFloatColumnType() { GetFloatColumnTypeHasCalled = true; return null; }
+        protected override string GetDoubleColumnType() { GetDoubleColumnTypeHasCalled = true; return null; }
+        protected override string GetLongColumnType() { GetLongColumnTypeHasCalled = true; return null; }
+        protected override string GetUnsignedLongColumnType() { GetUnsignedLongColumnTypeHasCalled = true; return null; }
+        protected override string GetUnsignedIntColumnType() { GetUnsignedIntColumnTypeHasCalled = true; return null; }
+        protected override string GetIntColumnType() { GetIntColumnTypeHasCalled = true; return null; }
+        protected override string GetShortColumnType() { GetShortColumnTypeHasCalled = true; return null; }
+        protected override string GetUnsignedShortColumnType() { GetUnsignedShortColumnTypeHasCalled = true; return null; }
+        protected override string GetStringColumnType() { GetStringColumnTypeHasCalled = true; return null; }
+
+        public override void OpenDatabase()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void Execute(System.Collections.Generic.IList<string> requestList)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void CloseDatabase()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

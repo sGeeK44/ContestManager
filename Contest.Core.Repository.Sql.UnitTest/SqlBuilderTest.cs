@@ -9,26 +9,6 @@ namespace Contest.Core.Repository.Sql.UnitTest
     public class SqlBuilderTest
     {
         [TestCase]
-        public void SqlType()
-        {
-            const string INTEGER = "integer";
-            const string REAL = "real";
-            const string TEXT = "text";
-            var builder = new SqlBuilder<Entity1>();
-
-            Assert.AreEqual(INTEGER, builder.ToSqlType(typeof(ushort)));
-            Assert.AreEqual(INTEGER, builder.ToSqlType(typeof(short)));
-            Assert.AreEqual(INTEGER, builder.ToSqlType(typeof(uint)));
-            Assert.AreEqual(INTEGER, builder.ToSqlType(typeof(int)));
-            Assert.AreEqual(INTEGER, builder.ToSqlType(typeof(ulong)));
-            Assert.AreEqual(INTEGER, builder.ToSqlType(typeof(long)));
-            Assert.AreEqual(REAL, builder.ToSqlType(typeof(float)));
-            Assert.AreEqual(REAL, builder.ToSqlType(typeof(double)));
-            Assert.AreEqual(TEXT, builder.ToSqlType(typeof(object)));
-            Assert.AreEqual(TEXT, builder.ToSqlType(typeof(string)));
-        }
-
-        [TestCase]
         public void CreateTable()
         {
             var builder = new SqlBuilder<Entity1>();
@@ -48,18 +28,18 @@ namespace Contest.Core.Repository.Sql.UnitTest
         public void SqliteInsertRow()
         {
             var builder = new SqlBuilder<Entity1>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Insert(Entity1.CreateMock(), out arg);
-            Assert.AreEqual("INSERT INTO ENTITY_1 (ID, NAME, ACTIVE, AGE) VALUES (@Id@, @Name@, @Active@, @Age@);", query);
+            Assert.AreEqual("INSERT INTO ENTITY_1 (ID, NAME, ACTIVE, AGE) VALUES (@ID@, @NAME@, @ACTIVE@, @AGE@);", query);
         }
 
         [TestCase]
         public void SqliteInsertRowWithInterface()
         {
             var builder = new SqlBuilder<Entity5, IEntity5>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Insert(Entity5.CreateMock(), out arg);
-            Assert.AreEqual("INSERT INTO ENTITY_5 (ID, NAME, ACTIVE, AGE) VALUES (@Id@, @Name@, @Active@, @Age@);", query);
+            Assert.AreEqual("INSERT INTO ENTITY_5 (ID, NAME, ACTIVE, AGE) VALUES (@ID@, @NAME@, @ACTIVE@, @AGE@);", query);
         }
 
         [TestCase]
@@ -67,7 +47,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
         {
             var builder = new SqlBuilder<Entity3, Entity3>();
             var ent = Entity3.CreateMock();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             Assert.Throws<NotSupportedException>(() => builder.Update(ent, out arg));
         }
 
@@ -76,7 +56,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
         {
             var builder = new SqlBuilder<Entity3, Entity3>();
             var ent = Entity3.CreateMock();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             Assert.Throws< NotSupportedException>(() => builder.Delete(ent, out arg));
         }
 
@@ -86,16 +66,16 @@ namespace Contest.Core.Repository.Sql.UnitTest
             var ent = Entity1.CreateMock();
             ent.Name += "New";
             var builder = new SqlBuilder<Entity1>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Update(ent, out arg);
-            Assert.AreEqual("UPDATE ENTITY_1 SET ID = @Id@, NAME = @Name@, ACTIVE = @Active@, AGE = @Age@ WHERE ID = @Id@;", query);
+            Assert.AreEqual("UPDATE ENTITY_1 SET NAME = @NAME@, ACTIVE = @ACTIVE@, AGE = @AGE@ WHERE ID = @ID@;", query);
         }
 
         [TestCase]
         public void SqliteSelectTrue()
         {
             var builder = new SqlBuilder<Entity1>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Select(_ => true, out arg);
             Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1;", query);
             Assert.IsNotNull(arg);
@@ -107,7 +87,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
         {
             var ent = Entity1.CreateMock();
             var builder = new SqlBuilder<Entity1>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Select(_ => _.Id == ent.Id, out arg);
             Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE ID = @P0@;", query);
             Assert.IsNotNull(arg);
@@ -120,7 +100,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
         {
             var id = Entity1.Guid;
             var builder = new SqlBuilder<Entity1>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Select(_ => _.Id == id, out arg);
             Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE ID = @P0@;", query);
             Assert.IsNotNull(arg);
@@ -132,7 +112,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
         public void SqliteSelectRowByName()
         {
             var builder = new SqlBuilder<Entity1>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Select(_ => _.Name == "NameSearch", out arg);
             Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE NAME = @P0@;", query);
             Assert.IsNotNull(arg);
@@ -145,7 +125,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
         {
             var ent = Entity1.CreateMock();
             var builder = new SqlBuilder<Entity1>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Select(_ => _.Id == ent.Id && _.Name == "NameSearch", out arg);
             Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE ID = @P0@ AND NAME = @P1@;", query);
             Assert.IsNotNull(arg);
@@ -159,7 +139,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
         {
             var ent = Entity1.CreateMock();
             var builder = new SqlBuilder<Entity1>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Select(_ => _.Id == ent.Id || _.Name == "NameSearch", out arg);
             Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE ID = @P0@ OR NAME = @P1@;", query);
             Assert.IsNotNull(arg);
@@ -172,9 +152,9 @@ namespace Contest.Core.Repository.Sql.UnitTest
         public void SqliteDeleteRow()
         {
             var builder = new SqlBuilder<Entity1>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Delete(Entity1.CreateMock(), out arg);
-            Assert.AreEqual("DELETE FROM ENTITY_1 WHERE ID = @Id@;", query);
+            Assert.AreEqual("DELETE FROM ENTITY_1 WHERE ID = @ID@;", query);
         }
 
         [TestCase]
@@ -183,16 +163,16 @@ namespace Contest.Core.Repository.Sql.UnitTest
             IEntity5 ent = Entity5.CreateMock();
             ent.Name += "New";
             var builder = new SqlBuilder<Entity5, IEntity5>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Update(ent, out arg);
-            Assert.AreEqual("UPDATE ENTITY_5 SET ID = @Id@, NAME = @Name@, ACTIVE = @Active@, AGE = @Age@ WHERE ID = @Id@;", query);
+            Assert.AreEqual("UPDATE ENTITY_5 SET NAME = @NAME@, ACTIVE = @ACTIVE@, AGE = @AGE@ WHERE ID = @ID@;", query);
         }
 
         [TestCase]
         public void SqliteSelectTrueWithInterface()
         {
             var builder = new SqlBuilder<Entity5, IEntity5>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Select(_ => true, out arg);
             Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5;", query);
             Assert.IsNotNull(arg);
@@ -204,7 +184,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
         {
             IEntity5 ent = Entity5.CreateMock();
             var builder = new SqlBuilder<Entity5, IEntity5>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Select(_ => _.Id == ent.Id, out arg);
             Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE ID = @P0@;", query);
             Assert.IsNotNull(arg);
@@ -217,7 +197,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
         {
             var id = Entity5.Guid;
             var builder = new SqlBuilder<Entity5, IEntity5>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Select(_ => _.Id == id, out arg);
             Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE ID = @P0@;", query);
             Assert.IsNotNull(arg);
@@ -229,7 +209,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
         public void SqliteSelectRowByNameWithInterface()
         {
             var builder = new SqlBuilder<Entity5, IEntity5>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Select(_ => _.Name == "NameSearch", out arg);
             Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE NAME = @P0@;", query);
             Assert.IsNotNull(arg);
@@ -242,7 +222,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
         {
             IEntity5 ent = Entity5.CreateMock();
             var builder = new SqlBuilder<Entity5, IEntity5>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Select(_ => _.Id == ent.Id && _.Name == "NameSearch", out arg);
             Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE ID = @P0@ AND NAME = @P1@;", query);
             Assert.IsNotNull(arg);
@@ -256,7 +236,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
         {
             IEntity5 ent = Entity5.CreateMock();
             var builder = new SqlBuilder<Entity5, IEntity5>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Select(_ => _.Id == ent.Id || _.Name == "NameSearch", out arg);
             Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE ID = @P0@ OR NAME = @P1@;", query);
             Assert.IsNotNull(arg);
@@ -269,16 +249,16 @@ namespace Contest.Core.Repository.Sql.UnitTest
         public void SqliteDeleteRowWithInterface()
         {
             var builder = new SqlBuilder<Entity5, IEntity5>();
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var query = builder.Delete(Entity5.CreateMock(), out arg);
-            Assert.AreEqual("DELETE FROM ENTITY_5 WHERE ID = @Id@;", query);
+            Assert.AreEqual("DELETE FROM ENTITY_5 WHERE ID = @ID@;", query);
         }
 
-        private void AssertArg(IList<Tuple<string, object, object[]>> arg, int index, object expectedValue)
+        private void AssertArg(IList<SqlField> arg, int index, object expectedValue)
         {
             Assert.IsNotNull(arg[index]);
-            Assert.AreEqual("P" + index.ToString(CultureInfo.InvariantCulture), arg[index].Item1);
-            Assert.AreEqual(expectedValue, arg[index].Item2);
+            Assert.AreEqual("@P" + index.ToString(CultureInfo.InvariantCulture) + "@", arg[index].MarkerValue);
+            Assert.AreEqual(expectedValue, arg[index].Value);
         }
     }
 }

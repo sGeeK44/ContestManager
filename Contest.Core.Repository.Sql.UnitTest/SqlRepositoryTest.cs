@@ -15,7 +15,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
         private Mock<IConverter> Converter { get; set; }
         private SqlRepository<Identifiable<object>, Identifiable<object>> SqlRepository { get; set; }
 
-        [OneTimeSetUp]
+        [SetUp]
         public void Init()
         {
             Context = new Mock<IDataContext<Identifiable<object>>>();
@@ -265,6 +265,19 @@ namespace Contest.Core.Repository.Sql.UnitTest
             SqlRepository.Delete(obj);
 
             Context.Verify();
+        }
+
+        [TestCase]
+        public void Delete_WithUnitOfWork_ShouldSupressExstingReference()
+        {
+            var objLinked = new OneToManyEntity();
+            var obj = new Identifiable<object>();
+            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
+            var unitOfworks = new SqlUnitOfWorksMock();
+
+            SqlRepository.Delete(obj);
+
+            Assert.IsNull(obj);
         }
 
         [TestCase]

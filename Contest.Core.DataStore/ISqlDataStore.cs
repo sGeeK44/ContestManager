@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
 
-namespace Contest.Core.Repository.Sql
+namespace Contest.Core.DataStore
 {
     /// <summary>
     /// Expose commons methods needed to store data into an Relation Database
@@ -13,5 +15,13 @@ namespace Contest.Core.Repository.Sql
         /// <param name="objectType">.Net object type</param>
         /// <returns>Sql column type equivalent</returns>
         string ToSqlType(Type objectType);
+
+        void OpenDatabase();
+
+        void Execute(IList<string> requestList);
+
+        void CloseDatabase();
+
+        IDataReader Execute(string request);
     }
 }

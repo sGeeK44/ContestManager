@@ -17,16 +17,16 @@ namespace Contest.Core.Repository.Sql.UnitTest
             return string.Empty;
         }
 
-        public string Select(Expression<Func<TI, bool>> predicate, out IList<Tuple<string, object, object[]>> arg)
+        public string Select(Expression<Func<TI, bool>> predicate, out IList<SqlField> arg)
         {
-            arg = new Tuple<string, object, object[]>[0];
+            arg = new SqlField[0];
             return string.Empty;
         }
 
-        public string Insert(TI item, out IList<Tuple<string, object, object[]>> arg)
+        public string Insert(TI item, out IList<SqlField> arg)
         {
             CountInsertCall++;
-            arg = new Tuple<string, object, object[]>[0];
+            arg = new SqlField[0];
             return string.Empty;
         }
 
@@ -34,17 +34,17 @@ namespace Contest.Core.Repository.Sql.UnitTest
         public int CountUpdateCall { get; set; }
         public int CountDeleteCall { get; set; }
 
-        public string Update(TI item, out IList<Tuple<string, object, object[]>> arg)
+        public string Update(TI item, out IList<SqlField> arg)
         {
             CountUpdateCall++;
-            arg = new Tuple<string, object, object[]>[0];
+            arg = new SqlField[0];
             return string.Empty;
         }
 
-        public string Delete(TI item, out IList<Tuple<string, object, object[]>> arg)
+        public string Delete(TI item, out IList<SqlField> arg)
         {
             CountDeleteCall++;
-            arg = new Tuple<string, object, object[]>[0];
+            arg = new SqlField[0];
             return string.Empty;
         }
 

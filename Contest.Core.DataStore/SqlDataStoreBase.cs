@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
 
-namespace Contest.Core.Repository.Sql
+namespace Contest.Core.DataStore
 {
     public abstract class SqlDataStoreBase : ISqlDataStore
     {
@@ -24,70 +26,75 @@ namespace Contest.Core.Repository.Sql
             return GetDefaultColumnType();
         }
 
+        public abstract void OpenDatabase();
+        public abstract void CloseDatabase();
+        public abstract void Execute(IList<string> requestList);
+        public abstract IDataReader Execute(string request);
+
         /// <summary>
         /// Determine default Sql column type when .net is not managed
         /// </summary>
         /// <returns>A string which contains Sql column type</returns>
-        public abstract string GetDefaultColumnType();
+        protected abstract string GetDefaultColumnType();
 
         /// <summary>
         /// Determine Sql column type to store string .Net value
         /// </summary>
         /// <returns>A string which contains Sql column type</returns>
-        public abstract string GetStringColumnType();
+        protected abstract string GetStringColumnType();
 
         /// <summary>
         /// Determine Sql column type to store decimal .Net value
         /// </summary>
         /// <returns>A string which contains Sql column type</returns>
-        public abstract string GetDecimalColumnType();
+        protected abstract string GetDecimalColumnType();
 
         /// <summary>
         /// Determine Sql column type to store float .Net value
         /// </summary>
         /// <returns>A string which contains Sql column type</returns>
-        public abstract string GetFloatColumnType();
+        protected abstract string GetFloatColumnType();
 
         /// <summary>
         /// Determine Sql column type to store double .Net value
         /// </summary>
         /// <returns>A string which contains Sql column type</returns>
-        public abstract string GetDoubleColumnType();
+        protected abstract string GetDoubleColumnType();
 
         /// <summary>
         /// Determine Sql column type to store long .Net value
         /// </summary>
         /// <returns>A string which contains Sql column type</returns>
-        public abstract string GetLongColumnType();
+        protected abstract string GetLongColumnType();
 
         /// <summary>
         /// Determine Sql column type to store ulong .Net value
         /// </summary>
         /// <returns>A string which contains Sql column type</returns>
-        public abstract string GetUnsignedLongColumnType();
+        protected abstract string GetUnsignedLongColumnType();
 
         /// <summary>
         /// Determine Sql column type to store uint .Net value
         /// </summary>
         /// <returns>A string which contains Sql column type</returns>
-        public abstract string GetUnsignedIntColumnType();
+        protected abstract string GetUnsignedIntColumnType();
 
         /// <summary>
         /// Determine Sql column type to store int .Net value
         /// </summary>
         /// <returns>A string which contains Sql column type</returns>
-        public abstract string GetIntColumnType();
+        protected abstract string GetIntColumnType();
 
         /// <summary>
         /// Determine Sql column type to store short .Net value
         /// </summary>
         /// <returns>A string which contains Sql column type</returns>
-        public abstract string GetShortColumnType();
+        protected abstract string GetShortColumnType();
 
         /// <summary>
         /// Determine Sql column type to store ushort .Net value
         /// </summary>
         /// <returns>A string which contains Sql column type</returns>
-        public abstract string GetUnsignedShortColumnType();
+        protected abstract string GetUnsignedShortColumnType();
     }
 }

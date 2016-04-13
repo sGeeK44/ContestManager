@@ -4,6 +4,8 @@ using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
 using Contest.Core.Converters;
+using Contest.Core.DataStore;
+using Contest.Core.DataStore.Sqlite;
 
 namespace Contest.Core.Repository.Sql
 {
@@ -29,6 +31,8 @@ namespace Contest.Core.Repository.Sql
 
         internal IDataContext<TI> Context { get; set; }
 
+        private ISqlDataStore SqlDataStore { get; set; }
+
         public IList<string> QueryList
         {
             get { return _queryList; }
@@ -43,6 +47,8 @@ namespace Contest.Core.Repository.Sql
             SqlBuilder = new SqlBuilder<T,TI>();
             Converter = Converters.Converter.Instance;
             Context = new DataContext<TI>();
+            SqlDataStore = new SqliteDataStore(DatabasePath);
+            SqlDataStore.OpenDatabase();
         }
 
         /// <summary>
@@ -65,7 +71,7 @@ namespace Contest.Core.Repository.Sql
             Context.Insert(item);
 
             //Build request and append it for next commit
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var request = SqlBuilder.Insert(item, out arg);
             SetValueAndAppendRequest(request, arg);
         }
@@ -90,7 +96,7 @@ namespace Contest.Core.Repository.Sql
             Context.Update(item);
 
             // Build request and append it for next commit
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var request = SqlBuilder.Update(item, out arg);
             SetValueAndAppendRequest(request, arg);
         }
@@ -105,15 +111,15 @@ namespace Contest.Core.Repository.Sql
             Context.Delete(item);
 
             //Build request and append it for next commit
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var request = SqlBuilder.Delete(item, out arg);
             SetValueAndAppendRequest(request, arg);
         }
 
-        private string SetValue(string request, IEnumerable<Tuple<string, object, object[]>> arg)
+        private string SetValue(string request, IEnumerable<SqlField> arg)
         {
             if (arg == null) return request;
-            return arg.Aggregate(request, (current, tuple) => current.Replace("@" + tuple.Item1 + "@", ToSqlValue(tuple.Item2, tuple.Item3)));
+            return arg.Aggregate(request, (current, tuple) => current.Replace(tuple.MarkerValue, ToSqlValue(tuple.Value, tuple.CustomAttr)));
         }
 
         public string ToSqlValue(object obj, object[] attr)
@@ -132,7 +138,7 @@ namespace Contest.Core.Repository.Sql
             return string.Concat("'", value.Replace("'", "''"), "'");
         }
 
-        private void SetValueAndAppendRequest(string request, IEnumerable<Tuple<string, object, object[]>> arg)
+        private void SetValueAndAppendRequest(string request, IEnumerable<SqlField> arg)
         {
             request = SetValue(request, arg);
             if (UnitOfWorks == null) QueryList.Add(request);
@@ -160,28 +166,20 @@ namespace Contest.Core.Repository.Sql
         /// <return>A list wich contain all item founds or an empty list</return>
         public IList<TI> Find(Expression<Func<TI, bool>> predicate)
         {
-            string request = PrepareSqlRequest(predicate);
+            var request = PrepareSqlRequest(predicate);
 
-            //Execute
-            using (var db = Sqlite.OpenDatabase(DatabasePath))
-            using (var cmd = db.CreateCommand())
+            var result = SqlDataStore.Execute(request);
+
+            while (result.Read())
             {
-                cmd.CommandText = request;
-                cmd.ExecuteNonQuery();
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        var item = BoFactory != null
-                                ? BoFactory.Create(reader)
-                                : SqlBuilder.CreateInstance(reader);
+                var item = BoFactory != null
+                        ? BoFactory.Create(result)
+                        : SqlBuilder.CreateInstance(result);
 
-                        //Update context
-                        if (!Context.IsExist(item)) Context.Insert(item);
-                    }
-                    reader.Close();
-                }
+                //Update context
+                if (!Context.IsExist(item)) Context.Insert(item);
             }
+            result.Close();
 
             //Return response
             return Context.Find(predicate.Compile());
@@ -190,7 +188,7 @@ namespace Contest.Core.Repository.Sql
         public string PrepareSqlRequest(Expression<Func<TI, bool>> predicate)
         {
             //Prepare request
-            IList<Tuple<string, object, object[]>> arg;
+            IList<SqlField> arg;
             var request = SqlBuilder.Select(predicate, out arg);
             request = SetValue(request, arg);
             return request;
@@ -210,7 +208,7 @@ namespace Contest.Core.Repository.Sql
         public void Commit()
         {
             if (UnitOfWorks != null) throw new NotSupportedException("Current repository is linked to unit of works.");
-            Sqlite.Execute(DatabasePath, QueryList);
+            SqlDataStore.Execute(QueryList);
         }
 
         /// <summary>

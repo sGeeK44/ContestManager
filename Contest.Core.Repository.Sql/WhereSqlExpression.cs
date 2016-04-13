@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.Serialization;
 
 namespace Contest.Core.Repository.Sql
 {
@@ -18,14 +16,13 @@ namespace Contest.Core.Repository.Sql
             _expression = exp;
         }
 
-        public string ToStatement(out IList<Tuple<string, object, object[]>> arg)
+        public string ToStatement(out IList<SqlField> arg)
         {
-            arg = new List<Tuple<string, object, object[]>>();
-            // To manage null for sql server... (sql server doesn't support item = NULL but support item IS NULL
-            return ToStatement(_expression, arg).Replace("= NULL", "IS NULL");
+            arg = new List<SqlField>();
+            return ToStatement(_expression, arg);
         }
 
-        private string ToStatement(Expression exp, IList<Tuple<string, object, object[]>> arg)
+        private string ToStatement(Expression exp, IList<SqlField> arg)
         {
             if (exp == null)
                 return string.Empty;
@@ -67,12 +64,12 @@ namespace Contest.Core.Repository.Sql
             }
         }
 
-        protected virtual string ToStatement(ExpressionType type, UnaryExpression u, IList<Tuple<string, object, object[]>> arg)
+        protected virtual string ToStatement(ExpressionType type, UnaryExpression u, IList<SqlField> arg)
         {
             return ToSqlStatement(type) + " " + ToStatement(u.Operand, arg);
         }
 
-        protected virtual string ToStatement(ExpressionType type, BinaryExpression b, IList<Tuple<string, object, object[]>> arg)
+        protected virtual string ToStatement(ExpressionType type, BinaryExpression b, IList<SqlField> arg)
         {
             if (b.Left is ParameterExpression)
             {
@@ -87,17 +84,17 @@ namespace Contest.Core.Repository.Sql
             return ToStatement(b.Left, arg) + " " + ToSqlStatement(type) + " " + ToStatement(b.Right, arg);
         }
 
-        protected virtual string ToStatement(ConstantExpression c, IList<Tuple<string, object, object[]>> arg)
+        protected virtual string ToStatement(ConstantExpression c, IList<SqlField> arg)
         {
             return ToSqlValue(c.Value, null, arg);
         }
 
-        protected virtual string ToStatement(LambdaExpression l, IList<Tuple<string, object, object[]>> arg)
+        protected virtual string ToStatement(LambdaExpression l, IList<SqlField> arg)
         {
             return l.Body.NodeType == ExpressionType.Constant ? string.Empty : "WHERE " + ToStatement(l.Body, arg);
         }
 
-        protected virtual string ToStatement(MemberExpression m, IList<Tuple<string, object, object[]>> arg)
+        protected virtual string ToStatement(MemberExpression m, IList<SqlField> arg)
         {
             string fieldName = null;
             if (m.Expression is ParameterExpression) fieldName = ((ParameterExpression)m.Expression).Name;
@@ -110,40 +107,30 @@ namespace Contest.Core.Repository.Sql
             }
             else throw new NotSupportedException(string.Format("Type not supported. Type:{0}.", m.Expression.GetType()));
 
-            if (string.Equals(_expression.Parameters[0].Name, fieldName))
-            {
-                //Seek property on real cause DataMember is specified on it
-                var property = SqlBuilder<T,TI>.GetPropertiesList(true).First(_ => _.Name == m.Member.Name);
-                var attr = property.GetCustomAttributes(typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>().First();
-                return attr.Name ?? property.Name;
-            }
+            if (IsLambdaArgument(fieldName)) return m.ColumnName<T>();
+
             var objectMember = Expression.Convert(m, typeof(object));
-
             var getterLambda = Expression.Lambda<Func<object>>(objectMember);
-
             var getter = getterLambda.Compile();
 
             return ToSqlValue(getter(), null, arg);
         }
 
-        protected virtual string ToStatement(ParameterExpression p, IList<Tuple<string, object, object[]>> arg)
+        private bool IsLambdaArgument(string fieldName)
+        {
+            return string.Equals(_expression.Parameters[0].Name, fieldName);
+        }
+
+        protected virtual string ToStatement(ParameterExpression p, IList<SqlField> arg)
         {
             throw new NotImplementedException();
         }
 
-        public string ToSqlValue(object obj, object[] customAttr, IList<Tuple<string, object, object[]>> arg)
+        public string ToSqlValue(object obj, object[] customAttr, IList<SqlField> arg)
         {
-            // To manage null for sql server... (sql server doesn't support item = NULL but support item IS NULL
-            if (obj == null) return "NULL";
-
-            // Need because devb doesn't support parameter wich started with a number.
-            const string MARKER = "P";
-
-            //Convert like that: Item1=@MARKERposition Item2=Value
-            var count = arg.Count;
-            var newArg = new Tuple<string, object, object[]>(string.Concat(MARKER, count.ToString(CultureInfo.InvariantCulture)), obj, customAttr);
+            var newArg = SqlField.Create("P" + arg.Count.ToString(CultureInfo.InvariantCulture), obj, customAttr);
             arg.Add(newArg);
-            return string.Concat("@", MARKER, count.ToString(CultureInfo.InvariantCulture), "@");
+            return newArg.MarkerValue;
         }
 
         protected string ToSqlStatement(ExpressionType type)
