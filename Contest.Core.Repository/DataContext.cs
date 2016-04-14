@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Contest.Core.Exceptions;
 using Contest.Core.Repository.Exceptions;
 
 namespace Contest.Core.Repository

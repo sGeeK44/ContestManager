@@ -77,7 +77,6 @@
     <Compile Include="Exceptions\RepositoryException.cs" />
     <Compile Include="Exceptions\SeveralItemFoundException.cs" />
     <Compile Include="IDataContext.cs" />
-    <Compile Include="IIdentifiable.cs" />
     <Compile Include="IQueryable.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="IUnitOfWorks.cs" />

@@ -1,0 +1,38 @@
+﻿using System;
+using System.Runtime.Serialization;
+using Contest.Core.DataStore.Sql.Attributes;
+using Contest.Core.DataStore.Sql.ReferenceManyToMany;
+using Contest.Core.Repository;
+
+namespace Contest.Core.DataStore.Sql.UnitTest.Entities
+{
+    [DataContract]
+    public class ManyToOneEntity : IIdentifiable, IQueryable
+    {
+        [SqlPrimaryKey]
+        public Guid Id { get; set; }
+
+        [SqlField]
+        public string Name { get; set; }
+
+        [SqlField]
+        public Guid OneToManyEntityId { get; private set; }
+
+        public OneToManyEntity Entity { get; private set; }
+
+        public static ManyToOneEntity CreateMock()
+        {
+            return new ManyToOneEntity
+            {
+                Id = new Guid("ee47a3d1-f43b-4337-b7b0-1880e21c5c5f"),
+                OneToManyEntityId = OneToManyEntity.Guid,
+                Name = "Test"
+            };
+        }
+
+        public bool AreSame(object other)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

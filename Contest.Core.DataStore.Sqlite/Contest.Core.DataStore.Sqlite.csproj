@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqliteStrategy.cs" />
     <Compile Include="SqliteDataStore.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -53,9 +54,9 @@
       <Project>{ae46a224-2c96-4f3c-af4d-960cab831457}</Project>
       <Name>Contest.Core.Converters</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Contest.Core.DataStore\Contest.Core.DataStore.csproj">
-      <Project>{90473dbf-5134-4c4f-a900-8ce2bd53bb49}</Project>
-      <Name>Contest.Core.DataStore</Name>
+    <ProjectReference Include="..\Contest.Core.DataStore.Sql\Contest.Core.DataStore.Sql.csproj">
+      <Project>{90473DBF-5134-4C4F-A900-8CE2BD53BB49}</Project>
+      <Name>Contest.Core.DataStore.Sql</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

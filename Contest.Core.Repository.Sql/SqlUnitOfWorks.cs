@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Contest.Core.DataStore;
+using Contest.Core.DataStore.Sql;
+using Contest.Core.DataStore.Sql.SqlQuery;
 using Contest.Core.DataStore.Sqlite;
 
 namespace Contest.Core.Repository.Sql
 {
     public class SqlUnitOfWorks : ISqlUnitOfWorks
     {
-        private readonly IList<string> _queryList;
-        //private readonly string _databasePath;
+        private readonly IList<ISqlQuery> _queryList;
         private readonly IDictionary<Type, object> _repositoryList = new Dictionary<Type, object>();
 
         private ISqlDataStore SqlDataStore { get; set; }
@@ -19,7 +20,7 @@ namespace Contest.Core.Repository.Sql
         /// </summary>
         public SqlUnitOfWorks(string path)
         {
-            _queryList = new List<string>();
+            _queryList = new List<ISqlQuery>();
             SqlDataStore = new SqliteDataStore(path);
             SqlDataStore.OpenDatabase();
         }
@@ -145,7 +146,7 @@ namespace Contest.Core.Repository.Sql
         /// Used by repository linked to append request.
         /// </summary>
         /// <param name="request">Request to append for next commit</param>
-        public void AddRequest(string request)
+        public void AddRequest(ISqlQuery request)
         {
             _queryList.Add(request);
         }

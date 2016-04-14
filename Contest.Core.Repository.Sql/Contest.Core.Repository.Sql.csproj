@@ -58,20 +58,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IBusinessObjectFactory.cs" />
-    <Compile Include="Identifiable.cs" />
-    <Compile Include="ISqlBuilder.cs" />
     <Compile Include="ISqlPersistable.cs" />
     <Compile Include="ISqlRepository.cs" />
     <Compile Include="ISqlUnitOfWorks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Relationship.cs" />
-    <Compile Include="SqlBuilder.cs" />
-    <Compile Include="SqlBuilderT.cs" />
     <Compile Include="SqlRepository.cs" />
-    <Compile Include="SqlRepositoryT.cs" />
     <Compile Include="SqlUnitOfWorks.cs" />
-    <Compile Include="WhereSqlExpression.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -86,9 +78,9 @@
       <Project>{4B0ED7F4-49D9-4720-A4EA-4ABF92EE3549}</Project>
       <Name>Contest.Core.DataStore.Sqlite</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Contest.Core.DataStore\Contest.Core.DataStore.csproj">
+    <ProjectReference Include="..\Contest.Core.DataStore.Sql\Contest.Core.DataStore.Sql.csproj">
       <Project>{90473DBF-5134-4C4F-A900-8CE2BD53BB49}</Project>
-      <Name>Contest.Core.DataStore</Name>
+      <Name>Contest.Core.DataStore.Sql</Name>
     </ProjectReference>
     <ProjectReference Include="..\Contest.Core.Repository\Contest.Core.Repository.csproj">
       <Project>{4194f8f9-57e1-4d31-b4e3-a989f0d786f0}</Project>

@@ -3,12 +3,22 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
-using Contest.Core.Converters;
 using Contest.Core.DataStore;
+using Contest.Core.DataStore.Sql;
+using Contest.Core.DataStore.Sql.BusinessObjectFactory;
+using Contest.Core.DataStore.Sql.SqlQuery;
 using Contest.Core.DataStore.Sqlite;
-
 namespace Contest.Core.Repository.Sql
 {
+    /// <summary>
+    /// Expose methods for CRUD action on T base on Sql database for persistance
+    /// </summary>
+    /// <typeparam name="T">Type of repository object</typeparam>
+    public class SqlRepository<T> : SqlRepository<T, T> where T : class, IQueryable
+    {
+        public SqlRepository(ISqlDataStore dataStore) : base(dataStore) { }
+    }
+    
     /// <summary>
     /// Expose methods for CRUD action on T base on Sql database for persistance
     /// </summary>
@@ -17,23 +27,21 @@ namespace Contest.Core.Repository.Sql
     public class SqlRepository<T, TI> : ISqlRepository<TI> where T : class, TI
         where TI : class, IQueryable
     {
-        private readonly IList<string> _queryList;
+        private readonly IList<ISqlQuery> _queryList;
 
         private static string DatabasePath { get { return ConfigurationManager.AppSettings["DatabasePath"]; } }
 
-        public IUnitOfWorks UnitOfWorks { get; set; }
+        public ISqlUnitOfWorks UnitOfWorks { get; set; }
 
-        internal ISqlBuilder<T, TI> SqlBuilder { get; set; }
+        internal ISqlQueryFactory<TI> SqlQueryFactory { get; set; }
 
         internal IBusinessObjectFactory<TI> BoFactory { get; set; }
-
-        internal IConverter Converter { get; set; }
 
         internal IDataContext<TI> Context { get; set; }
 
         private ISqlDataStore SqlDataStore { get; set; }
 
-        public IList<string> QueryList
+        public IList<ISqlQuery> QueryList
         {
             get { return _queryList; }
         }
@@ -41,13 +49,13 @@ namespace Contest.Core.Repository.Sql
         /// <summary>
         /// Create a new Repository
         /// </summary>
-        public SqlRepository()
+        public SqlRepository(ISqlDataStore dataStore)
         {
-            _queryList = new List<string>();
-            SqlBuilder = new SqlBuilder<T,TI>();
-            Converter = Converters.Converter.Instance;
+            _queryList = new List<ISqlQuery>();
+            SqlQueryFactory = new SqlQueryFactory<T,TI>(new SqliteStrategy());
             Context = new DataContext<TI>();
-            SqlDataStore = new SqliteDataStore(DatabasePath);
+            BoFactory = new SqlSerializer<T, TI>();
+            SqlDataStore = dataStore;
             SqlDataStore.OpenDatabase();
         }
 
@@ -56,9 +64,8 @@ namespace Contest.Core.Repository.Sql
         /// </summary>
         public void CreateTable()
         {
-            var request = SqlBuilder.CreateTable();
-            if (UnitOfWorks == null) QueryList.Add(request);
-            else UnitOfWorks.AddRequest(request);
+            var request = SqlQueryFactory.CreateTable();
+            AppendRequest(request);
         }
 
         /// <summary>
@@ -71,9 +78,8 @@ namespace Contest.Core.Repository.Sql
             Context.Insert(item);
 
             //Build request and append it for next commit
-            IList<SqlField> arg;
-            var request = SqlBuilder.Insert(item, out arg);
-            SetValueAndAppendRequest(request, arg);
+            var request = SqlQueryFactory.Insert(item);
+            AppendRequest(request);
         }
 
         /// <summary>
@@ -96,9 +102,8 @@ namespace Contest.Core.Repository.Sql
             Context.Update(item);
 
             // Build request and append it for next commit
-            IList<SqlField> arg;
-            var request = SqlBuilder.Update(item, out arg);
-            SetValueAndAppendRequest(request, arg);
+            var request = SqlQueryFactory.Update(item);
+            AppendRequest(request);
         }
 
         /// <summary>
@@ -111,36 +116,12 @@ namespace Contest.Core.Repository.Sql
             Context.Delete(item);
 
             //Build request and append it for next commit
-            IList<SqlField> arg;
-            var request = SqlBuilder.Delete(item, out arg);
-            SetValueAndAppendRequest(request, arg);
+            var request = SqlQueryFactory.Delete(item);
+            AppendRequest(request);
         }
-
-        private string SetValue(string request, IEnumerable<SqlField> arg)
+        
+        private void AppendRequest(ISqlQuery request)
         {
-            if (arg == null) return request;
-            return arg.Aggregate(request, (current, tuple) => current.Replace(tuple.MarkerValue, ToSqlValue(tuple.Value, tuple.CustomAttr)));
-        }
-
-        public string ToSqlValue(object obj, object[] attr)
-        {
-            if (obj == null) return "NULL";
-            var value = Converter.Convert(obj, attr);
-            var objectType = obj.GetType();
-            if (objectType == typeof(ushort)
-                || objectType == typeof(short)
-                || objectType == typeof(uint)
-                || objectType == typeof(int)
-                || objectType == typeof(ulong)
-                || objectType == typeof(long)
-                || objectType == typeof(float)) return value;
-
-            return string.Concat("'", value.Replace("'", "''"), "'");
-        }
-
-        private void SetValueAndAppendRequest(string request, IEnumerable<SqlField> arg)
-        {
-            request = SetValue(request, arg);
             if (UnitOfWorks == null) QueryList.Add(request);
             else UnitOfWorks.AddRequest(request);
         }
@@ -172,9 +153,7 @@ namespace Contest.Core.Repository.Sql
 
             while (result.Read())
             {
-                var item = BoFactory != null
-                        ? BoFactory.Create(result)
-                        : SqlBuilder.CreateInstance(result);
+                var item = BoFactory.Convert(result);
 
                 //Update context
                 if (!Context.IsExist(item)) Context.Insert(item);
@@ -185,13 +164,9 @@ namespace Contest.Core.Repository.Sql
             return Context.Find(predicate.Compile());
         }
 
-        public string PrepareSqlRequest(Expression<Func<TI, bool>> predicate)
+        public ISqlQuery PrepareSqlRequest(Expression<Func<TI, bool>> predicate)
         {
-            //Prepare request
-            IList<SqlField> arg;
-            var request = SqlBuilder.Select(predicate, out arg);
-            request = SetValue(request, arg);
-            return request;
+            return SqlQueryFactory.Select(predicate);
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Contest.Core.Converters;
+﻿using Contest.Core.DataStore;
+using Contest.Core.DataStore.Sql;
+using Contest.Core.DataStore.Sql.ReferenceManyToMany;
+using Contest.Core.DataStore.Sql.SqlQuery;
 using Moq;
 using NUnit.Framework;
 
@@ -10,555 +11,244 @@ namespace Contest.Core.Repository.Sql.UnitTest
     public class SqlRepositoryTest
     {
         private Mock<IDataContext<Identifiable<object>>> Context { get; set; }
-        private Mock<ISqlBuilder<Identifiable<object>, Identifiable<object>>> SqlBuilder { get; set; }
+        private Mock<ISqlQueryFactory<Identifiable<object>>> SqlBuilder { get; set; }
         private Mock<ISqlUnitOfWorks> UnitOfWork { get; set; }
-        private Mock<IConverter> Converter { get; set; }
+        private Mock<ISqlDataStore> SqlDataStore { get; set; }
         private SqlRepository<Identifiable<object>, Identifiable<object>> SqlRepository { get; set; }
 
         [SetUp]
         public void Init()
         {
             Context = new Mock<IDataContext<Identifiable<object>>>();
-            SqlBuilder = new Mock<ISqlBuilder<Identifiable<object>, Identifiable<object>>>();
+            SqlBuilder = new Mock<ISqlQueryFactory<Identifiable<object>>>();
             UnitOfWork = new Mock<ISqlUnitOfWorks>();
-            Converter = new Mock<IConverter>();
-            SqlRepository = new SqlRepository<Identifiable<object>, Identifiable<object>>
+            SqlDataStore = new Mock<ISqlDataStore>();
+
+            SqlRepository = new SqlRepository<Identifiable<object>, Identifiable<object>>(SqlDataStore.Object)
             {
-                SqlBuilder = SqlBuilder.Object,
-                Converter = Converter.Object,
-                Context = Context.Object,
-                UnitOfWorks = UnitOfWork.Object
+                SqlQueryFactory = SqlBuilder.Object,
+                Context = Context.Object
             };
         }
 
         [TestCase]
-        public void Create()
+        public void Constructor_ShouldBeEmptyStatement()
         {
-            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>();
+            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>(SqlDataStore.Object);
 
             Assert.IsNotNull(repo.QueryList);
             Assert.AreEqual(0, repo.QueryList.Count);
         }
 
         [TestCase]
-        public void Insert_WithoutUnitOfWork()
+        public void Insert_ContextShouldBeUpdated()
         {
-            var context = new ContextMock<Identifiable<object>>();
-            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
-            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
-            {
-                SqlBuilder = sqlBuilder,
-                Converter = new ConverterMock(),
-                Context = context
-            };
             var obj = new Identifiable<object>();
+            Context.Setup(_ => _.Insert(obj));
 
-            repo.Insert(obj);
+            SqlRepository.Insert(obj);
 
-            Assert.AreEqual(1, context.CountInsertCall);
-            Assert.AreEqual(1, sqlBuilder.CountInsertCall);
-            Assert.IsNotNull(repo.QueryList);
-            Assert.AreEqual(1, repo.QueryList.Count);
+            Context.Verify();
         }
 
         [TestCase]
-        public void Insert_WithUnitOfWork()
+        public void Insert_ValidObject_QueryListShouldContainNewStatement()
         {
-            var context = new ContextMock<Identifiable<object>>();
-            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
-            var unitOfworks = new SqlUnitOfWorksMock();
-
-            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
-            {
-                SqlBuilder = sqlBuilder,
-                Converter = new ConverterMock(),
-                Context = context,
-                UnitOfWorks = unitOfworks
-            };
             var obj = new Identifiable<object>();
 
-            repo.Insert(obj);
+            SqlRepository.Insert(obj);
 
-            Assert.AreEqual(1, context.CountInsertCall);
-            Assert.AreEqual(1, sqlBuilder.CountInsertCall);
-            Assert.IsNotNull(repo.QueryList);
-            Assert.AreEqual(0, repo.QueryList.Count);
-            Assert.AreEqual(1, unitOfworks.CountAddRequestCall);
+            Assert.AreEqual(1, SqlRepository.QueryList.Count);
         }
 
         [TestCase]
-        public void InsertOrUpdate_WithoutUnitOfWork_1()
+        public void Insert_WithUnitOfWork_InnerStatementShouldNotBeUpdate()
         {
-            var context = new ContextMock<Identifiable<object>>();
-            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
-            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
-            {
-                SqlBuilder = sqlBuilder,
-                Converter = new ConverterMock(),
-                Context = context
-            };
             var obj = new Identifiable<object>();
+            SqlRepository.UnitOfWorks = UnitOfWork.Object;
 
-            repo.InsertOrUpdate(obj);
+            SqlRepository.Insert(obj);
 
-            Assert.AreEqual(1, context.CountInsertCall);
-            Assert.AreEqual(0, context.CountUpdateCall);
-            Assert.AreEqual(1, sqlBuilder.CountInsertCall);
-            Assert.AreEqual(0, sqlBuilder.CountUpdateCall);
-            Assert.IsNotNull(repo.QueryList);
-            Assert.AreEqual(1, repo.QueryList.Count);
+            Assert.AreEqual(0, SqlRepository.QueryList.Count);
         }
 
         [TestCase]
-        public void InsertOrUpdate_WithoutUnitOfWork_2()
+        public void Insert_WithUnitOfWork_UnitOfWorkStatementShouldNotBeUpdate()
         {
-            var context = new ContextMock<Identifiable<object>>();
-            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
-            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
-            {
-                SqlBuilder = sqlBuilder,
-                Converter = new ConverterMock(),
-                Context = context
-            };
             var obj = new Identifiable<object>();
-            repo.Insert(obj);
+            UnitOfWork.Setup(_ => _.Insert(obj));
+            SqlRepository.UnitOfWorks = UnitOfWork.Object;
 
-            repo.InsertOrUpdate(obj);
+            SqlRepository.Insert(obj);
 
-            Assert.AreEqual(1, context.CountInsertCall);
-            Assert.AreEqual(1, context.CountUpdateCall);
-            Assert.AreEqual(1, sqlBuilder.CountInsertCall);
-            Assert.AreEqual(1, sqlBuilder.CountUpdateCall);
-            Assert.IsNotNull(repo.QueryList);
-            Assert.AreEqual(2, repo.QueryList.Count);
+            UnitOfWork.Verify();
         }
 
         [TestCase]
-        public void InsertOrUpdate_WithUnitOfWork_1()
+        public void InsertOrUpdate_ContextShouldBeUpdated()
         {
-            var context = new ContextMock<Identifiable<object>>();
-            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
-            var unitOfworks = new SqlUnitOfWorksMock();
-
-            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
-            {
-                SqlBuilder = sqlBuilder,
-                Converter = new ConverterMock(),
-                Context = context,
-                UnitOfWorks = unitOfworks
-            };
             var obj = new Identifiable<object>();
+            Context.Setup(_ => _.Insert(obj));
 
-            repo.Insert(obj);
+            SqlRepository.InsertOrUpdate(obj);
 
-            Assert.AreEqual(1, context.CountInsertCall);
-            Assert.AreEqual(0, context.CountUpdateCall);
-            Assert.AreEqual(1, sqlBuilder.CountInsertCall);
-            Assert.AreEqual(0, sqlBuilder.CountUpdateCall);
-            Assert.IsNotNull(repo.QueryList);
-            Assert.AreEqual(0, repo.QueryList.Count);
-            Assert.AreEqual(1, unitOfworks.CountAddRequestCall);
+            Context.Verify();
         }
 
         [TestCase]
-        public void InsertOrUpdate_WithUnitOfWork_2()
+        public void InsertOrUpdate_QueryListShouldContainNewStatement()
         {
-            var context = new ContextMock<Identifiable<object>>();
-            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
-            var unitOfworks = new SqlUnitOfWorksMock();
-
-            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
-            {
-                SqlBuilder = sqlBuilder,
-                Converter = new ConverterMock(),
-                Context = context,
-                UnitOfWorks = unitOfworks
-            };
             var obj = new Identifiable<object>();
 
-            repo.Insert(obj);
+            SqlRepository.InsertOrUpdate(obj);
 
-            Assert.AreEqual(1, context.CountInsertCall);
-            Assert.AreEqual(0, context.CountUpdateCall);
-            Assert.AreEqual(1, sqlBuilder.CountInsertCall);
-            Assert.AreEqual(0, sqlBuilder.CountUpdateCall);
-            Assert.IsNotNull(repo.QueryList);
-            Assert.AreEqual(0, repo.QueryList.Count);
-            Assert.AreEqual(1, unitOfworks.CountAddRequestCall);
+            Assert.AreEqual(1, SqlRepository.QueryList.Count);
         }
 
         [TestCase]
-        public void Update_WithoutUnitOfWork()
+        public void InsertOrUpdate_AlreadyPresentObject_ContextShouldBeUpdated()
         {
-            var context = new ContextMock<Identifiable<object>>();
-            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
-            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
-            {
-                SqlBuilder = sqlBuilder,
-                Converter = new ConverterMock(),
-                Context = context
-            };
             var obj = new Identifiable<object>();
+            Context.Setup(_ => _.IsExist(obj)).Returns(true);
+            Context.Setup(_ => _.Update(obj));
 
-            repo.Update(obj);
+            SqlRepository.InsertOrUpdate(obj);
 
-            Assert.AreEqual(1, context.CountUpdateCall);
-            Assert.AreEqual(1, sqlBuilder.CountUpdateCall);
-            Assert.IsNotNull(repo.QueryList);
-            Assert.AreEqual(1, repo.QueryList.Count);
+            Context.Verify();
         }
 
         [TestCase]
-        public void Update_WithUnitOfWork()
+        public void InsertOrUpdate_AlreadyPresentObject_QueryListShouldContainNewStatement()
         {
-            var context = new ContextMock<Identifiable<object>>();
-            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
-            var unitOfworks = new SqlUnitOfWorksMock();
-
-            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
-            {
-                SqlBuilder = sqlBuilder,
-                Converter = new ConverterMock(),
-                Context = context,
-                UnitOfWorks = unitOfworks
-            };
             var obj = new Identifiable<object>();
+            Context.Setup(_ => _.IsExist(obj)).Returns(true);
 
-            repo.Update(obj);
+            SqlRepository.InsertOrUpdate(obj);
 
-            Assert.AreEqual(1, context.CountUpdateCall);
-            Assert.AreEqual(1, sqlBuilder.CountUpdateCall);
-            Assert.IsNotNull(repo.QueryList);
-            Assert.AreEqual(0, repo.QueryList.Count);
-            Assert.AreEqual(1, unitOfworks.CountAddRequestCall);
+            Assert.AreEqual(1, SqlRepository.QueryList.Count);
         }
 
         [TestCase]
-        public void Delete_WithoutUnitOfWork()
+        public void InsertOrUpdate_WithUnitOfWork_InnerStatementShouldNotBeUpdate()
         {
-            var context = new ContextMock<Identifiable<object>>();
-            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
-            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
-            {
-                SqlBuilder = sqlBuilder,
-                Converter = new ConverterMock(),
-                Context = context
-            };
             var obj = new Identifiable<object>();
+            SqlRepository.UnitOfWorks = UnitOfWork.Object;
 
-            repo.Delete(obj);
+            SqlRepository.InsertOrUpdate(obj);
 
-            Assert.AreEqual(1, context.CountDeleteCall);
-            Assert.AreEqual(1, sqlBuilder.CountDeleteCall);
-            Assert.IsNotNull(repo.QueryList);
-            Assert.AreEqual(1, repo.QueryList.Count);
+            Assert.AreEqual(0, SqlRepository.QueryList.Count);
         }
 
         [TestCase]
-        public void Delete_WithUnitOfWork_ShouldUpdateContext()
+        public void InsertOrUpdate_WithUnitOfWork_UnitOfWorkStatementShouldNotBeUpdate()
         {
             var obj = new Identifiable<object>();
+            UnitOfWork.Setup(_ => _.InsertOrUpdate(obj));
+            SqlRepository.UnitOfWorks = UnitOfWork.Object;
+
+            SqlRepository.InsertOrUpdate(obj);
+
+            UnitOfWork.Verify();
+        }
+
+        [TestCase]
+        public void Update_ContextShouldBeUpdated()
+        {
+            var obj = new Identifiable<object>();
+            Context.Setup(_ => _.Update(obj));
+
+            SqlRepository.Update(obj);
+
+            Context.Verify();
+        }
+
+        [TestCase]
+        public void Update_QueryListShouldContainNewStatement()
+        {
+            var obj = new Identifiable<object>();
+
+            SqlRepository.Update(obj);
+
+            Assert.AreEqual(1, SqlRepository.QueryList.Count);
+        }
+
+        [TestCase]
+        public void Update_WithUnitOfWork_InnerStatementShouldNotBeUpdate()
+        {
+            var obj = new Identifiable<object>();
+            SqlRepository.UnitOfWorks = UnitOfWork.Object;
+
+            SqlRepository.Update(obj);
+
+            Assert.AreEqual(0, SqlRepository.QueryList.Count);
+        }
+
+        [TestCase]
+        public void Update_WithUnitOfWork_UnitOfWorkStatementShouldNotBeUpdate()
+        {
+            var obj = new Identifiable<object>();
+            UnitOfWork.Setup(_ => _.Update(obj));
+            SqlRepository.UnitOfWorks = UnitOfWork.Object;
+
+            SqlRepository.Update(obj);
+
+            UnitOfWork.Verify();
+        }
+
+        [TestCase]
+        public void Delete_QueryListShouldContainNewStatement()
+        {
+            var obj = new Identifiable<object>();
+
+            SqlRepository.Delete(obj);
+
+            Assert.AreEqual(1, SqlRepository.QueryList.Count);
+        }
+
+        [TestCase]
+        public void Delete_AlreadyPresentObject_ContextShouldBeUpdated()
+        {
+            var obj = new Identifiable<object>();
+            Context.Setup(_ => _.IsExist(obj)).Returns(true);
             Context.Setup(_ => _.Delete(obj));
-            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
-            var unitOfworks = new SqlUnitOfWorksMock();
-            
+
             SqlRepository.Delete(obj);
 
             Context.Verify();
         }
 
         [TestCase]
-        public void Delete_WithUnitOfWork_ShouldSupressExstingReference()
+        public void Delete_AlreadyPresentObject_QueryListShouldContainNewStatement()
         {
-            var objLinked = new OneToManyEntity();
             var obj = new Identifiable<object>();
-            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
-            var unitOfworks = new SqlUnitOfWorksMock();
+            Context.Setup(_ => _.IsExist(obj)).Returns(true);
 
             SqlRepository.Delete(obj);
 
-            Assert.IsNull(obj);
+            Assert.AreEqual(1, SqlRepository.QueryList.Count);
         }
 
         [TestCase]
-        public void Delete_WithUnitOfWork_ShouldUpdateQueryList()
+        public void Delete_WithUnitOfWork_InnerStatementShouldNotBeUpdate()
         {
             var obj = new Identifiable<object>();
-            Context.Setup(_ => _.Delete(obj));
-            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
-            var unitOfworks = new SqlUnitOfWorksMock();
+            SqlRepository.UnitOfWorks = UnitOfWork.Object;
 
-            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
-            {
-                SqlBuilder = sqlBuilder,
-                Converter = new ConverterMock(),
-                Context = Context.Object,
-                UnitOfWorks = unitOfworks
-            };
+            SqlRepository.Delete(obj);
 
-            repo.Delete(obj);
-
-            Assert.AreEqual(1, sqlBuilder.CountDeleteCall);
-            Assert.IsNotNull(repo.QueryList);
-            Assert.AreEqual(0, repo.QueryList.Count);
-            Assert.AreEqual(1, unitOfworks.CountAddRequestCall);
+            Assert.AreEqual(0, SqlRepository.QueryList.Count);
         }
 
         [TestCase]
-        public void Delete_WithUnitOfWork_ShouldUpdateUnitOfWork()
+        public void Delete_WithUnitOfWork_UnitOfWorkStatementShouldNotBeUpdate()
         {
             var obj = new Identifiable<object>();
-            Context.Setup(_ => _.Delete(obj));
-            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
-            var unitOfworks = new SqlUnitOfWorksMock();
+            UnitOfWork.Setup(_ => _.Delete(obj));
+            SqlRepository.UnitOfWorks = UnitOfWork.Object;
 
-            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
-            {
-                SqlBuilder = sqlBuilder,
-                Converter = new ConverterMock(),
-                Context = Context.Object,
-                UnitOfWorks = unitOfworks
-            };
+            SqlRepository.Delete(obj);
 
-            repo.Delete(obj);
-
-            Assert.AreEqual(1, sqlBuilder.CountDeleteCall);
-            Assert.IsNotNull(repo.QueryList);
-            Assert.AreEqual(0, repo.QueryList.Count);
-            Assert.AreEqual(1, unitOfworks.CountAddRequestCall);
-        }
-
-        [TestCase]
-        public void FirstOrDefault_ExistInCache()
-        {
-            var obj = new Identifiable<object>();
-            var context = new ContextMock<Identifiable<object>> { Item = new List<Identifiable<object>> { obj } };
-            var sqlBuilder = new SqlBuilderMock<Identifiable<object>, Identifiable<object>>();
-            var unitOfworks = new SqlUnitOfWorksMock();
-
-            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>
-            {
-                SqlBuilder = sqlBuilder,
-                Converter = new ConverterMock(),
-                Context = context,
-                UnitOfWorks = unitOfworks
-            };
-
-            var result = repo.FirstOrDefault(_ => _ == obj);
-
-            Assert.AreEqual(obj, result);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_TrueCondition_ShouldRetunrValidSqlQuery()
-        {
-            var repo = CreateRepository<Entity1>();
-            var query = repo.PrepareSqlRequest(_ => true);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1;", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_ById_ShouldRetunrValidSqlQuery()
-        {
-            var ent = Entity1.CreateMock();
-            var repo = CreateRepository<Entity1>();
-            var query = repo.PrepareSqlRequest(_ => _.Id == ent.Id);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE ID = '6A4A4F81-0C29-43C4-863E-AD10398B3A8C';", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_ByVarId_ShouldRetunrValidSqlQuery()
-        {
-            var id = Entity1.Guid;
-            var repo = CreateRepository<Entity1>();
-            var query = repo.PrepareSqlRequest(_ => _.Id == id);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE ID = '6A4A4F81-0C29-43C4-863E-AD10398B3A8C';", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_ByName_ShouldRetunrValidSqlQuery()
-        {
-            var repo = CreateRepository<Entity1>();
-            var query = repo.PrepareSqlRequest(_ => _.Name == "NameSearch");
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE NAME = 'NameSearch';", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_And_ShouldRetunrValidSqlQuery()
-        {
-            var ent = Entity1.CreateMock();
-            var repo = CreateRepository<Entity1>();
-            var query = repo.PrepareSqlRequest(_ => _.Id == ent.Id && _.Name == "NameSearch");
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE ID = '6A4A4F81-0C29-43C4-863E-AD10398B3A8C' AND NAME = 'NameSearch';", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_Or_ShouldRetunrValidSqlQuery()
-        {
-            var ent = Entity1.CreateMock();
-            var repo = CreateRepository<Entity1>();
-            var query = repo.PrepareSqlRequest(_ => _.Id == ent.Id || _.Name == "NameSearch");
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE ID = '6A4A4F81-0C29-43C4-863E-AD10398B3A8C' OR NAME = 'NameSearch';", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_TrueWithInterface_ShouldRetunrValidSqlQuery()
-        {
-            var repo = CreateRepository<Entity5, IEntity5>();
-            var query = repo.PrepareSqlRequest(_ => true);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5;", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_ByIdWithInterface_ShouldRetunrValidSqlQuery()
-        {
-            IEntity5 ent = Entity5.CreateMock();
-            var repo = CreateRepository<Entity5, IEntity5>();
-            var query = repo.PrepareSqlRequest(_ => _.Id == ent.Id);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE ID = '6A4A4F81-0C29-43C4-863E-AD10398B3A8C';", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_ByVarIdWithInterface_ShouldRetunrValidSqlQuery()
-        {
-            var id = Entity5.Guid;
-            var repo = CreateRepository<Entity5, IEntity5>();
-            var query = repo.PrepareSqlRequest(_ => _.Id == id);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE ID = '6A4A4F81-0C29-43C4-863E-AD10398B3A8C';", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_ByNameWithInterface_ShouldRetunrValidSqlQuery()
-        {
-            var repo = CreateRepository<Entity5, IEntity5>();
-            var query = repo.PrepareSqlRequest(_ => _.Name == "NameSearch");
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE NAME = 'NameSearch';", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_AndWithInterface_ShouldRetunrValidSqlQuery()
-        {
-            IEntity5 ent = Entity5.CreateMock();
-            var repo = CreateRepository<Entity5, IEntity5>();
-            var query = repo.PrepareSqlRequest(_ => _.Id == ent.Id && _.Name == "NameSearch");
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE ID = '6A4A4F81-0C29-43C4-863E-AD10398B3A8C' AND NAME = 'NameSearch';", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_OrWithInterface_ShouldRetunrValidSqlQuery()
-        {
-            IEntity5 ent = Entity5.CreateMock();
-            var repo = CreateRepository<Entity5, IEntity5>();
-            var query = repo.PrepareSqlRequest(_ => _.Id == ent.Id || _.Name == "NameSearch");
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE ID = '6A4A4F81-0C29-43C4-863E-AD10398B3A8C' OR NAME = 'NameSearch';", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_AddOperator_ShouldRetunrValidSqlQuery()
-        {
-            var repo = CreateRepository<Entity5>();
-            int param = 5;
-            var query = repo.PrepareSqlRequest(_ => _.Age == param + 5);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE = 5 + 5;", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_SubtractOperator_ShouldRetunrValidSqlQuery()
-        {
-            var repo = CreateRepository<Entity5>();
-            int param = 5;
-            var query = repo.PrepareSqlRequest(_ => _.Age == param - 5);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE = 5 - 5;", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_NegateMember_ShouldRetunrValidSqlQuery()
-        {
-            var repo = CreateRepository<Entity5>();
-            var query = repo.PrepareSqlRequest(_ => -(_.Age) == 5);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE - AGE = 5;", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_MultiplyMember_ShouldRetunrValidSqlQuery()
-        {
-            var repo = CreateRepository<Entity5>();
-            var query = repo.PrepareSqlRequest(_ => _.Age * 5 == 5);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE * 5 = 5;", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_DivideMember_ShouldRetunrValidSqlQuery()
-        {
-            var repo = CreateRepository<Entity5>();
-            var query = repo.PrepareSqlRequest(_ => _.Age / 5 == 5);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE / 5 = 5;", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_ModuloMember_ShouldRetunrValidSqlQuery()
-        {
-            var repo = CreateRepository<Entity5>();
-            var query = repo.PrepareSqlRequest(_ => _.Age % 5 == 5);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE MOD 5 = 5;", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_LessThanExpression_ShouldRetunrValidSqlQuery()
-        {
-            var repo = CreateRepository<Entity5>();
-            var query = repo.PrepareSqlRequest(_ => _.Age < 5);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE < 5;", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_LessThanOrEqualExpression_ShouldRetunrValidSqlQuery()
-        {
-            var repo = CreateRepository<Entity5>();
-            var query = repo.PrepareSqlRequest(_ => _.Age <= 5);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE <= 5;", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_MoreThanExpression_ShouldRetunrValidSqlQuery()
-        {
-            var repo = CreateRepository<Entity5>();
-            var query = repo.PrepareSqlRequest(_ => _.Age > 5);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE > 5;", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_MoreThanOrEqualExpression_ShouldRetunrValidSqlQuery()
-        {
-            var repo = CreateRepository<Entity5>();
-            var query = repo.PrepareSqlRequest(_ => _.Age >= 5);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE >= 5;", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_DifferentExpression_ShouldRetunrValidSqlQuery()
-        {
-            var repo = CreateRepository<Entity5>();
-            var query = repo.PrepareSqlRequest(_ => _.Age != 5);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE AGE <> 5;", query);
-        }
-
-        [TestCase]
-        public void PrepareSqlRequest_NegateExpression_ShouldRetunrValidSqlQuery()
-        {
-            var repo = CreateRepository<Entity5>();
-            var query = repo.PrepareSqlRequest(_ => !_.Active);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_5 WHERE NOT ACTIVE;", query);
-        }
-
-        private SqlRepository<T, T> CreateRepository<T>() where T : class, IQueryable
-        {
-            return new SqlRepository<T, T> { SqlBuilder = new SqlBuilder<T, T>() };
-        }
-
-        private SqlRepository<T, TI> CreateRepository<T, TI>() where T : class, TI where TI : class, IQueryable
-        {
-            return new SqlRepository<T, TI> { SqlBuilder = new SqlBuilder<T, TI>() };
+            UnitOfWork.Verify();
         }
     }
 }

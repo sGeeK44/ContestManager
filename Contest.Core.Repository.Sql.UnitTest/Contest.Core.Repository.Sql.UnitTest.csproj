@@ -55,28 +55,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="ContextMock.cs" />
-    <Compile Include="ConverterMock.cs" />
-    <Compile Include="Entity7.cs" />
-    <Compile Include="Entity6.cs" />
-    <Compile Include="Entity1.cs" />
-    <Compile Include="Entity2.cs" />
-    <Compile Include="Entity3.cs" />
-    <Compile Include="Entity4.cs" />
-    <Compile Include="Entity5.cs" />
-    <Compile Include="IdentifiableTest.cs" />
-    <Compile Include="IEntity4.cs" />
-    <Compile Include="IEntity5.cs" />
-    <Compile Include="IId.cs" />
-    <Compile Include="ManyToOneEntity.cs" />
-    <Compile Include="OneToManyEntity.cs" />
-    <Compile Include="RelationshipTest.cs" />
-    <Compile Include="SqlBuilderMock.cs" />
-    <Compile Include="SqlBuilderTest.cs" />
-    <Compile Include="SqlObjectExtentionTest.cs" />
-    <Compile Include="SqlRepositoryMock.cs" />
     <Compile Include="SqlRepositoryTest.cs" />
-    <Compile Include="SqlUnitOfWorksMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -84,9 +63,9 @@
       <Project>{6CC897AB-E169-4F20-A56D-0BC0AF8E451D}</Project>
       <Name>Contest.Core.Component</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Contest.Core.DataStore\Contest.Core.DataStore.csproj">
-      <Project>{90473dbf-5134-4c4f-a900-8ce2bd53bb49}</Project>
-      <Name>Contest.Core.DataStore</Name>
+    <ProjectReference Include="..\Contest.Core.DataStore.Sql\Contest.Core.DataStore.Sql.csproj">
+      <Project>{90473DBF-5134-4C4F-A900-8CE2BD53BB49}</Project>
+      <Name>Contest.Core.DataStore.Sql</Name>
     </ProjectReference>
     <ProjectReference Include="..\Contest.Core.Repository\Contest.Core.Repository.csproj">
       <Project>{4194F8F9-57E1-4D31-B4E3-A989F0D786F0}</Project>

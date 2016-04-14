@@ -38,11 +38,5 @@
         /// Undo all changes making after last commit
         /// </summary>
         void RollBack();
-
-        /// <summary>
-        /// Inject sql request for next commit
-        /// </summary>
-        /// <param name="request">Request to add</param>
-        void AddRequest(string request);
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Contest.Core.Repository
+﻿namespace Contest.Core.Repository
 {
     public interface IQueryable
     {
