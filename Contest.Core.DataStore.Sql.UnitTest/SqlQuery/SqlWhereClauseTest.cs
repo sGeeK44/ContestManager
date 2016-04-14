@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq.Expressions;
 using Contest.Core.DataStore.Sql.SqlQuery;
 using Contest.Core.DataStore.Sql.UnitTest.Entities;
+using Moq;
 using NUnit.Framework;
 
 namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
@@ -11,13 +12,19 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
     [TestFixture]
     public class SqlWhereClauseTest : SqlQueryTestBase
     {
+        [SetUp]
+        public override void Init()
+        {
+            SqlStrategy = new Mock<ISqlProviderStrategy>();
+        }
+
         [TestCase]
         public void ToStatement_TruePredicate_ShouldReturnNull()
         {
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => true);
 
-            Assert.AreEqual(null, query.ToStatement(out arg));
+            Assert.AreEqual(string.Empty, query.ToStatement(out arg));
             AssertArg(arg);
         }
 
@@ -28,7 +35,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             var ent = OverrideNameEntity.CreateMock();
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Id == ent.Id);
 
-            Assert.AreEqual("WHERE ID = @P0@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE ID = @P0@", query.ToStatement(out arg));
             AssertArg(arg, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"));
         }
 
@@ -39,7 +46,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Id == id);
             IList<SqlColumnField> arg;
 
-            Assert.AreEqual("WHERE ID = @P0@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE ID = @P0@", query.ToStatement(out arg));
             AssertArg(arg, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"));
         }
 
@@ -49,7 +56,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Name == "NameSearch");
 
-            Assert.AreEqual("WHERE NAME = @P0@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE NAME = @P0@", query.ToStatement(out arg));
             AssertArg(arg, "NameSearch");
         }
 
@@ -60,7 +67,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             var ent = OverrideNameEntity.CreateMock();
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Id == ent.Id && _.Name == "NameSearch");
 
-            Assert.AreEqual("WHERE ID = @P0@ AND NAME = @P1@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE ID = @P0@ AND NAME = @P1@", query.ToStatement(out arg));
             AssertArg(arg, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"), "NameSearch");
         }
 
@@ -71,7 +78,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Id == ent.Id || _.Name == "NameSearch");
             IList<SqlColumnField> arg;
 
-            Assert.AreEqual("WHERE ID = @P0@ OR NAME = @P1@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE ID = @P0@ OR NAME = @P1@", query.ToStatement(out arg));
             AssertArg(arg, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"),"NameSearch");
         }
 
@@ -81,7 +88,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => true);
 
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1;", query.ToStatement(out arg));
+            Assert.AreEqual(string.Empty, query.ToStatement(out arg));
             AssertArg(arg);
         }
 
@@ -92,7 +99,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IOverrideNameEntity ent = OverrideNameEntity.CreateMock();
             var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => _.Id == ent.Id);
 
-            Assert.AreEqual("WHERE ID = @P0@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE ID = @P0@", query.ToStatement(out arg));
             AssertArg(arg, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"));
         }
 
@@ -103,7 +110,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             var id = OverrideNameEntity.Guid;
             var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => _.Id == id);
 
-            Assert.AreEqual("WHERE ID = @P0@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE ID = @P0@", query.ToStatement(out arg));
             AssertArg(arg, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"));
         }
 
@@ -113,7 +120,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => _.Name == "NameSearch");
 
-            Assert.AreEqual("WHERE NAME = @P0@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE NAME = @P0@", query.ToStatement(out arg));
             AssertArg(arg, "NameSearch");
         }
 
@@ -124,7 +131,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IOverrideNameEntity ent = OverrideNameEntity.CreateMock();
             var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => _.Id == ent.Id && _.Name == "NameSearch");
 
-            Assert.AreEqual("WHERE ID = @P0@ AND NAME = @P1@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE ID = @P0@ AND NAME = @P1@", query.ToStatement(out arg));
             AssertArg(arg, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"),"NameSearch");
         }
 
@@ -135,7 +142,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IOverrideNameEntity ent = OverrideNameEntity.CreateMock();
             var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => _.Id == ent.Id || _.Name == "NameSearch");
 
-            Assert.AreEqual("WHERE ID = @P0@ OR NAME = @P1@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE ID = @P0@ OR NAME = @P1@", query.ToStatement(out arg));
             AssertArg(arg, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"), "NameSearch");
         }
 
@@ -146,7 +153,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age == param + 5);
 
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE AGE = @P0@ + @P1@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE AGE = @P0@ + @P1@", query.ToStatement(out arg));
             AssertArg(arg, 5, 5);
         }
 
@@ -156,7 +163,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             var param = 5;
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age == param - 5);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE AGE = @P0@ - @P1@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE AGE = @P0@ - @P1@", query.ToStatement(out arg));
             AssertArg(arg, 5, 5);
         }
 
@@ -165,7 +172,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
         {
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => -(_.Age) == 5);
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE - AGE = @P0@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE - AGE = @P0@", query.ToStatement(out arg));
             AssertArg(arg, 5);
         }
 
@@ -175,7 +182,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age * 5 == 5);
 
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE AGE * @P0@ = @P1@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE AGE * @P0@ = @P1@", query.ToStatement(out arg));
             AssertArg(arg, 5, 5);
         }
 
@@ -185,7 +192,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age / 5 == 5);
 
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE AGE / @P0@ = @P1@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE AGE / @P0@ = @P1@", query.ToStatement(out arg));
             AssertArg(arg, 5, 5);
         }
 
@@ -195,7 +202,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age % 5 == 5);
 
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE AGE MOD @P0@ = @P1@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE AGE MOD @P0@ = @P1@", query.ToStatement(out arg));
             AssertArg(arg, 5, 5);
         }
 
@@ -205,7 +212,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age < 5);
 
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE AGE < @P0@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE AGE < @P0@", query.ToStatement(out arg));
             AssertArg(arg, 5);
         }
 
@@ -215,7 +222,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age <= 5);
 
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE AGE <= @P0@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE AGE <= @P0@", query.ToStatement(out arg));
             AssertArg(arg, 5);
         }
 
@@ -225,7 +232,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age > 5);
 
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE AGE > @P0@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE AGE > @P0@", query.ToStatement(out arg));
             AssertArg(arg, 5);
         }
 
@@ -235,7 +242,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age >= 5);
 
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE AGE >= @P0@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE AGE >= @P0@", query.ToStatement(out arg));
             AssertArg(arg, 5);
         }
 
@@ -245,7 +252,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age != 5);
 
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE AGE <> @P0@;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE AGE <> @P0@", query.ToStatement(out arg));
             AssertArg(arg, 5);
         }
 
@@ -255,7 +262,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => !_.Active);
 
-            Assert.AreEqual("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE NOT ACTIVE;", query.ToStatement(out arg));
+            Assert.AreEqual("WHERE NOT ACTIVE", query.ToStatement(out arg));
             AssertArg(arg);
         }
 
@@ -267,7 +274,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             {
                 Assert.IsNotNull(arg[i]);
                 Assert.AreEqual("@P" + i.ToString(CultureInfo.InvariantCulture) + "@", arg[i].MarkerValue);
-                Assert.AreEqual(expectedValue, arg[i]);
+                Assert.AreEqual(expectedValue[i], arg[i].Value);
             }
         }
 

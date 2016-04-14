@@ -10,6 +10,7 @@ namespace Contest.Core.DataStore.Sqlite
     public class SqliteDataStore : ISqlDataStore
     {
         private IDbConnection _databaseConnection;
+        private readonly IList<ISqlQuery> _queryList = new List<ISqlQuery>();
 
         public SqliteDataStore(string filePath = null)
         {
@@ -38,23 +39,34 @@ namespace Contest.Core.DataStore.Sqlite
                 return cmd.ExecuteReader();
             }
         }
-
-        public void Execute(IList<ISqlQuery> requestList)
+        
+        public void CloseDatabase()
         {
-            if (requestList == null || requestList.Count == 0) return;
-            
+            if (_databaseConnection.State != ConnectionState.Closed) _databaseConnection.Close();
+            _databaseConnection.Dispose();
+        }
+
+        public void RollBack()
+        {
+            _queryList.Clear();
+        }
+
+        public void Commit()
+        {
+            if (_queryList == null || _queryList.Count == 0) return;
+
             using (var dbTransaction = _databaseConnection.BeginTransaction())
             try
             {
                 using (var cmd = _databaseConnection.CreateCommand())
-                foreach (var request in requestList)
-                {
-                    cmd.Transaction = dbTransaction;
-                    cmd.CommandText = request.ToStatement();
-                    cmd.ExecuteNonQuery();
-                }
+                    foreach (var request in _queryList)
+                    {
+                        cmd.Transaction = dbTransaction;
+                        cmd.CommandText = request.ToStatement();
+                        cmd.ExecuteNonQuery();
+                    }
                 dbTransaction.Commit();
-                requestList.Clear();
+                _queryList.Clear();
             }
             catch (Exception)
             {
@@ -63,10 +75,9 @@ namespace Contest.Core.DataStore.Sqlite
             }
         }
 
-        public void CloseDatabase()
+        public void AddRequest(ISqlQuery request)
         {
-            if (_databaseConnection.State != ConnectionState.Closed) _databaseConnection.Close();
-            _databaseConnection.Dispose();
+            _queryList.Add(request);
         }
     }
 }

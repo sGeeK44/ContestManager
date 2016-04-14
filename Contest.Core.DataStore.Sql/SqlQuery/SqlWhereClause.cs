@@ -68,7 +68,7 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
 
         protected virtual string ToStatement(ExpressionType type, UnaryExpression u, IList<SqlColumnField> arg)
         {
-            return ToSqlStatement(type) + ToStatement(u.Operand, arg);
+            return ToSqlStatement(type) + " " + ToStatement(u.Operand, arg);
         }
 
         protected virtual string ToStatement(ExpressionType type, BinaryExpression b, IList<SqlColumnField> arg)

@@ -1,28 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Contest.Core.DataStore;
 using Contest.Core.DataStore.Sql;
-using Contest.Core.DataStore.Sql.SqlQuery;
-using Contest.Core.DataStore.Sqlite;
 
 namespace Contest.Core.Repository.Sql
 {
     public class SqlUnitOfWorks : ISqlUnitOfWorks
     {
-        private readonly IList<ISqlQuery> _queryList;
         private readonly IDictionary<Type, object> _repositoryList = new Dictionary<Type, object>();
 
-        private ISqlDataStore SqlDataStore { get; set; }
-        
-        /// <summary>
-        /// Create a new Unit of Works
-        /// </summary>
-        public SqlUnitOfWorks(string path)
+        public ISqlDataStore SqlDataStore { get; private set; }
+
+        public SqlUnitOfWorks(ISqlDataStore sqlDataStore)
         {
-            _queryList = new List<ISqlQuery>();
-            SqlDataStore = new SqliteDataStore(path);
-            SqlDataStore.OpenDatabase();
+            SqlDataStore = sqlDataStore;
         }
         
         /// <summary>
@@ -131,7 +122,7 @@ namespace Contest.Core.Repository.Sql
         /// </summary>
         public void Commit()
         {
-            SqlDataStore.Execute(_queryList);
+            SqlDataStore.Commit();
         }
 
         /// <summary>
@@ -139,16 +130,7 @@ namespace Contest.Core.Repository.Sql
         /// </summary>
         public void RollBack()
         {
-            _queryList.Clear();
-        }
-
-        /// <summary>
-        /// Used by repository linked to append request.
-        /// </summary>
-        /// <param name="request">Request to append for next commit</param>
-        public void AddRequest(ISqlQuery request)
-        {
-            _queryList.Add(request);
+            SqlDataStore.RollBack();
         }
 
         public T FirstOrDefault<T>(Expression<Func<T, bool>> predicate) where T : class

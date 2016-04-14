@@ -18,6 +18,7 @@ namespace Contest.Core.DataStore.Sql
             _customAttr = customAttr;
         }
 
+        public object Value { get { return _value; } }
         public string ColumnName { get; private set; }
         public string MarkerValue { get; private set; }
         public bool IsPrimaryKey { get; private set; }

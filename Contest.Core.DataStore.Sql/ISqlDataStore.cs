@@ -22,14 +22,11 @@ namespace Contest.Core.DataStore.Sql
         IDataReader Execute(ISqlQuery request);
 
         /// <summary>
-        /// Execute specified request list as a Transaction
-        /// </summary>
-        /// <param name="requestList">Sql request list to execute</param>
-        void Execute(IList<ISqlQuery> requestList);
-
-        /// <summary>
         /// Close active connection with database
         /// </summary>
         void CloseDatabase();
+        void RollBack();
+        void Commit();
+        void AddRequest(ISqlQuery request);
     }
 }

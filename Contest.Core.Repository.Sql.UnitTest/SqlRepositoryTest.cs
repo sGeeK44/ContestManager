@@ -34,10 +34,10 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void Constructor_ShouldBeEmptyStatement()
         {
+            SqlDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>(SqlDataStore.Object);
 
-            Assert.IsNotNull(repo.QueryList);
-            Assert.AreEqual(0, repo.QueryList.Count);
+            SqlDataStore.Verify();
         }
 
         [TestCase]
@@ -54,22 +54,24 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void Insert_ValidObject_QueryListShouldContainNewStatement()
         {
+            SqlDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             var obj = new Identifiable<object>();
 
             SqlRepository.Insert(obj);
 
-            Assert.AreEqual(1, SqlRepository.QueryList.Count);
+            SqlDataStore.Verify();
         }
 
         [TestCase]
         public void Insert_WithUnitOfWork_InnerStatementShouldNotBeUpdate()
         {
+            SqlDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             var obj = new Identifiable<object>();
             SqlRepository.UnitOfWorks = UnitOfWork.Object;
 
             SqlRepository.Insert(obj);
 
-            Assert.AreEqual(0, SqlRepository.QueryList.Count);
+            SqlDataStore.Verify();
         }
 
         [TestCase]
@@ -98,11 +100,12 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void InsertOrUpdate_QueryListShouldContainNewStatement()
         {
+            SqlDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             var obj = new Identifiable<object>();
 
             SqlRepository.InsertOrUpdate(obj);
 
-            Assert.AreEqual(1, SqlRepository.QueryList.Count);
+            SqlDataStore.Verify();
         }
 
         [TestCase]
@@ -120,23 +123,25 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void InsertOrUpdate_AlreadyPresentObject_QueryListShouldContainNewStatement()
         {
+            SqlDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             var obj = new Identifiable<object>();
             Context.Setup(_ => _.IsExist(obj)).Returns(true);
 
             SqlRepository.InsertOrUpdate(obj);
 
-            Assert.AreEqual(1, SqlRepository.QueryList.Count);
+            SqlDataStore.Verify();
         }
 
         [TestCase]
         public void InsertOrUpdate_WithUnitOfWork_InnerStatementShouldNotBeUpdate()
         {
+            SqlDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             var obj = new Identifiable<object>();
             SqlRepository.UnitOfWorks = UnitOfWork.Object;
 
             SqlRepository.InsertOrUpdate(obj);
 
-            Assert.AreEqual(0, SqlRepository.QueryList.Count);
+            SqlDataStore.Verify();
         }
 
         [TestCase]
@@ -165,22 +170,24 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void Update_QueryListShouldContainNewStatement()
         {
+            SqlDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             var obj = new Identifiable<object>();
 
             SqlRepository.Update(obj);
 
-            Assert.AreEqual(1, SqlRepository.QueryList.Count);
+            SqlDataStore.Verify();
         }
 
         [TestCase]
         public void Update_WithUnitOfWork_InnerStatementShouldNotBeUpdate()
         {
+            SqlDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             var obj = new Identifiable<object>();
             SqlRepository.UnitOfWorks = UnitOfWork.Object;
 
             SqlRepository.Update(obj);
 
-            Assert.AreEqual(0, SqlRepository.QueryList.Count);
+            SqlDataStore.Verify();
         }
 
         [TestCase]
@@ -198,11 +205,12 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void Delete_QueryListShouldContainNewStatement()
         {
+            SqlDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             var obj = new Identifiable<object>();
 
             SqlRepository.Delete(obj);
 
-            Assert.AreEqual(1, SqlRepository.QueryList.Count);
+            SqlDataStore.Verify();
         }
 
         [TestCase]
@@ -220,23 +228,25 @@ namespace Contest.Core.Repository.Sql.UnitTest
         [TestCase]
         public void Delete_AlreadyPresentObject_QueryListShouldContainNewStatement()
         {
+            SqlDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             var obj = new Identifiable<object>();
             Context.Setup(_ => _.IsExist(obj)).Returns(true);
 
             SqlRepository.Delete(obj);
 
-            Assert.AreEqual(1, SqlRepository.QueryList.Count);
+            SqlDataStore.Verify();
         }
 
         [TestCase]
         public void Delete_WithUnitOfWork_InnerStatementShouldNotBeUpdate()
         {
+            SqlDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             var obj = new Identifiable<object>();
             SqlRepository.UnitOfWorks = UnitOfWork.Object;
 
             SqlRepository.Delete(obj);
 
-            Assert.AreEqual(0, SqlRepository.QueryList.Count);
+            SqlDataStore.Verify();
         }
 
         [TestCase]

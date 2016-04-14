@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Contest.Core.DataStore;
-using Contest.Core.DataStore.Sql.SqlQuery;
+using Contest.Core.DataStore.Sql;
 
 namespace Contest.Core.Repository.Sql
 {
@@ -42,10 +41,6 @@ namespace Contest.Core.Repository.Sql
         /// </summary>
         bool IsBinded { get; }
 
-        /// <summary>
-        /// Inject sql request for next commit
-        /// </summary>
-        /// <param name="request">Request to add</param>
-        void AddRequest(ISqlQuery request);
+        ISqlDataStore SqlDataStore { get; }
     }
 }

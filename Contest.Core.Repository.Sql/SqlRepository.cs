@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
-using Contest.Core.DataStore;
 using Contest.Core.DataStore.Sql;
 using Contest.Core.DataStore.Sql.BusinessObjectFactory;
 using Contest.Core.DataStore.Sql.SqlQuery;
@@ -27,9 +26,9 @@ namespace Contest.Core.Repository.Sql
     public class SqlRepository<T, TI> : ISqlRepository<TI> where T : class, TI
         where TI : class, IQueryable
     {
-        private readonly IList<ISqlQuery> _queryList;
-
         private static string DatabasePath { get { return ConfigurationManager.AppSettings["DatabasePath"]; } }
+
+        private ISqlDataStore SqlDataStore { get; set; }
 
         public ISqlUnitOfWorks UnitOfWorks { get; set; }
 
@@ -38,25 +37,16 @@ namespace Contest.Core.Repository.Sql
         internal IBusinessObjectFactory<TI> BoFactory { get; set; }
 
         internal IDataContext<TI> Context { get; set; }
-
-        private ISqlDataStore SqlDataStore { get; set; }
-
-        public IList<ISqlQuery> QueryList
-        {
-            get { return _queryList; }
-        }
-
+        
         /// <summary>
         /// Create a new Repository
         /// </summary>
         public SqlRepository(ISqlDataStore dataStore)
         {
-            _queryList = new List<ISqlQuery>();
             SqlQueryFactory = new SqlQueryFactory<T,TI>(new SqliteStrategy());
             Context = new DataContext<TI>();
             BoFactory = new SqlSerializer<T, TI>();
             SqlDataStore = dataStore;
-            SqlDataStore.OpenDatabase();
         }
 
         /// <summary>
@@ -122,8 +112,8 @@ namespace Contest.Core.Repository.Sql
         
         private void AppendRequest(ISqlQuery request)
         {
-            if (UnitOfWorks == null) QueryList.Add(request);
-            else UnitOfWorks.AddRequest(request);
+            var sqlDataStore = UnitOfWorks != null ? UnitOfWorks.SqlDataStore : SqlDataStore;
+            SqlDataStore.AddRequest(request);
         }
 
         /// <summary>
@@ -175,24 +165,6 @@ namespace Contest.Core.Repository.Sql
         public void ClearCache()
         {
             Context.Clear();
-        }
-
-        /// <summary>
-        /// Persist all changes
-        /// </summary>
-        public void Commit()
-        {
-            if (UnitOfWorks != null) throw new NotSupportedException("Current repository is linked to unit of works.");
-            SqlDataStore.Execute(QueryList);
-        }
-
-        /// <summary>
-        /// Undo all changes making after last commit
-        /// </summary>
-        public void RollBack()
-        {
-            if (UnitOfWorks != null) throw new NotSupportedException("Current repository is linked to unit of works.");
-            QueryList.Clear();
         }
     }
 }
