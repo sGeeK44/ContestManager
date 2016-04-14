@@ -10,7 +10,7 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
 
         public override string ToStatement()
         {
-            var fieldList = (from propertyInfo in SqlFieldExtension.GetPropertiesList<T>()
+            var fieldList = (from propertyInfo in SqlColumnField.GetPropertiesList<T>()
                              let fieldAttribute = propertyInfo.GetCustomAttributes(typeof(SqlFieldAttribute), true)
                                                              .Cast<SqlFieldAttribute>()
                                                              .FirstOrDefault()

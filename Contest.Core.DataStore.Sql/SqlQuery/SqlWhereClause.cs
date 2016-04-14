@@ -109,7 +109,7 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
             }
             else throw new NotSupportedException(string.Format("Type not supported. Type:{0}.", m.Expression.GetType()));
 
-            if (IsLambdaArgument(fieldName)) return m.ColumnName<T>();
+            if (IsLambdaArgument(fieldName)) return SqlColumnField.GetColumnName<T>(m);
 
             var objectMember = Expression.Convert(m, typeof(object));
 

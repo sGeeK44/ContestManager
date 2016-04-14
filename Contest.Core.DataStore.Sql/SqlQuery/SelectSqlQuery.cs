@@ -25,7 +25,7 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
         {
             StringBuilder columns = null;
 
-            var columnField = SqlFieldExtension.GetSqlField<T>(null);
+            var columnField = SqlColumnField.GetSqlField<T>(null);
             foreach (var value in columnField)
             {
                 //Add marker to set clause

@@ -38,7 +38,7 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
             var activator = realObjectType.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[0], null);
             if (activator == null) throw new Exception(string.Format("Class which you want to deserialize doesn't contains default constructor. Class:{0}", typeof(TI).Name));
             var result = (TI)activator.Invoke(null);
-            foreach (var propertyInfo in SqlFieldExtension.GetPropertiesList<T>())
+            foreach (var propertyInfo in SqlColumnField.GetPropertiesList<T>())
             {
                 var fieldAttribute = propertyInfo.GetCustomAttributes(typeof(SqlFieldAttribute), true)
                                                                  .Cast<SqlFieldAttribute>()
@@ -80,7 +80,7 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
         private string GetStringEnumPivotValue(Type enumPivot, IDataReader row)
         {
             //Iterate all potential properties to find same type as enumPivot
-            foreach (var prop in SqlFieldExtension.GetPropertiesList<T>())
+            foreach (var prop in SqlColumnField.GetPropertiesList<T>())
             {
                 // If we found a property with same type as enum pivot
                 if (prop.PropertyType != enumPivot) continue;

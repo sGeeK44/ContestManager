@@ -59,7 +59,6 @@
     <Compile Include="SqlProviderStrategyBase.cs" />
     <Compile Include="SqlColumnField.cs" />
     <Compile Include="Attributes\SqlFieldAttribute.cs" />
-    <Compile Include="SqlFieldExtension.cs" />
     <Compile Include="Attributes\SqlPrimaryKeyAttribute.cs" />
     <Compile Include="SqlQuery\SqlQuery.cs" />
     <Compile Include="SqlQuery\SqlQueryFactory.cs" />

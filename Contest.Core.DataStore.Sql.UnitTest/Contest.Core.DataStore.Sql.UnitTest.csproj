@@ -60,7 +60,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceManyToMany\IdentifiableTest.cs" />
     <Compile Include="ReferenceManyToMany\RelationshipTest.cs" />
-    <Compile Include="SqlObjectExtentionTest.cs" />
+    <Compile Include="SqlColumnFieldTest.cs" />
     <Compile Include="SqlQuery\SqlWhereClauseTest.cs" />
     <Compile Include="SqlQuery\SqlQueryTest.cs" />
     <Compile Include="SqlQuery\SqlQueryTester.cs" />
