@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using Contest.Core.DataStore.Sql.SqlQuery;
 
 namespace Contest.Core.DataStore.Sql
@@ -15,6 +14,11 @@ namespace Contest.Core.DataStore.Sql
         void OpenDatabase();
 
         /// <summary>
+        /// Close active connection with database
+        /// </summary>
+        void CloseDatabase();
+
+        /// <summary>
         /// Execute specified request
         /// </summary>
         /// <param name="request">Sql request to execute</param>
@@ -22,11 +26,19 @@ namespace Contest.Core.DataStore.Sql
         IDataReader Execute(ISqlQuery request);
 
         /// <summary>
-        /// Close active connection with database
+        /// Cancel all request added after last commit
         /// </summary>
-        void CloseDatabase();
         void RollBack();
+
+        /// <summary>
+        /// Execute all request add after previous commit
+        /// </summary>
         void Commit();
+
+        /// <summary>
+        /// Add new request for next trasaction
+        /// </summary>
+        /// <param name="request">Request to apped</param>
         void AddRequest(ISqlQuery request);
     }
 }
