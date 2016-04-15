@@ -1,8 +1,4 @@
-﻿using System;
-
-namespace Contest.Core.DataStore.Sql.Attributes
+﻿namespace Contest.Core.DataStore.Sql.Attributes
 {
-    public class SqlReferenceOneToManyAttribute : Attribute
-    {
-    }
+    public class SqlReferenceOneToManyAttribute : SqlPropertyAttribute { }
 }

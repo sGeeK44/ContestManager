@@ -15,6 +15,14 @@ namespace Contest.Core.Repository.Sql
         {
             SqlDataStore = sqlDataStore;
         }
+
+        /// <summary>
+        /// Indicate if current unit of work is mapped to a Database
+        /// </summary>
+        public bool IsBinded
+        {
+            get { return SqlDataStore != null; }
+        }
         
         /// <summary>
         /// Get boolean to know if specified repository is already present in current unit of work
@@ -55,15 +63,7 @@ namespace Contest.Core.Repository.Sql
         /// <param name="item">New item to insert</param>
         public void Insert<T>(T item) where T : class
         {
-            //Check if we have a repository for this object type.
-            var repoType = typeof (T);
-            if (!_repositoryList.ContainsKey(repoType)) throw new ArgumentException(string.Format("Unit of works does not contain this type of repository. Type:{0}", repoType));
-            
-            //Get repo.
-            var repo = (ISqlRepository<T>)_repositoryList[repoType];
-
-            //Transmit request
-            repo.Insert(item);
+            GetRepository<T>().Insert(item);
         }
 
         /// <summary>
@@ -72,15 +72,7 @@ namespace Contest.Core.Repository.Sql
         /// <param name="item">New or Existing item to insert/Update</param>
         public void InsertOrUpdate<T>(T item) where T : class
         {
-            //Check if we have a repository for this object type.
-            var repoType = typeof(T);
-            if (!_repositoryList.ContainsKey(repoType)) throw new ArgumentException(string.Format("Unit of works does not contain this type of repository. Type:{0}", repoType));
-
-            //Get repo.
-            var repo = (ISqlRepository<T>)_repositoryList[repoType];
-
-            //Transmit request
-            repo.InsertOrUpdate(item);
+            GetRepository<T>().InsertOrUpdate(item);
         }
 
         /// <summary>
@@ -89,15 +81,7 @@ namespace Contest.Core.Repository.Sql
         /// <param name="item">Existing item to update</param>
         public void Update<T>(T item) where T : class
         {
-            //Check if we have a repository for this object type.
-            var repoType = typeof(T);
-            if (!_repositoryList.ContainsKey(repoType)) throw new ArgumentException(string.Format("Unit of works does not contain this type of repository. Type:{0}", repoType));
-
-            //Get repo.
-            var repo = (ISqlRepository<T>)_repositoryList[repoType];
-
-            //Transmit request
-            repo.Update(item);
+            GetRepository<T>().Update(item);
         }
 
         /// <summary>
@@ -106,15 +90,17 @@ namespace Contest.Core.Repository.Sql
         /// <param name="item">Old item to delete</param>
         public void Delete<T>(T item) where T : class
         {
-            //Check if we have a repository for this object type.
-            var repoType = typeof(T);
-            if (!_repositoryList.ContainsKey(repoType)) throw new ArgumentException(string.Format("Unit of works does not contain this type of repository. Type:{0}", repoType));
+            GetRepository<T>().Delete(item);
+        }
 
-            //Get repo.
-            var repo = (ISqlRepository<T>)_repositoryList[repoType];
+        public T FirstOrDefault<T>(Expression<Func<T, bool>> predicate) where T : class
+        {
+            return GetRepository<T>().FirstOrDefault(predicate);
+        }
 
-            //Transmit request
-            repo.Delete(item);
+        public IList<T> Find<T>(Expression<Func<T, bool>> predicate) where T : class
+        {
+            return GetRepository<T>().Find(predicate);
         }
 
         /// <summary>
@@ -133,38 +119,12 @@ namespace Contest.Core.Repository.Sql
             SqlDataStore.RollBack();
         }
 
-        public T FirstOrDefault<T>(Expression<Func<T, bool>> predicate) where T : class
+        private ISqlRepository<T> GetRepository<T>() where T : class
         {
-            //Check if we have a repository for this object type.
-            var repoType = typeof(T);
+            var repoType = typeof (T);
             if (!_repositoryList.ContainsKey(repoType)) throw new ArgumentException(string.Format("Unit of works does not contain this type of repository. Type:{0}", repoType));
 
-            //Get repo.
-            var repo = (ISqlRepository<T>)_repositoryList[repoType];
-
-            //Transmit request
-            return repo.FirstOrDefault(predicate);
-        }
-
-        public IList<T> Find<T>(Expression<Func<T, bool>> predicate) where T : class
-        {
-            //Check if we have a repository for this object type.
-            var repoType = typeof(T);
-            if (!_repositoryList.ContainsKey(repoType)) throw new ArgumentException(string.Format("Unit of works does not contain this type of repository. Type:{0}", repoType));
-
-            //Get repo.
-            var repo = (ISqlRepository<T>)_repositoryList[repoType];
-
-            //Transmit request
-            return repo.Find(predicate);
-        }
-
-        /// <summary>
-        /// Indicate if current unit of work is mapped to a Database
-        /// </summary>
-        public bool IsBinded
-        {
-            get { return SqlDataStore != null; }
+            return (ISqlRepository<T>) _repositoryList[repoType];
         }
     }
 }

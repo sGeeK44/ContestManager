@@ -198,24 +198,6 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
             Assert.AreEqual(typeof(GenericEntity<BasicEntity>), serializer.GetRealObjectType(typeof(GenericEntity<>), Data.Object));
         }
 
-        [TestCase]
-        public void FillOneToManyReferences_NoOnToManyReference_ShouldDoNothing()
-        {
-            var serializer = CreateSqlSerializer<BasicEntity>();
-            var obj = new BasicEntity();
-
-            serializer.FillOneToManyReferences(obj, Data.Object);
-        }
-
-        [TestCase]
-        public void FillOneToManyReferences_OneToManyReference_ShouldFillIt()
-        {
-            var serializer = CreateSqlSerializer<BasicEntity>();
-            var obj = new BasicEntity();
-
-            serializer.FillOneToManyReferences(obj, Data.Object);
-        }
-
         private SqlSerializer<T, T> CreateSqlSerializer<T>()
             where T : class
         {

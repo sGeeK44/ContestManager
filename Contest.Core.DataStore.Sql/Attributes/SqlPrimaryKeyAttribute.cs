@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Contest.Core.DataStore.Sql.Attributes
+﻿namespace Contest.Core.DataStore.Sql.Attributes
 {
     /// <summary>
     /// Flag a properties on Dto as primary key

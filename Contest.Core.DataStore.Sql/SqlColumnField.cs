@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Contest.Core.Converters;
 using Contest.Core.DataStore.Sql.Attributes;
 
 namespace Contest.Core.DataStore.Sql
@@ -22,10 +23,19 @@ namespace Contest.Core.DataStore.Sql
         public string ColumnName { get; private set; }
         public string MarkerValue { get; private set; }
         public bool IsPrimaryKey { get; private set; }
+        public PropertyInfo Property { get; private set; }
 
         public string ToSqlValue(ISqlProviderStrategy sqlProviderStrategy)
         {
             return sqlProviderStrategy.ToSqlValue(_value, _customAttr);
+        }
+
+        public void SetValue(IConverter converter, object objectToSet, string sqlValue)
+        {
+            if (!Property.CanWrite) throw new NotSupportedException(string.Format("You have flags property as SqlField, but setter isn't accessible. Property involve: {0} ({1}).", Property.Name, Property.PropertyType));
+
+            var innerValue = converter.Convert(Property.PropertyType, sqlValue, _customAttr);
+            if (innerValue != null) Property.SetValue(objectToSet, innerValue, null); //Set Prop which hold value;
         }
 
         public static SqlColumnField Create(string name, object value, object[] customAttr)
@@ -38,28 +48,35 @@ namespace Contest.Core.DataStore.Sql
             };
         }
 
-        public static List<SqlColumnField> GetSqlField<T>(object item)
+        public static List<SqlColumnField> GetSqlField<T>(object item = null)
         {
-            var propList = GetPropertiesList<T>();
+            return GetPropertiesList<T>().Where(_ => _.IsDefined(typeof(SqlFieldAttribute)))
+                                         .Select(_ => Create(_, item))
+                                         .ToList();
 
-            var result = new List<SqlColumnField>();
-            foreach (var prop in propList)
-            {
-                var customAttr = prop.GetCustomAttributes(true);
-                var fieldAttribute = customAttr.OfType<SqlFieldAttribute>().FirstOrDefault();
-                if (fieldAttribute == null) continue;
+            
+        }
 
-                var columnName = GetColumnName(fieldAttribute, prop);
-                var itemValue = item != null ? prop.GetValue(item, null) : null;
-                result.Add(Create(columnName, itemValue, customAttr));
-            }
-
+        private static SqlColumnField Create(PropertyInfo prop, object item)
+        {
+            var customAttr = prop.GetCustomAttributes(true);
+            var columnName = GetColumnName(prop);
+            var itemValue = item != null ? prop.GetValue(item, null) : null;
+            var result = Create(columnName, itemValue, customAttr);
+            result.Property = prop;
             return result;
         }
 
-        public static string GetColumnName<TObj, TPropOrField>(TObj obj, Expression<Func<TObj, TPropOrField>> propertyorFieldExpression)
+        private static IEnumerable<PropertyInfo> GetPropertiesList<T>()
         {
-            return GetColumnName(propertyorFieldExpression);
+            return GetPropertiesList(typeof(T));
+        }
+
+        private static IEnumerable<PropertyInfo> GetPropertiesList(Type t)
+        {
+            return t.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly)
+                    .Where(item => item.IsDefined(typeof(SqlPropertyAttribute), true))
+                    .Union(t.BaseType != null ? GetPropertiesList(t.BaseType) : new PropertyInfo[0]);
         }
 
         public static string GetColumnName<TObj, TPropOrField>(Expression<Func<TObj, TPropOrField>> propertyorFieldExpression)
@@ -78,22 +95,12 @@ namespace Contest.Core.DataStore.Sql
             return GetColumnName<T>(memberExpression.Member as PropertyInfo);
         }
 
-        public static string GetColumnName<T>(PropertyInfo property)
+        private static string GetColumnName<T>(PropertyInfo property)
         {
             if (property == null) throw new ArgumentNullException("property");
 
             var propertyOnRequestedType = GetPropertyOnRequestedType<T>(property);
-            var sqlAttribute = GetSqlFieldAttribute(propertyOnRequestedType);
-
-            return GetColumnName(sqlAttribute, propertyOnRequestedType);
-        }
-
-        private static SqlFieldAttribute GetSqlFieldAttribute(PropertyInfo propertyOnRequestedType)
-        {
-            var sqlAttribute = propertyOnRequestedType.GetCustomAttributes(typeof(SqlFieldAttribute), true).Cast<SqlFieldAttribute>().FirstOrDefault();
-            if (sqlAttribute == null) throw new NotSupportedException(string.Format("Properties doesn't contains SqlFieldAttribute. Property:{0}", propertyOnRequestedType.Name));
-
-            return sqlAttribute;
+            return GetColumnName(propertyOnRequestedType);
         }
 
         private static PropertyInfo GetPropertyOnRequestedType<T>(PropertyInfo property)
@@ -104,21 +111,18 @@ namespace Contest.Core.DataStore.Sql
             return requestedProperty;
         }
 
-        private static string GetColumnName(SqlFieldAttribute attr, PropertyInfo prop)
+        private static string GetColumnName(PropertyInfo prop)
         {
+            var attr = GetSqlFieldAttribute(prop);
             return attr.Name ?? prop.Name;
         }
 
-        public static IEnumerable<PropertyInfo> GetPropertiesList<T>()
+        private static SqlFieldAttribute GetSqlFieldAttribute(PropertyInfo propertyOnRequestedType)
         {
-            return GetPropertiesList(typeof(T));
-        }
+            var sqlAttribute = propertyOnRequestedType.GetCustomAttributes(typeof(SqlFieldAttribute), true).Cast<SqlFieldAttribute>().FirstOrDefault();
+            if (sqlAttribute == null) throw new NotSupportedException(string.Format("Properties doesn't contains SqlFieldAttribute. Property:{0}", propertyOnRequestedType.Name));
 
-        public static IEnumerable<PropertyInfo> GetPropertiesList(Type t)
-        {
-            return t.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly)
-                    .Where(item => item.IsDefined(typeof(SqlFieldAttribute), true))
-                    .Union(t.BaseType != null ? GetPropertiesList(t.BaseType) : new PropertyInfo[0]);
+            return sqlAttribute;
         }
     }
 }

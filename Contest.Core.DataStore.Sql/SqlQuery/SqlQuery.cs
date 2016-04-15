@@ -39,11 +39,5 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
 
             return tableAttribute.Name ?? typeof(T).Name;
         }
-
-        protected string SetValue(string request, IEnumerable<SqlColumnField> arg)
-        {
-            if (arg == null) return request;
-            return arg.Aggregate(request, (current, field) => current.Replace(field.MarkerValue, field.ToSqlValue(SqlProviderStrategy)));
-        }
     }
 }

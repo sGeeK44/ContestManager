@@ -42,7 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\SqlAttribute.cs" />
     <Compile Include="Attributes\SqlForeignKeyAttribute.cs" />
+    <Compile Include="Attributes\SqlPropertyAttribute.cs" />
     <Compile Include="Attributes\SqlReferenceManyToManyAttribute.cs" />
     <Compile Include="SqlQuery\CreateSqlQuery.cs" />
     <Compile Include="BusinessObjectFactory\IBusinessObjectFactory.cs" />

@@ -20,5 +20,10 @@ namespace Contest.Core.DataStore.Sql.UnitTest.Entities
         {
             throw new NotImplementedException();
         }
+
+        public OneToManyEntity Create()
+        {
+            return new OneToManyEntity { Id = Guid };
+        }
     }
 }

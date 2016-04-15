@@ -3,7 +3,6 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using Contest.Core.Converters;
-using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.Serialization;
 
 namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
@@ -37,22 +36,13 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
             var constructor = GetDefaultConstructor(realObjectType);
             var result = (TI)constructor.Invoke(null);
 
-            foreach (var propertyInfo in SqlColumnField.GetPropertiesList<T>())
+            foreach (var field in SqlColumnField.GetSqlField<T>())
             {
-                var fieldAttribute = propertyInfo.GetCustomAttributes(typeof(SqlFieldAttribute), true)
-                                                                 .Cast<SqlFieldAttribute>()
-                                                                 .FirstOrDefault();
-                if (fieldAttribute == null) continue;
-
                 // Converter value
-                var sqlValue = row[SqlColumnField.GetColumnName<T>(propertyInfo)];
+                var sqlValue = row[field.ColumnName];
                 if (sqlValue == null) continue;
                 
-                // Ensure properties have set accessor
-                if (!propertyInfo.CanWrite) throw new NotSupportedException(string.Format("You have flags property as DataMember, but setter isn't accessible. Object type:{0}. Property involve: {1} ({2}).", realObjectType.Name, propertyInfo.Name, propertyInfo.PropertyType));
-
-                var innerValue = Converter.Convert(propertyInfo.PropertyType, sqlValue.ToString(), propertyInfo.GetCustomAttributes(true));
-                if (innerValue != null) propertyInfo.SetValue(result, innerValue, null); //Set Prop which hold value;
+                field.SetValue(Converter, result, sqlValue.ToString());
             }
             return result;
         }
@@ -99,23 +89,17 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
 
         public string GetEnumPivotValue(Type enumPivot, IDataReader row)
         {
-            PropertyInfo prop;
-            try { prop = SqlColumnField.GetPropertiesList<T>().Single(_ => _.PropertyType == enumPivot); }
+            SqlColumnField field;
+            try { field = SqlColumnField.GetSqlField<T>().Single(_ => _.Property.PropertyType == enumPivot); }
             catch (InvalidOperationException ex)
             {
                 throw new NotSupportedException(string.Format("Enum pivot not or several found. EnumPivot:{0}. CurrentType:{1}", enumPivot, typeof(T)), ex);
             }
 
-            var columnName = SqlColumnField.GetColumnName<T>(prop);
-            var sqlValue = row[columnName];
-            if (sqlValue == null) throw new NotSupportedException(string.Format("Data reader does not contain column value for enum pivot. EnumPivot:{0}. ColumnName:{1}", enumPivot, columnName));
+            var sqlValue = row[field.ColumnName];
+            if (sqlValue == null) throw new NotSupportedException(string.Format("Data reader does not contain column value for enum pivot. EnumPivot:{0}. ColumnName:{1}", enumPivot, field.ColumnName));
 
             return sqlValue.ToString();
-        }
-
-        public TI FillOneToManyReferences(TI objToFill, IDataReader row)
-        {
-            return objToFill;
         }
     }
 }

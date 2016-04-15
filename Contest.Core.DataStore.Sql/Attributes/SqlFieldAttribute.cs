@@ -1,9 +1,6 @@
-﻿using System;
-
-namespace Contest.Core.DataStore.Sql.Attributes
+﻿namespace Contest.Core.DataStore.Sql.Attributes
 {
-    [AttributeUsage(AttributeTargets.Property)]
-    public class SqlFieldAttribute : Attribute
+    public class SqlFieldAttribute : SqlPropertyAttribute
     {
         public string Name { get; set; }
     }

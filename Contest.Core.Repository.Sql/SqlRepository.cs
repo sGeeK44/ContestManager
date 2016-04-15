@@ -113,7 +113,7 @@ namespace Contest.Core.Repository.Sql
         private void AppendRequest(ISqlQuery request)
         {
             var sqlDataStore = UnitOfWorks != null ? UnitOfWorks.SqlDataStore : SqlDataStore;
-            SqlDataStore.AddRequest(request);
+            sqlDataStore.AddRequest(request);
         }
 
         /// <summary>
@@ -137,8 +137,7 @@ namespace Contest.Core.Repository.Sql
         /// <return>A list wich contain all item founds or an empty list</return>
         public IList<TI> Find(Expression<Func<TI, bool>> predicate)
         {
-            var request = PrepareSqlRequest(predicate);
-
+            var request = SqlQueryFactory.Select(predicate);
             var result = SqlDataStore.Execute(request);
 
             while (result.Read())
@@ -147,6 +146,8 @@ namespace Contest.Core.Repository.Sql
 
                 //Update context
                 if (!Context.IsExist(item)) Context.Insert(item);
+
+                TryFillOneToManyReference(item);
             }
             result.Close();
 
@@ -154,9 +155,11 @@ namespace Contest.Core.Repository.Sql
             return Context.Find(predicate.Compile());
         }
 
-        public ISqlQuery PrepareSqlRequest(Expression<Func<TI, bool>> predicate)
+        public void TryFillOneToManyReference(TI item)
         {
-            return SqlQueryFactory.Select(predicate);
+            if (UnitOfWorks == null) return;
+
+            
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿using Contest.Core.DataStore;
+﻿using System.Linq;
 using Contest.Core.DataStore.Sql;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.DataStore.Sql.SqlQuery;
@@ -7,36 +7,39 @@ using NUnit.Framework;
 
 namespace Contest.Core.Repository.Sql.UnitTest
 {
-    [TestFixture]
-    public class SqlRepositoryTest
+    public class SqlRepositoryTestBase<T> where T : class, IQueryable
     {
-        private Mock<IDataContext<Identifiable<object>>> Context { get; set; }
-        private Mock<ISqlQueryFactory<Identifiable<object>>> SqlBuilder { get; set; }
-        private Mock<ISqlUnitOfWorks> UnitOfWork { get; set; }
-        private Mock<ISqlDataStore> SqlDataStore { get; set; }
-        private SqlRepository<Identifiable<object>, Identifiable<object>> SqlRepository { get; set; }
+        public Mock<IDataContext<T>> Context { get; set; }
+        public Mock<ISqlQueryFactory<T>> SqlBuilder { get; set; }
+        public Mock<ISqlUnitOfWorks> UnitOfWork { get; set; }
+        public Mock<ISqlDataStore> SqlDataStore { get; set; }
+        public SqlRepository<T, T> SqlRepository { get; set; }
 
         [SetUp]
         public void Init()
         {
-            Context = new Mock<IDataContext<Identifiable<object>>>();
-            SqlBuilder = new Mock<ISqlQueryFactory<Identifiable<object>>>();
+            Context = new Mock<IDataContext<T>>();
+            SqlBuilder = new Mock<ISqlQueryFactory<T>>();
             UnitOfWork = new Mock<ISqlUnitOfWorks>();
             SqlDataStore = new Mock<ISqlDataStore>();
 
-            SqlRepository = new SqlRepository<Identifiable<object>, Identifiable<object>>(SqlDataStore.Object)
+            SqlRepository = new SqlRepository<T, T>(SqlDataStore.Object)
             {
                 SqlQueryFactory = SqlBuilder.Object,
                 Context = Context.Object
             };
-        }
 
+            UnitOfWork.Setup(_ => _.SqlDataStore).Returns(SqlDataStore.Object);
+        }
+    }
+
+    [TestFixture]
+    public class SqlRepositoryTestPart1 : SqlRepositoryTestBase<Identifiable<object>>
+    {
         [TestCase]
         public void Constructor_ShouldBeEmptyStatement()
         {
             SqlDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
-            var repo = new SqlRepository<Identifiable<object>, Identifiable<object>>(SqlDataStore.Object);
-
             SqlDataStore.Verify();
         }
 
@@ -259,6 +262,35 @@ namespace Contest.Core.Repository.Sql.UnitTest
             SqlRepository.Delete(obj);
 
             UnitOfWork.Verify();
+        }
+
+        [TestCase]
+        public void FillOneToManyReferences_RepositoryNoLinkedToUnitOfWork_ShouldDoNothing()
+        {
+            SqlRepository.TryFillOneToManyReference(new Identifiable<object>());
+        }
+
+        [TestCase]
+        public void FillOneToManyReferences_NoOnToManyReference_ShouldDoNothing()
+        {
+            SqlRepository.UnitOfWorks = UnitOfWork.Object;
+            SqlRepository.TryFillOneToManyReference(new Identifiable<object>());
+        }
+    }
+
+    [TestFixture]
+    public class SqlRepositoryTestPart2 : SqlRepositoryTestBase<OneToManyEntity>
+    {
+        [TestCase]
+        public void FillOneToManyReferences_OneToManyReference_ShouldFillIt()
+        {
+            SqlRepository.UnitOfWorks = UnitOfWork.Object;
+            var expectedReference = new ManyToOneEntity();
+            var obj = new OneToManyEntity();
+
+            SqlRepository.TryFillOneToManyReference(obj);
+
+            Assert.AreEqual(expectedReference, obj.EntityList.ToList()[0]);
         }
     }
 }

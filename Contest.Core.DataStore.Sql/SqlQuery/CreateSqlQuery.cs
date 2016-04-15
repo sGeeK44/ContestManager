@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Contest.Core.DataStore.Sql.Attributes;
 
 namespace Contest.Core.DataStore.Sql.SqlQuery
 {
@@ -10,17 +9,11 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
 
         public override string ToStatement()
         {
-            var fieldList = (from propertyInfo in SqlColumnField.GetPropertiesList<T>()
-                             let fieldAttribute = propertyInfo.GetCustomAttributes(typeof(SqlFieldAttribute), true)
-                                                             .Cast<SqlFieldAttribute>()
-                                                             .FirstOrDefault()
-                             where fieldAttribute != null
+            var fieldList = (from propertyInfo in SqlColumnField.GetSqlField<T>()
                              select string.Format("{0} {1}{2}",
-                                                 fieldAttribute.Name ?? propertyInfo.Name,
-                                                 SqlProviderStrategy.ToSqlType(propertyInfo.PropertyType),
-                                                 propertyInfo.GetCustomAttributes(typeof(SqlPrimaryKeyAttribute), true)
-                                                             .Cast<SqlPrimaryKeyAttribute>()
-                                                             .FirstOrDefault() != null ? " primary key" : string.Empty)).ToList();
+                                                 propertyInfo.ColumnName,
+                                                 SqlProviderStrategy.ToSqlType(propertyInfo.Property.PropertyType),
+                                                 propertyInfo.IsPrimaryKey ? " primary key" : string.Empty)).ToList();
 
 
             if (fieldList.Count == 0) throw new NotSupportedException("Table have to own one field at less.");

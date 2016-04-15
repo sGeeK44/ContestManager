@@ -20,7 +20,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.Entities
 
         public OneToManyEntity Entity { get; private set; }
 
-        public static ManyToOneEntity CreateMock()
+        public static ManyToOneEntity Create()
         {
             return new ManyToOneEntity
             {

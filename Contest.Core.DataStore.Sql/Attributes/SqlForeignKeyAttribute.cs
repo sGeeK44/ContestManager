@@ -7,10 +7,7 @@ namespace Contest.Core.DataStore.Sql.Attributes
     /// </summary>
     public class SqlForeignKeyAttribute : SqlFieldAttribute
     {
-        public SqlForeignKeyAttribute(Type foreignEntity)
-        {
-
-        }
+        public SqlForeignKeyAttribute(Type foreignEntity) { }
 
         public string PrimaryKeyPropertyName { get; set; }
     }
