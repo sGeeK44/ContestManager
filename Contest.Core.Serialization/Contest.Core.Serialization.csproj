@@ -45,6 +45,7 @@
     <Compile Include="DynamicClassAttributeExtension.cs" />
     <Compile Include="GenericClassAttribute.cs" />
     <Compile Include="GenericClassAttributeExtension.cs" />
+    <Compile Include="PivotAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

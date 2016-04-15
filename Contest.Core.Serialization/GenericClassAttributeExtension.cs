@@ -33,12 +33,12 @@ namespace Contest.Core.Serialization
         /// <param name="value">String value of enum pivot</param>
         /// <param name="converter">Converter to convert string value to enum pivot field</param>
         /// <returns>Real type</returns>
-        public static Type GetGenericType(this Type objType, string value, IEnumConverter converter)
+        public static Type GetGenericType(this Type objType, string value, IConverter converter)
         {
             var attr = objType.GetCustomAttributes(typeof(GenericClassAttribute), false) as GenericClassAttribute[];
 
             if (attr == null || attr.Length == 0) return objType;
-            if (attr.Length == 1) return attr[0].GetGenericType(value, converter);
+            if (attr.Length == 1) return attr[0].GetAssociatedClass(value, converter);
             throw new SeveralFoundException(typeof(GenericClassAttribute), attr.Length);
         }
     }

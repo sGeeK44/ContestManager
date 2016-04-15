@@ -18,7 +18,7 @@ namespace Contest.Core.Converters
         private static readonly Converter instance = new Converter();
         private static readonly IBooleanConverter defaultBooleanConverter = new BooleanTrueFalse();
         private static readonly INumberConverter defaultNumberConverter = new NumberNoSpecific();
-        private static readonly IEnumConverter defaultEnumConverter = new StringEnumByFieldName();
+        private static readonly IEnumConverter defaultEnumConverter = new StringEnumByInt();
         private static readonly IDateTimeConverter defaultDateTimeConverter = new DateTimeTimestamp();
         private static readonly ITimeSpanConverter defaultTimeSpanConverter = new TimeSpanDb2();
         private static readonly IGuidConverter defaultGuidConverter = new GuidNoSpecific();

@@ -78,7 +78,7 @@ namespace Contest.Core.DataStore.Sql
             return GetColumnName<T>(memberExpression.Member as PropertyInfo);
         }
 
-        private static string GetColumnName<T>(PropertyInfo property)
+        public static string GetColumnName<T>(PropertyInfo property)
         {
             if (property == null) throw new ArgumentNullException("property");
 
@@ -90,9 +90,9 @@ namespace Contest.Core.DataStore.Sql
 
         private static SqlFieldAttribute GetSqlFieldAttribute(PropertyInfo propertyOnRequestedType)
         {
-            var sqlAttribute = propertyOnRequestedType.GetCustomAttributes(typeof(SqlFieldAttribute), true).Cast<SqlFieldAttribute>().First();
+            var sqlAttribute = propertyOnRequestedType.GetCustomAttributes(typeof(SqlFieldAttribute), true).Cast<SqlFieldAttribute>().FirstOrDefault();
+            if (sqlAttribute == null) throw new NotSupportedException(string.Format("Properties doesn't contains SqlFieldAttribute. Property:{0}", propertyOnRequestedType.Name));
 
-            if (sqlAttribute == null) throw new NotSupportedException("Properties doesn't contains SqlFieldAttribute.");
             return sqlAttribute;
         }
 

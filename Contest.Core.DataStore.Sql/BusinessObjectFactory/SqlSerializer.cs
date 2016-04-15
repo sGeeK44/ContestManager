@@ -3,7 +3,6 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using Contest.Core.Converters;
-using Contest.Core.Converters.EnumConverter;
 using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.Serialization;
 
@@ -13,13 +12,13 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
         where T : class, TI
         where TI : class
     {
-        private IConverter Instance { get; set; }
-        private IEnumConverter PivotEnumConverter { get; set; }
+        private IConverter Converter { get; set; }
 
-        public SqlSerializer()
+        public SqlSerializer() : this (Converters.Converter.Instance) { }
+
+        public SqlSerializer(IConverter converter)
         {
-            Instance = Converter.Instance;
-            PivotEnumConverter = new StringEnumByInt();
+            Converter = converter;
         }
 
         public TI Convert(object from)
@@ -35,9 +34,9 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
             var realObjectType = GetRealObjectType(typeof(T), row);
 
             //Get default constructor
-            var activator = realObjectType.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[0], null);
-            if (activator == null) throw new Exception(string.Format("Class which you want to deserialize doesn't contains default constructor. Class:{0}", typeof(TI).Name));
-            var result = (TI)activator.Invoke(null);
+            var constructor = GetDefaultConstructor(realObjectType);
+            var result = (TI)constructor.Invoke(null);
+
             foreach (var propertyInfo in SqlColumnField.GetPropertiesList<T>())
             {
                 var fieldAttribute = propertyInfo.GetCustomAttributes(typeof(SqlFieldAttribute), true)
@@ -45,53 +44,78 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
                                                                  .FirstOrDefault();
                 if (fieldAttribute == null) continue;
 
+                // Converter value
+                var sqlValue = row[SqlColumnField.GetColumnName<T>(propertyInfo)];
+                if (sqlValue == null) continue;
+                
                 // Ensure properties have set accessor
                 if (!propertyInfo.CanWrite) throw new NotSupportedException(string.Format("You have flags property as DataMember, but setter isn't accessible. Object type:{0}. Property involve: {1} ({2}).", realObjectType.Name, propertyInfo.Name, propertyInfo.PropertyType));
 
-                // Converter value
-                var innerValue = Instance.Convert(propertyInfo.PropertyType, row[fieldAttribute.Name ?? propertyInfo.Name].ToString(), propertyInfo.GetCustomAttributes(true));
-                if (innerValue == null) continue; //If inner value is null don't set property
-                propertyInfo.SetValue(result, innerValue, null); //Set Prop which hold value;
+                var innerValue = Converter.Convert(propertyInfo.PropertyType, sqlValue.ToString(), propertyInfo.GetCustomAttributes(true));
+                if (innerValue != null) propertyInfo.SetValue(result, innerValue, null); //Set Prop which hold value;
             }
             return result;
         }
 
-        private Type GetRealObjectType(Type objectType, IDataReader row)
+        private static ConstructorInfo GetDefaultConstructor(Type objectType)
+        {
+            var activator = objectType.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[0], null);
+            if (activator != null) return activator;
+            
+            throw new NotSupportedException(string.Format("Class which you want to deserialize doesn't contains default constructor. Class:{0}", typeof(TI).Name));
+        }
+
+        public Type GetRealObjectType(Type objectType, IDataReader row)
         {
             if (objectType == null) throw new ArgumentNullException("objectType");
             if (row == null) throw new ArgumentNullException("row");
-            Type dynamicEnumPivot;
-            var isDynamicType = objectType.IsDynamicType(out dynamicEnumPivot);
 
-            var result = isDynamicType
-                       ? GetRealObjectType(objectType.GetDynamicType(GetStringEnumPivotValue(dynamicEnumPivot, row), PivotEnumConverter), row)
-                       : objectType;
-
-            //Check if object is generic
-            Type genericEnumPivot;
-            if (!result.IsGenericType(out genericEnumPivot)) return result;
-
-            //Get generic type definition
-            result = result.GetGenericTypeDefinition();
-            result = result.MakeGenericType(GetRealObjectType(result.GetGenericType(GetStringEnumPivotValue(genericEnumPivot, row), PivotEnumConverter), row)); //Set generic type
-            return result;
+            var result = GetDynamicType(objectType, row);
+            return  GetGenericType(result, row);
         }
 
-        private string GetStringEnumPivotValue(Type enumPivot, IDataReader row)
+        private Type GetDynamicType(Type type, IDataReader row)
         {
-            //Iterate all potential properties to find same type as enumPivot
-            foreach (var prop in SqlColumnField.GetPropertiesList<T>())
+            Type dynamicEnumPivot;
+
+            if (!type.IsDynamicType(out dynamicEnumPivot)) return type;
+
+            var enumPivotValue = GetEnumPivotValue(dynamicEnumPivot, row);
+            var associatedClass = type.GetDynamicType(enumPivotValue, Converter);
+            return GetRealObjectType(associatedClass, row);
+        }
+
+        private Type GetGenericType(Type type, IDataReader row)
+        {
+            Type genericEnumPivot;
+            if (!type.IsGenericType(out genericEnumPivot)) return type;
+
+            var result = type.GetGenericTypeDefinition();
+            var enumPivotValue = GetEnumPivotValue(genericEnumPivot, row);
+            var associatedClass = type.GetGenericType(enumPivotValue, Converter);
+            var realAssociatedClass = GetRealObjectType(associatedClass, row);
+            return result.MakeGenericType(realAssociatedClass);
+        }
+
+        public string GetEnumPivotValue(Type enumPivot, IDataReader row)
+        {
+            PropertyInfo prop;
+            try { prop = SqlColumnField.GetPropertiesList<T>().Single(_ => _.PropertyType == enumPivot); }
+            catch (InvalidOperationException ex)
             {
-                // If we found a property with same type as enum pivot
-                if (prop.PropertyType != enumPivot) continue;
-                var fieldAttribute = prop.GetCustomAttributes(typeof(SqlFieldAttribute), true)
-                                                         .Cast<SqlFieldAttribute>()
-                                                         .FirstOrDefault();
-                if (fieldAttribute == null) continue;
-                return row[fieldAttribute.Name ?? prop.Name].ToString();
+                throw new NotSupportedException(string.Format("Enum pivot not or several found. EnumPivot:{0}. CurrentType:{1}", enumPivot, typeof(T)), ex);
             }
 
-            throw new NotSupportedException(string.Format("Enum pivot not found. EnumPivot:{0}. CurrentType:{1}", enumPivot, typeof(TI)));
+            var columnName = SqlColumnField.GetColumnName<T>(prop);
+            var sqlValue = row[columnName];
+            if (sqlValue == null) throw new NotSupportedException(string.Format("Data reader does not contain column value for enum pivot. EnumPivot:{0}. ColumnName:{1}", enumPivot, columnName));
+
+            return sqlValue.ToString();
+        }
+
+        public TI FillOneToManyReferences(TI objToFill, IDataReader row)
+        {
+            return objToFill;
         }
     }
 }

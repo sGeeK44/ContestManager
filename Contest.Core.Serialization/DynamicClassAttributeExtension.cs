@@ -34,12 +34,12 @@ namespace Contest.Core.Serialization
         /// <param name="value">String value of enum pivot</param>
         /// <param name="converter">Converter to convert string value to enum pivot field</param>
         /// <returns>Real type</returns>
-        public static Type GetDynamicType(this Type objType, string value, IEnumConverter converter)
+        public static Type GetDynamicType(this Type objType, string value, IConverter converter)
         {
             var attr = objType.GetCustomAttributes(typeof(DynamicClassAttribute), false) as DynamicClassAttribute[];
 
             if (attr == null || attr.Length == 0) return objType;
-            if (attr.Length == 1) return attr[0].GetDynamicType(value, converter);
+            if (attr.Length == 1) return attr[0].GetAssociatedClass(value, converter);
             throw new SeveralFoundException(typeof(DynamicClassAttribute), attr.Length);
         }
     }
