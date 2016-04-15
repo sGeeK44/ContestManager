@@ -8,6 +8,16 @@ namespace Contest.Core.Repository.Sql
     public interface ISqlUnitOfWorks : IUnitOfWorks
     {
         /// <summary>
+        /// Indicate if current unit of work is mapped to a Database
+        /// </summary>
+        bool IsBinded { get; }
+
+        /// <summary>
+        /// Get store used for data access
+        /// </summary>
+        ISqlDataStore SqlDataStore { get; }
+
+        /// <summary>
         /// Get boolean to know if specified repository is already present in current unit of work
         /// </summary>
         /// <typeparam name="T">Type of object managed by repository</typeparam>
@@ -35,12 +45,5 @@ namespace Contest.Core.Repository.Sql
         /// <param name="predicate">NewA lamba expression for where clause</param>
         /// <return>A list wich contain all item founds or an empty list</return>
         IList<T> Find<T>(Expression<Func<T, bool>> predicate) where T : class;
-
-        /// <summary>
-        /// Indicate if current unit of work is mapped to a Database
-        /// </summary>
-        bool IsBinded { get; }
-
-        ISqlDataStore SqlDataStore { get; }
     }
 }
