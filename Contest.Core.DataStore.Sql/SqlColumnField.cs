@@ -27,7 +27,12 @@ namespace Contest.Core.DataStore.Sql
 
         public string ToSqlValue(ISqlProviderStrategy sqlProviderStrategy)
         {
-            return sqlProviderStrategy.ToSqlValue(_value, _customAttr);
+            return ToSqlValue(sqlProviderStrategy, _value, _customAttr);
+        }
+
+        public static string ToSqlValue(ISqlProviderStrategy sqlProviderStrategy, object value, object[] customAttr)
+        {
+            return sqlProviderStrategy.ToSqlValue(value, customAttr);
         }
 
         public void SetValue(IConverter converter, object objectToSet, string sqlValue)
@@ -53,8 +58,6 @@ namespace Contest.Core.DataStore.Sql
             return GetPropertiesList<T>().Where(_ => _.IsDefined(typeof(SqlFieldAttribute)))
                                          .Select(_ => Create(_, item))
                                          .ToList();
-
-            
         }
 
         private static SqlColumnField Create(PropertyInfo prop, object item)

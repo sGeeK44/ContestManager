@@ -12,31 +12,31 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
     [TestFixture]
     public class SqlWhereClauseTest : SqlQueryTestBase
     {
+        private const string SQL_VALUE = "####";
+
         [SetUp]
         public override void Init()
         {
             SqlStrategy = new Mock<ISqlProviderStrategy>();
+            SqlStrategy.Setup(_ => _.ToSqlValue(It.IsAny<object>(), It.IsAny<object[]>())).Returns(SQL_VALUE);
         }
 
         [TestCase]
         public void ToStatement_TruePredicate_ShouldReturnNull()
         {
-            IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => true);
 
-            Assert.AreEqual(string.Empty, query.ToStatement(out arg));
-            AssertArg(arg);
+            Assert.AreEqual(string.Empty, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_ById()
         {
-            IList<SqlColumnField> arg;
             var ent = OverrideNameEntity.CreateMock();
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Id == ent.Id);
+            var expected = string.Format("WHERE ID = {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE ID = @P0@", query.ToStatement(out arg));
-            AssertArg(arg, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"));
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
@@ -44,31 +44,28 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
         {
             var id = OverrideNameEntity.Guid;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Id == id);
-            IList<SqlColumnField> arg;
+            var expected = string.Format("WHERE ID = {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE ID = @P0@", query.ToStatement(out arg));
-            AssertArg(arg, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"));
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_ByName()
         {
-            IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Name == "NameSearch");
+            var expected = string.Format("WHERE NAME = {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE NAME = @P0@", query.ToStatement(out arg));
-            AssertArg(arg, "NameSearch");
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_And()
         {
-            IList<SqlColumnField> arg;
             var ent = OverrideNameEntity.CreateMock();
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Id == ent.Id && _.Name == "NameSearch");
+            var expected = string.Format("WHERE ID = {0} AND NAME = {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE ID = @P0@ AND NAME = @P1@", query.ToStatement(out arg));
-            AssertArg(arg, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"), "NameSearch");
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
@@ -76,10 +73,9 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
         {
             var ent = OverrideNameEntity.CreateMock();
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Id == ent.Id || _.Name == "NameSearch");
-            IList<SqlColumnField> arg;
+            var expected = string.Format("WHERE ID = {0} OR NAME = {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE ID = @P0@ OR NAME = @P1@", query.ToStatement(out arg));
-            AssertArg(arg, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"),"NameSearch");
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
@@ -88,172 +84,158 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => true);
 
-            Assert.AreEqual(string.Empty, query.ToStatement(out arg));
-            AssertArg(arg);
+            Assert.AreEqual(string.Empty, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_ByIdWithInterface()
         {
-            IList<SqlColumnField> arg;
             IOverrideNameEntity ent = OverrideNameEntity.CreateMock();
             var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => _.Id == ent.Id);
+            var expected = string.Format("WHERE ID = {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE ID = @P0@", query.ToStatement(out arg));
-            AssertArg(arg, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"));
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_ByVarIdWithInterface()
         {
-            IList<SqlColumnField> arg;
             var id = OverrideNameEntity.Guid;
             var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => _.Id == id);
+            var expected = string.Format("WHERE ID = {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE ID = @P0@", query.ToStatement(out arg));
-            AssertArg(arg, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"));
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_ByNameWithInterface()
         {
-            IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => _.Name == "NameSearch");
+            var expected = string.Format("WHERE NAME = {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE NAME = @P0@", query.ToStatement(out arg));
-            AssertArg(arg, "NameSearch");
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_AndWithInterface()
         {
-            IList<SqlColumnField> arg;
             IOverrideNameEntity ent = OverrideNameEntity.CreateMock();
             var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => _.Id == ent.Id && _.Name == "NameSearch");
 
-            Assert.AreEqual("WHERE ID = @P0@ AND NAME = @P1@", query.ToStatement(out arg));
-            AssertArg(arg, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"),"NameSearch");
+            var expected = string.Format("WHERE ID = {0} AND NAME = {0}", SQL_VALUE);
+
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_OrWithInterface()
         {
-            IList<SqlColumnField> arg;
             IOverrideNameEntity ent = OverrideNameEntity.CreateMock();
             var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => _.Id == ent.Id || _.Name == "NameSearch");
+            var expected = string.Format("WHERE ID = {0} OR NAME = {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE ID = @P0@ OR NAME = @P1@", query.ToStatement(out arg));
-            AssertArg(arg, new Guid("6A4A4F81-0C29-43C4-863E-AD10398B3A8C"), "NameSearch");
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_AddOperator()
         {
             var param = 5;
-            IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age == param + 5);
+            var expected = string.Format("WHERE AGE = {0} + {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE AGE = @P0@ + @P1@", query.ToStatement(out arg));
-            AssertArg(arg, 5, 5);
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_SubtractOperator()
         {
             var param = 5;
-            IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age == param - 5);
-            Assert.AreEqual("WHERE AGE = @P0@ - @P1@", query.ToStatement(out arg));
-            AssertArg(arg, 5, 5);
+            var expected = string.Format("WHERE AGE = {0} - {0}", SQL_VALUE);
+
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_NegateMember()
         {
-            IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => -(_.Age) == 5);
-            Assert.AreEqual("WHERE - AGE = @P0@", query.ToStatement(out arg));
-            AssertArg(arg, 5);
+            var expected = string.Format("WHERE - AGE = {0}", SQL_VALUE);
+
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_MultiplyMember()
         {
-            IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age * 5 == 5);
+            var expected = string.Format("WHERE AGE * {0} = {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE AGE * @P0@ = @P1@", query.ToStatement(out arg));
-            AssertArg(arg, 5, 5);
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_DivideMember()
         {
-            IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age / 5 == 5);
+            var expected = string.Format("WHERE AGE / {0} = {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE AGE / @P0@ = @P1@", query.ToStatement(out arg));
-            AssertArg(arg, 5, 5);
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_ModuloMember()
         {
-            IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age % 5 == 5);
+            var expected = string.Format("WHERE AGE MOD {0} = {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE AGE MOD @P0@ = @P1@", query.ToStatement(out arg));
-            AssertArg(arg, 5, 5);
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_LessThanExpression()
         {
-            IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age < 5);
+            var expected = string.Format("WHERE AGE < {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE AGE < @P0@", query.ToStatement(out arg));
-            AssertArg(arg, 5);
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_LessThanOrEqualExpression()
         {
-            IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age <= 5);
+            var expected = string.Format("WHERE AGE <= {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE AGE <= @P0@", query.ToStatement(out arg));
-            AssertArg(arg, 5);
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_MoreThanExpression()
         {
-            IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age > 5);
+            var expected = string.Format("WHERE AGE > {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE AGE > @P0@", query.ToStatement(out arg));
-            AssertArg(arg, 5);
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_MoreThanOrEqualExpression()
         {
-            IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age >= 5);
+            var expected = string.Format("WHERE AGE >= {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE AGE >= @P0@", query.ToStatement(out arg));
-            AssertArg(arg, 5);
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
         public void ToStatement_DifferentExpression()
         {
-            IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Age != 5);
+            var expected = string.Format("WHERE AGE <> {0}", SQL_VALUE);
 
-            Assert.AreEqual("WHERE AGE <> @P0@", query.ToStatement(out arg));
-            AssertArg(arg, 5);
+            Assert.AreEqual(expected, query.ToStatement());
         }
 
         [TestCase]
@@ -262,20 +244,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             IList<SqlColumnField> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => !_.Active);
 
-            Assert.AreEqual("WHERE NOT ACTIVE", query.ToStatement(out arg));
-            AssertArg(arg);
-        }
-
-        public void AssertArg(IList<SqlColumnField> arg, params object[] expectedValue)
-        {
-            Assert.IsNotNull(arg);
-            Assert.AreEqual(expectedValue.Length, arg.Count);
-            for (int i = 0; i < expectedValue.Length; i++)
-            {
-                Assert.IsNotNull(arg[i]);
-                Assert.AreEqual("@P" + i.ToString(CultureInfo.InvariantCulture) + "@", arg[i].MarkerValue);
-                Assert.AreEqual(expectedValue[i], arg[i].Value);
-            }
+            Assert.AreEqual("WHERE NOT ACTIVE", query.ToStatement());
         }
 
         public SqlWhereClause<T, T> CreateSqlWhereClause<T>(Expression<Func<T, bool>> predicate)
@@ -288,7 +257,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             where T : class, TI
             where TI : class
         {
-            return new SqlWhereClause<T, TI>(predicate);
+            return new SqlWhereClause<T, TI>(SqlStrategy.Object, predicate);
         }
     }
 }

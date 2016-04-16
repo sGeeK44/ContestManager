@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq.Expressions;
 
 namespace Contest.Core.DataStore.Sql.SqlQuery
@@ -10,20 +8,23 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
         where TI : class
     {
         private readonly Expression<Func<TI, bool>> _expression;
+        private const string NULL_VALUE = "NULL";
 
-        public SqlWhereClause(Expression<Func<TI, bool>> exp)
+        private ISqlProviderStrategy ProviderStrategy { get; set; }
+
+        public SqlWhereClause(ISqlProviderStrategy providerStrategy, Expression<Func<TI, bool>> exp)
         {
             _expression = exp;
+            ProviderStrategy = providerStrategy;
         }
 
-        public string ToStatement(out IList<SqlColumnField> arg)
+        public string ToStatement()
         {
-            arg = new List<SqlColumnField>();
             // To manage null for sql server... (sql server doesn't support item = NULL but support item IS NULL
-            return _expression != null ? ToStatement(_expression, arg).Replace("= NULL", "IS NULL") : string.Empty;
+            return _expression != null ? ToStatement(_expression).Replace("= " + NULL_VALUE, "IS " + NULL_VALUE) : string.Empty;
         }
 
-        private string ToStatement(Expression exp, IList<SqlColumnField> arg)
+        private string ToStatement(Expression exp)
         {
             if (exp == null)
                 return string.Empty;
@@ -31,9 +32,9 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
             {
                 case ExpressionType.Negate:
                 case ExpressionType.NegateChecked:
-                    return ToStatement(exp.NodeType, (UnaryExpression)exp, arg);
+                    return ToStatement(exp.NodeType, (UnaryExpression)exp);
                 case ExpressionType.Not:
-                    return ToStatement(exp.NodeType, (UnaryExpression)exp, arg);
+                    return ToStatement(exp.NodeType, (UnaryExpression)exp);
                 case ExpressionType.Add:
                 case ExpressionType.AddChecked:
                 case ExpressionType.Subtract:
@@ -52,51 +53,51 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
                 case ExpressionType.GreaterThan:
                 case ExpressionType.GreaterThanOrEqual:
                 case ExpressionType.NotEqual:
-                    return ToStatement(exp.NodeType, (BinaryExpression)exp, arg);
+                    return ToStatement(exp.NodeType, (BinaryExpression)exp);
                 case ExpressionType.Constant:
-                    return ToStatement((ConstantExpression)exp, arg);
+                    return ToStatement((ConstantExpression)exp);
                 case ExpressionType.MemberAccess:
-                    return ToStatement((MemberExpression)exp, arg);
+                    return ToStatement((MemberExpression)exp);
                 case ExpressionType.Lambda:
-                    return ToStatement((LambdaExpression)exp, arg);
+                    return ToStatement((LambdaExpression)exp);
                 case ExpressionType.Parameter:
-                    return ToStatement((ParameterExpression)exp, arg);
+                    return ToStatement((ParameterExpression)exp);
                 default:
                     throw new NotSupportedException(string.Format("Not supported expression type: '{0}'", exp.NodeType));
             }
         }
 
-        protected virtual string ToStatement(ExpressionType type, UnaryExpression u, IList<SqlColumnField> arg)
+        protected virtual string ToStatement(ExpressionType type, UnaryExpression u)
         {
-            return ToSqlStatement(type) + " " + ToStatement(u.Operand, arg);
+            return ToSqlStatement(type) + " " + ToStatement(u.Operand);
         }
 
-        protected virtual string ToStatement(ExpressionType type, BinaryExpression b, IList<SqlColumnField> arg)
+        protected virtual string ToStatement(ExpressionType type, BinaryExpression b)
         {
             if (b.Left is ParameterExpression)
             {
-                if (type == ExpressionType.Equal) return ToStatement(b.Right, arg);
+                if (type == ExpressionType.Equal) return ToStatement(b.Right);
                 throw new NotImplementedException();
             }
             if (b.Right is ParameterExpression)
             {
-                if (type == ExpressionType.Equal) return ToStatement(b.Left, arg);
+                if (type == ExpressionType.Equal) return ToStatement(b.Left);
                 throw new NotImplementedException();
             }
-            return ToStatement(b.Left, arg) + " " + ToSqlStatement(type) + " " + ToStatement(b.Right, arg);
+            return ToStatement(b.Left) + " " + ToSqlStatement(type) + " " + ToStatement(b.Right);
         }
 
-        protected virtual string ToStatement(ConstantExpression c, IList<SqlColumnField> arg)
+        protected virtual string ToStatement(ConstantExpression c)
         {
-            return ToSqlValue(c.Value, null, arg);
+            return ToSqlValue(c.Value, null);
         }
 
-        protected virtual string ToStatement(LambdaExpression l, IList<SqlColumnField> arg)
+        protected virtual string ToStatement(LambdaExpression l)
         {
-            return l.Body.NodeType == ExpressionType.Constant ? string.Empty : "WHERE " + ToStatement(l.Body, arg);
+            return l.Body.NodeType == ExpressionType.Constant ? string.Empty : "WHERE " + ToStatement(l.Body);
         }
 
-        protected virtual string ToStatement(MemberExpression m, IList<SqlColumnField> arg)
+        protected virtual string ToStatement(MemberExpression m)
         {
             string fieldName = null;
             if (m.Expression is ParameterExpression) fieldName = ((ParameterExpression)m.Expression).Name;
@@ -117,22 +118,19 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
 
             var getter = getterLambda.Compile();
 
-            return ToSqlValue(getter(), null, arg);
+            return ToSqlValue(getter(), null);
         }
 
-        protected virtual string ToStatement(ParameterExpression p, IList<SqlColumnField> arg)
+        protected virtual string ToStatement(ParameterExpression p)
         {
             throw new NotImplementedException();
         }
 
-        public string ToSqlValue(object obj, object[] customAttr, IList<SqlColumnField> arg)
+        public string ToSqlValue(object obj, object[] customAttr)
         {
             // To manage null for sql server... (sql server doesn't support item = NULL but support item IS NULL
-            if (obj == null) return "NULL";
-            
-            var newArg = SqlColumnField.Create("P" + arg.Count.ToString(CultureInfo.InvariantCulture), obj, customAttr);
-            arg.Add(newArg);
-            return newArg.MarkerValue;
+            if (obj == null) return NULL_VALUE;
+            return ProviderStrategy.ToSqlValue(obj, customAttr);
         }
 
         private bool IsLambdaArgument(string fieldName)
