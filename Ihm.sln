@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Ihm", "Ihm\Contest.Ihm.csproj", "{B39A4F9E-0484-4346-95A9-3AF5D62236BB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core", "Contest.Core\Contest.Core.csproj", "{AA703556-DD37-4B27-986D-9B8C01C24040}"
@@ -70,6 +68,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.UnitTest.Kit", "Contest.UnitTest.Kit\Contest.UnitTest.Kit.csproj", "{B40CB664-F09B-4288-9D85-3543036B735C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Business.Contest.UnitTest", "Contest.Business.Contest.UnitTest\Contest.Business.Contest.UnitTest.csproj", "{1E890A06-5FB2-4ADB-B4C3-4FFC131FC064}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.DataStore.Sql", "Contest.Core.DataStore.Sql\Contest.Core.DataStore.Sql.csproj", "{90473DBF-5134-4C4F-A900-8CE2BD53BB49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core.DataStore.Sqlite", "Contest.Core.DataStore.Sqlite\Contest.Core.DataStore.Sqlite.csproj", "{4B0ED7F4-49D9-4720-A4EA-4ABF92EE3549}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -213,6 +215,14 @@ Global
 		{1E890A06-5FB2-4ADB-B4C3-4FFC131FC064}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E890A06-5FB2-4ADB-B4C3-4FFC131FC064}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E890A06-5FB2-4ADB-B4C3-4FFC131FC064}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90473DBF-5134-4C4F-A900-8CE2BD53BB49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90473DBF-5134-4C4F-A900-8CE2BD53BB49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90473DBF-5134-4C4F-A900-8CE2BD53BB49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90473DBF-5134-4C4F-A900-8CE2BD53BB49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B0ED7F4-49D9-4720-A4EA-4ABF92EE3549}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B0ED7F4-49D9-4720-A4EA-4ABF92EE3549}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B0ED7F4-49D9-4720-A4EA-4ABF92EE3549}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B0ED7F4-49D9-4720-A4EA-4ABF92EE3549}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

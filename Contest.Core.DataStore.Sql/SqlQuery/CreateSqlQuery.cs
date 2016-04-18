@@ -9,10 +9,10 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
 
         public override string ToStatement()
         {
-            var fieldList = (from propertyInfo in SqlColumnField.GetSqlField<T>()
+            var fieldList = (from propertyInfo in SqlFieldInfo.GetSqlField<T>()
                              select string.Format("{0} {1}{2}",
                                                  propertyInfo.ColumnName,
-                                                 SqlProviderStrategy.ToSqlType(propertyInfo.Property.PropertyType),
+                                                 SqlProviderStrategy.ToSqlType(propertyInfo.PropertyInfo.PropertyType),
                                                  propertyInfo.IsPrimaryKey ? " primary key" : string.Empty)).ToList();
 
 

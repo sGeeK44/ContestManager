@@ -1,4 +1,3 @@
-using System;
 using System.Linq.Expressions;
 
 namespace Contest.Core.DataStore.Sql.SqlQuery
@@ -26,9 +25,9 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
             return new CreateSqlQuery<T>(SqlProviderStrategy);
         }
 
-        public ISqlQuery Select(Expression<Func<TI, bool>> predicate)
+        public ISqlQuery Select(LambdaExpression predicate)
         {
-            return new SelectSqlQuery<T, TI>(SqlProviderStrategy, predicate);
+            return new SelectSqlQuery<T>(SqlProviderStrategy, predicate);
         }
 
         public ISqlQuery Insert(TI item)

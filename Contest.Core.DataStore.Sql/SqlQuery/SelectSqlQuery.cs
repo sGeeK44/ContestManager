@@ -1,18 +1,16 @@
-﻿using System;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Text;
 
 namespace Contest.Core.DataStore.Sql.SqlQuery
 {
-    public class SelectSqlQuery<T, TI> : SqlQuery<T>
-        where T : class, TI
-        where TI : class
+    public class SelectSqlQuery<T> : SqlQuery<T>
+        where T : class
     {
-        private readonly SqlWhereClause<T, TI> _sqlWhereClause;
+        private readonly SqlWhereClause<T> _sqlWhereClause;
 
-        public SelectSqlQuery(ISqlProviderStrategy sqlProviderStrategy, Expression<Func<TI, bool>> predicate) : base(sqlProviderStrategy)
+        public SelectSqlQuery(ISqlProviderStrategy sqlProviderStrategy, LambdaExpression predicate) : base(sqlProviderStrategy)
         {
-            _sqlWhereClause = new SqlWhereClause<T, TI>(sqlProviderStrategy, predicate);
+            _sqlWhereClause = new SqlWhereClause<T>(sqlProviderStrategy, predicate);
         }
 
         /// <summary>
@@ -23,7 +21,7 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
         {
             StringBuilder columns = null;
 
-            var columnField = SqlColumnField.GetSqlField<T>(null);
+            var columnField = SqlFieldInfo.GetSqlField<T>();
             foreach (var value in columnField)
             {
                 //Add marker to set clause

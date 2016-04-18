@@ -1,52 +1,45 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
 using Contest.Core.DataStore.Sql;
 using Contest.Core.DataStore.Sql.BusinessObjectFactory;
 using Contest.Core.DataStore.Sql.SqlQuery;
-using Contest.Core.DataStore.Sqlite;
+
 namespace Contest.Core.Repository.Sql
 {
     /// <summary>
     /// Expose methods for CRUD action on T base on Sql database for persistance
     /// </summary>
-    /// <typeparam name="T">Type of repository object</typeparam>
-    public class SqlRepository<T> : SqlRepository<T, T> where T : class, IQueryable
-    {
-        public SqlRepository(ISqlDataStore dataStore) : base(dataStore) { }
-    }
-    
-    /// <summary>
-    /// Expose methods for CRUD action on T base on Sql database for persistance
-    /// </summary>
-    /// <typeparam name="T">Type of repository object</typeparam>
     /// <typeparam name="TI">Type of interface object. Same object if he haven't interface. DataMember and Contract have to be specified on TI type</typeparam>
-    public class SqlRepository<T, TI> : ISqlRepository<TI> where T : class, TI
-        where TI : class, IQueryable
+    public class SqlRepository<TI> : ISqlRepository<TI> where TI : class, IQueryable
     {
-        private static string DatabasePath { get { return ConfigurationManager.AppSettings["DatabasePath"]; } }
+        protected ISqlDataStore SqlDataStore { get; set; }
 
-        private ISqlDataStore SqlDataStore { get; set; }
+        private ISqlQueryFactory<TI> SqlQueryFactory { get; set; }
+
+        private IBusinessObjectFactory<TI> BoFactory { get; set; }
+
+        private IDataContext<TI> Context { get; set; }
 
         public ISqlUnitOfWorks UnitOfWorks { get; set; }
 
-        internal ISqlQueryFactory<TI> SqlQueryFactory { get; set; }
-
-        internal IBusinessObjectFactory<TI> BoFactory { get; set; }
-
-        internal IDataContext<TI> Context { get; set; }
-        
         /// <summary>
         /// Create a new Repository
         /// </summary>
-        public SqlRepository(ISqlDataStore dataStore)
+        public SqlRepository(ISqlDataStore dataStore, ISqlQueryFactory<TI> sqlQueryFactory,
+                             IBusinessObjectFactory<TI> boFactory, IDataContext<TI> context)
         {
-            SqlQueryFactory = new SqlQueryFactory<T,TI>(new SqliteStrategy());
-            Context = new DataContext<TI>();
-            BoFactory = new SqlSerializer<T, TI>();
+            if (dataStore == null) throw new ArgumentNullException("dataStore");
+            if (sqlQueryFactory == null) throw new ArgumentNullException("sqlQueryFactory");
+            if (boFactory == null) throw new ArgumentNullException("boFactory");
+            if (context == null) throw new ArgumentNullException("context");
+
             SqlDataStore = dataStore;
+            SqlQueryFactory = sqlQueryFactory;
+            Context = context;
+            BoFactory = boFactory;
         }
 
         /// <summary>
@@ -146,8 +139,6 @@ namespace Contest.Core.Repository.Sql
 
                 //Update context
                 if (!Context.IsExist(item)) Context.Insert(item);
-
-                TryFillOneToManyReference(item);
             }
             result.Close();
 
@@ -155,11 +146,9 @@ namespace Contest.Core.Repository.Sql
             return Context.Find(predicate.Compile());
         }
 
-        public void TryFillOneToManyReference(TI item)
+        public IList Find(Type objectTypeSearch, LambdaExpression predicate)
         {
-            if (UnitOfWorks == null) return;
-
-            
+            return Find(predicate as Expression<Func<TI, bool>>) as IList;
         }
 
         /// <summary>

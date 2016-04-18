@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.Repository;
 using Contest.Core.Repository.Sql;
 

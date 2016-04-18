@@ -39,7 +39,6 @@ namespace Contest.Core.Repository
         /// </summary>
         void ClearCache();
 
-
         /// <summary>
         /// Search item in repository
         /// </summary>

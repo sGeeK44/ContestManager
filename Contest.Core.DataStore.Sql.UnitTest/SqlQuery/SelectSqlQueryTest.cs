@@ -26,27 +26,10 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
             Assert.AreEqual(expected, query.ToStatement());
         }
 
-        [TestCase]
-        public void ToStatement_ValidEntityWithInterface_ShouldReturnSqlQueryWithoutWhereClause()
-        {
-            IOverrideNameEntity ent = OverrideNameEntity.CreateMock();
-            var query = CreateSelectSqlQuery<OverrideNameEntity, IOverrideNameEntity>(_ => _.Id == ent.Id);
-            var expected = string.Format("SELECT ID, NAME, ACTIVE, AGE FROM ENTITY_1 WHERE ID = {0};", ConvertedValue);
-
-            Assert.AreEqual(expected, query.ToStatement());
-        }
-
-        public SelectSqlQuery<T, T> CreateSelectSqlQuery<T>(Expression<Func<T, bool>> predicate)
+        public SelectSqlQuery<T> CreateSelectSqlQuery<T>(Expression<Func<T, bool>> predicate)
             where T : class
         {
-            return CreateSelectSqlQuery<T, T>(predicate);
-        }
-
-        public SelectSqlQuery<T, TI> CreateSelectSqlQuery<T, TI>(Expression<Func<TI, bool>> predicate)
-            where T : class, TI
-            where TI : class
-        {
-            return new SelectSqlQuery<T, TI>(SqlStrategy.Object, predicate);
+            return new SelectSqlQuery<T>(SqlStrategy.Object, predicate);
         }
     }
 }

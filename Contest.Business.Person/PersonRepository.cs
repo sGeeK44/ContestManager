@@ -6,5 +6,5 @@ namespace Contest.Business
 {
     [Export(typeof(IRepository<IPerson>))]
     [Export(typeof(ISqlRepository<IPerson>))]
-    public class PersonRepository : SqlRepository<Person, IPerson> { }
+    public class PersonRepository : SqlRepositoryBase<Person, IPerson> { }
 }

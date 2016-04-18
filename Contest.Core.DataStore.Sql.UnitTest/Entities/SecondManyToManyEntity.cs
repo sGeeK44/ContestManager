@@ -14,7 +14,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.Entities
         [SqlPrimaryKey]
         public Guid Id { get; set; }
 
-        [SqlReferenceManyToMany]
+        [SqlManyToManyReference]
         public IEnumerable<FirstManyToManyEntity> EntityList { get; set; }
 
         public bool AreSame(object other)

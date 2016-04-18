@@ -6,5 +6,5 @@ namespace Contest.Business
 {
     [Export(typeof(IRepository<IEliminationStep>))]
     [Export(typeof(ISqlRepository<IEliminationStep>))]
-    public class EliminationStepRepository : SqlRepository<EliminationStep, IEliminationStep> { }
+    public class EliminationStepRepository : SqlRepositoryBase<EliminationStep, IEliminationStep> { }
 }

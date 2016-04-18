@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq.Expressions;
 using Contest.Core.DataStore.Sql.SqlQuery;
 using Contest.Core.DataStore.Sql.UnitTest.Entities;
@@ -73,65 +72,6 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
         {
             var ent = OverrideNameEntity.CreateMock();
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => _.Id == ent.Id || _.Name == "NameSearch");
-            var expected = string.Format("WHERE ID = {0} OR NAME = {0}", SQL_VALUE);
-
-            Assert.AreEqual(expected, query.ToStatement());
-        }
-
-        [TestCase]
-        public void ToStatement_TrueWithInterface()
-        {
-            IList<SqlColumnField> arg;
-            var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => true);
-
-            Assert.AreEqual(string.Empty, query.ToStatement());
-        }
-
-        [TestCase]
-        public void ToStatement_ByIdWithInterface()
-        {
-            IOverrideNameEntity ent = OverrideNameEntity.CreateMock();
-            var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => _.Id == ent.Id);
-            var expected = string.Format("WHERE ID = {0}", SQL_VALUE);
-
-            Assert.AreEqual(expected, query.ToStatement());
-        }
-
-        [TestCase]
-        public void ToStatement_ByVarIdWithInterface()
-        {
-            var id = OverrideNameEntity.Guid;
-            var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => _.Id == id);
-            var expected = string.Format("WHERE ID = {0}", SQL_VALUE);
-
-            Assert.AreEqual(expected, query.ToStatement());
-        }
-
-        [TestCase]
-        public void ToStatement_ByNameWithInterface()
-        {
-            var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => _.Name == "NameSearch");
-            var expected = string.Format("WHERE NAME = {0}", SQL_VALUE);
-
-            Assert.AreEqual(expected, query.ToStatement());
-        }
-
-        [TestCase]
-        public void ToStatement_AndWithInterface()
-        {
-            IOverrideNameEntity ent = OverrideNameEntity.CreateMock();
-            var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => _.Id == ent.Id && _.Name == "NameSearch");
-
-            var expected = string.Format("WHERE ID = {0} AND NAME = {0}", SQL_VALUE);
-
-            Assert.AreEqual(expected, query.ToStatement());
-        }
-
-        [TestCase]
-        public void ToStatement_OrWithInterface()
-        {
-            IOverrideNameEntity ent = OverrideNameEntity.CreateMock();
-            var query = CreateSqlWhereClause<OverrideNameEntity, IOverrideNameEntity>(_ => _.Id == ent.Id || _.Name == "NameSearch");
             var expected = string.Format("WHERE ID = {0} OR NAME = {0}", SQL_VALUE);
 
             Assert.AreEqual(expected, query.ToStatement());
@@ -241,23 +181,16 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
         [TestCase]
         public void ToStatement_NegateExpression()
         {
-            IList<SqlColumnField> arg;
+            IList<SqlFieldInfo> arg;
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => !_.Active);
 
             Assert.AreEqual("WHERE NOT ACTIVE", query.ToStatement());
         }
 
-        public SqlWhereClause<T, T> CreateSqlWhereClause<T>(Expression<Func<T, bool>> predicate)
+        public SqlWhereClause<T> CreateSqlWhereClause<T>(Expression<Func<T, bool>> predicate)
             where T : class
         {
-            return CreateSqlWhereClause<T, T>(predicate);
-        }
-
-        public SqlWhereClause<T, TI> CreateSqlWhereClause<T, TI>(Expression<Func<TI, bool>> predicate)
-            where T : class, TI
-            where TI : class
-        {
-            return new SqlWhereClause<T, TI>(SqlStrategy.Object, predicate);
+            return new SqlWhereClause<T>(SqlStrategy.Object, predicate);
         }
     }
 }

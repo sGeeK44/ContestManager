@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Contest.Core.DataStore.Sql;
@@ -57,6 +58,21 @@ namespace Contest.Core.Repository.Sql
             _repositoryList.Add(typeof(T), repository);
         }
 
+        public T FirstOrDefault<T>(Expression<Func<T, bool>> predicate) where T : class
+        {
+            return GetRepository<T>().FirstOrDefault(predicate);
+        }
+
+        public IList<T> Find<T>(Expression<Func<T, bool>> predicate) where T : class
+        {
+            return GetRepository<T>().Find(predicate);
+        }
+
+        public IList Find(Type objectTypeSearch, LambdaExpression predicate)
+        {
+            return GetRepository(objectTypeSearch).Find(objectTypeSearch, predicate);
+        }
+
         /// <summary>
         /// Insert new item from repository
         /// </summary>
@@ -93,16 +109,6 @@ namespace Contest.Core.Repository.Sql
             GetRepository<T>().Delete(item);
         }
 
-        public T FirstOrDefault<T>(Expression<Func<T, bool>> predicate) where T : class
-        {
-            return GetRepository<T>().FirstOrDefault(predicate);
-        }
-
-        public IList<T> Find<T>(Expression<Func<T, bool>> predicate) where T : class
-        {
-            return GetRepository<T>().Find(predicate);
-        }
-
         /// <summary>
         /// Persist all changes
         /// </summary>
@@ -121,10 +127,14 @@ namespace Contest.Core.Repository.Sql
 
         private ISqlRepository<T> GetRepository<T>() where T : class
         {
-            var repoType = typeof (T);
+            return (ISqlRepository<T>) GetRepository(typeof (T));
+        }
+
+        private ISqlRepository GetRepository(Type repoType)
+        {
             if (!_repositoryList.ContainsKey(repoType)) throw new ArgumentException(string.Format("Unit of works does not contain this type of repository. Type:{0}", repoType));
 
-            return (ISqlRepository<T>) _repositoryList[repoType];
+            return (ISqlRepository)_repositoryList[repoType];
         }
     }
 }

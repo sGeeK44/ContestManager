@@ -33,6 +33,7 @@
   <ItemGroup>
     <Compile Include="BusinessObjectFactory\SqlSerializerTest.cs" />
     <Compile Include="Entities\BasicEntity.cs" />
+    <Compile Include="Entities\OneToManyWithoutIListEntity.cs" />
     <Compile Include="Entities\GenericEntity.cs" />
     <Compile Include="Entities\DefaultConstructorLessEntity.cs" />
     <Compile Include="Entities\DynamicEntity.cs" />
@@ -50,6 +51,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceManyToMany\IdentifiableTest.cs" />
     <Compile Include="ReferenceManyToMany\RelationshipTest.cs" />
+    <Compile Include="SqlOneToManyReferenceTest.cs" />
     <Compile Include="SqlColumnFieldTest.cs" />
     <Compile Include="SqlQuery\SqlWhereClauseTest.cs" />
     <Compile Include="SqlQuery\SqlQueryTest.cs" />

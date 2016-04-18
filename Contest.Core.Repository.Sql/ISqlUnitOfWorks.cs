@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using Contest.Core.DataStore.Sql;
+﻿using Contest.Core.DataStore.Sql;
 
 namespace Contest.Core.Repository.Sql
 {
@@ -31,19 +28,5 @@ namespace Contest.Core.Repository.Sql
         /// <typeparam name="T"></typeparam>
         /// <param name="repository"></param>
         void AddRepository<T>(ISqlRepository<T> repository) where T : class;
-
-        /// <summary>
-        /// Search item in repository
-        /// </summary>
-        /// <param name="predicate">NewA lamba expression for where clause</param>
-        /// <retur>First item found or default(T)</retur>
-        T FirstOrDefault<T>(Expression<Func<T, bool>> predicate) where T : class;
-
-        /// <summary>
-        /// Search items in repository
-        /// </summary>
-        /// <param name="predicate">NewA lamba expression for where clause</param>
-        /// <return>A list wich contain all item founds or an empty list</return>
-        IList<T> Find<T>(Expression<Func<T, bool>> predicate) where T : class;
     }
 }

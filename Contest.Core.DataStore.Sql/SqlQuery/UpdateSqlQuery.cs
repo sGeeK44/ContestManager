@@ -21,7 +21,7 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
         {
             StringBuilder values = null;
             StringBuilder keys = null;
-            var arg = SqlColumnField.GetSqlField<T>(_item);
+            var arg = SqlFieldInfo.GetSqlField<T>(_item);
             foreach (var sqlField in arg)
             {
                 var value = sqlField.ToSqlValue(SqlProviderStrategy);

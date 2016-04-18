@@ -6,5 +6,5 @@ namespace Contest.Business
 {
     [Export(typeof(IRepository<IPhysicalSetting>))]
     [Export(typeof(ISqlRepository<IPhysicalSetting>))]
-    public class PhysicalSettingRepository : SqlRepository<PhysicalSetting, IPhysicalSetting> { }
+    public class PhysicalSettingRepository : SqlRepositoryBase<PhysicalSetting, IPhysicalSetting> { }
 }

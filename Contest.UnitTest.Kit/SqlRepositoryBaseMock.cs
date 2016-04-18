@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Contest.Core.Repository;
 using Contest.Core.Repository.Sql;
 using Moq;
 
@@ -12,7 +12,14 @@ namespace Contest.UnitTest.Kit
     {
         public Mock<ISqlRepository<T>> RepositoryMock { get; set; }
 
-        public IUnitOfWorks UnitOfWorks
+        public IList Find(Type objectTypeSearch, LambdaExpression predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        ISqlUnitOfWorks ISqlRepository.UnitOfWorks { get; set; }
+
+        public ISqlUnitOfWorks UnitOfWorks
         {
             get { return RepositoryMock.Object.UnitOfWorks; }
             set { RepositoryMock.Object.UnitOfWorks = value; }
@@ -61,16 +68,6 @@ namespace Contest.UnitTest.Kit
         public void CreateTable()
         {
             RepositoryMock.Object.CreateTable();
-        }
-
-        public void Commit()
-        {
-            RepositoryMock.Object.Commit();
-        }
-
-        public void RollBack()
-        {
-            RepositoryMock.Object.RollBack();
         }
     }
 }

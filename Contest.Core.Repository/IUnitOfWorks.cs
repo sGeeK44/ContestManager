@@ -1,10 +1,22 @@
-﻿namespace Contest.Core.Repository
+﻿using System;
+using System.Collections;
+using System.Linq.Expressions;
+
+namespace Contest.Core.Repository
 {
     /// <summary>
     /// Expose service to persist several object type with transaction mode.
     /// </summary>
     public interface IUnitOfWorks
     {
+        /// <summary>
+        /// Search items in repository
+        /// </summary>
+        /// <param name="objectTypeSearch">Type of inner list element to search</param>
+        /// <param name="predicate">NewA lamba expression for where clause</param>
+        /// <return>A list wich contain all item founds or an empty list</return>
+        IList Find(Type objectTypeSearch, LambdaExpression predicate);
+
         /// <summary>
         /// Insert new item from repository
         /// </summary>

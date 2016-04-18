@@ -20,7 +20,7 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
         {
             StringBuilder columnsName = null;
             StringBuilder columnsValue = null;
-            var arg = SqlColumnField.GetSqlField<T>(_item);
+            var arg = SqlFieldInfo.GetSqlField<T>(_item);
             foreach (var sqlField in arg)
             {
                 //Add field name

@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.Serialization;
 using Contest.Core.Component;
+using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.Repository;
 using Contest.Core.Repository.Sql;
 

@@ -6,5 +6,5 @@ namespace Contest.Business
 {
     [Export(typeof(IRepository<IStepSetting>))]
     [Export(typeof(ISqlRepository<IStepSetting>))]
-    public class StepSettingRepository : SqlRepository<StepSetting, IStepSetting> { }
+    public class StepSettingRepository : SqlRepositoryBase<StepSetting, IStepSetting> { }
 }

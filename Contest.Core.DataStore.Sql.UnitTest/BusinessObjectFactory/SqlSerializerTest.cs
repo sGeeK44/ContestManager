@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using Contest.Core.Converters;
 using Contest.Core.DataStore.Sql.BusinessObjectFactory;
 using Contest.Core.DataStore.Sql.UnitTest.Entities;
+using Contest.Core.Repository;
 using Moq;
 using NUnit.Framework;
 
@@ -196,6 +201,29 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
             SetupConverterForPivotEnum();
 
             Assert.AreEqual(typeof(GenericEntity<BasicEntity>), serializer.GetRealObjectType(typeof(GenericEntity<>), Data.Object));
+        }
+        
+        [TestCase]
+        public void FillOneToManyReferences_NullEntity_ShouldThrowException()
+        {
+            var serializer = CreateSqlSerializer<OneToManyEntity>();
+
+            Assert.Throws<TargetException>(() => serializer.FillOneToManyReference(null, null));
+        }
+        
+        [TestCase]
+        public void FillOneToManyReferences_OneToManyReferenceProperties_ShouldBeFill()
+        {
+            var obj = new OneToManyEntity();
+            var expectedReference = new ManyToOneEntity();
+            var unitOfWorks = new Mock<IUnitOfWorks>();
+            unitOfWorks.Setup(_ => _.Find(typeof(ManyToOneEntity), It.IsAny<LambdaExpression>()))
+                       .Returns(new List<ManyToOneEntity> { expectedReference });
+            var serializer = CreateSqlSerializer<OneToManyEntity>();
+
+            serializer.FillOneToManyReference(unitOfWorks.Object, obj);
+
+            Assert.AreEqual(expectedReference, obj.EntityList[0]);
         }
 
         private SqlSerializer<T, T> CreateSqlSerializer<T>()

@@ -6,5 +6,5 @@ namespace Contest.Business
 {
     [Export(typeof(IRepository<IMatchSetting>))]
     [Export(typeof(ISqlRepository<IMatchSetting>))]
-    public class MatchSettingRepository : SqlRepository<MatchSetting, IMatchSetting> { }
+    public class MatchSettingRepository : SqlRepositoryBase<MatchSetting, IMatchSetting> { }
 }

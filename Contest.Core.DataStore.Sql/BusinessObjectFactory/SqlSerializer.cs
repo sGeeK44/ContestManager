@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using Contest.Core.Converters;
+using Contest.Core.Repository;
 using Contest.Core.Serialization;
 
 namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
@@ -36,7 +37,7 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
             var constructor = GetDefaultConstructor(realObjectType);
             var result = (TI)constructor.Invoke(null);
 
-            foreach (var field in SqlColumnField.GetSqlField<T>())
+            foreach (var field in SqlFieldInfo.GetSqlField<T>())
             {
                 // Converter value
                 var sqlValue = row[field.ColumnName];
@@ -47,12 +48,20 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
             return result;
         }
 
-        private static ConstructorInfo GetDefaultConstructor(Type objectType)
+        public void FillReferences(IUnitOfWorks unitOfWorks, TI item)
         {
-            var activator = objectType.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[0], null);
-            if (activator != null) return activator;
-            
-            throw new NotSupportedException(string.Format("Class which you want to deserialize doesn't contains default constructor. Class:{0}", typeof(TI).Name));
+            throw new NotImplementedException();
+        }
+
+        public void FillOneToManyReference(IUnitOfWorks unitOfWorks, TI item)
+        {
+            var propertiesToFill = SqlOneToManyReferenceInfo.GetSqlReference<T>();
+            if (propertiesToFill.Count == 0) return;
+
+            foreach (var property in propertiesToFill)
+            {
+                property.FillReference(unitOfWorks, item);
+            }
         }
 
         public Type GetRealObjectType(Type objectType, IDataReader row)
@@ -89,8 +98,8 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
 
         public string GetEnumPivotValue(Type enumPivot, IDataReader row)
         {
-            SqlColumnField field;
-            try { field = SqlColumnField.GetSqlField<T>().Single(_ => _.Property.PropertyType == enumPivot); }
+            SqlFieldInfo field;
+            try { field = SqlFieldInfo.GetSqlField<T>().Single(_ => _.PropertyInfo.PropertyType == enumPivot); }
             catch (InvalidOperationException ex)
             {
                 throw new NotSupportedException(string.Format("Enum pivot not or several found. EnumPivot:{0}. CurrentType:{1}", enumPivot, typeof(T)), ex);
@@ -100,6 +109,14 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
             if (sqlValue == null) throw new NotSupportedException(string.Format("Data reader does not contain column value for enum pivot. EnumPivot:{0}. ColumnName:{1}", enumPivot, field.ColumnName));
 
             return sqlValue.ToString();
+        }
+
+        private static ConstructorInfo GetDefaultConstructor(Type objectType)
+        {
+            var activator = objectType.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[0], null);
+            if (activator != null) return activator;
+
+            throw new NotSupportedException(string.Format("Class which you want to deserialize doesn't contains default constructor. Class:{0}", typeof(TI).Name));
         }
     }
 }

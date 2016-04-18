@@ -13,15 +13,10 @@ namespace Contest.Core.DataStore.Sql.UnitTest.Entities
         [SqlPrimaryKey]
         public Guid Id { get; set; }
 
-        [SqlReferenceOneToMany]
-        public IEnumerable<ManyToOneEntity> EntityList { get; set; }
+        [SqlOneToManyReference]
+        public IList<ManyToOneEntity> EntityList { get; set; }
 
-        public bool AreSame(object other)
-        {
-            throw new NotImplementedException();
-        }
-
-        public OneToManyEntity Create()
+        public static OneToManyEntity Create()
         {
             return new OneToManyEntity { Id = Guid };
         }

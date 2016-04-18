@@ -6,5 +6,5 @@ namespace Contest.Business
 {
     [Export(typeof(IRepository<ITeam>))]
     [Export(typeof(ISqlRepository<ITeam>))]
-    public class TeamRepository : SqlRepository<Team, ITeam> { }
+    public class TeamRepository : SqlRepositoryBase<Team, ITeam> { }
 }

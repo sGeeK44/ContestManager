@@ -45,7 +45,9 @@
     <Compile Include="Attributes\SqlAttribute.cs" />
     <Compile Include="Attributes\SqlForeignKeyAttribute.cs" />
     <Compile Include="Attributes\SqlPropertyAttribute.cs" />
-    <Compile Include="Attributes\SqlReferenceManyToManyAttribute.cs" />
+    <Compile Include="Attributes\SqlManyToManyReferenceAttribute.cs" />
+    <Compile Include="SqlOneToManyReferenceInfo.cs" />
+    <Compile Include="SqlPropertyInfo.cs" />
     <Compile Include="SqlQuery\CreateSqlQuery.cs" />
     <Compile Include="BusinessObjectFactory\IBusinessObjectFactory.cs" />
     <Compile Include="ReferenceManyToMany\Identifiable.cs" />
@@ -60,14 +62,14 @@
     <Compile Include="SqlQuery\ISqlQuery.cs" />
     <Compile Include="SqlQuery\SelectSqlQuery.cs" />
     <Compile Include="SqlProviderStrategyBase.cs" />
-    <Compile Include="SqlColumnField.cs" />
+    <Compile Include="SqlFieldInfo.cs" />
     <Compile Include="Attributes\SqlFieldAttribute.cs" />
     <Compile Include="Attributes\SqlPrimaryKeyAttribute.cs" />
     <Compile Include="SqlQuery\SqlQuery.cs" />
     <Compile Include="SqlQuery\SqlQueryFactory.cs" />
     <Compile Include="SqlQuery\UpdateSqlQuery.cs" />
-    <Compile Include="Attributes\SqlReferenceManyToOneAttribute.cs" />
-    <Compile Include="Attributes\SqlReferenceOneToManyAttribute.cs" />
+    <Compile Include="Attributes\SqlManyToOneReferenceAttribute.cs" />
+    <Compile Include="Attributes\SqlOneToManyReferenceAttribute.cs" />
     <Compile Include="BusinessObjectFactory\SqlSerializer.cs" />
     <Compile Include="SqlQuery\SqlWhereClause.cs" />
   </ItemGroup>

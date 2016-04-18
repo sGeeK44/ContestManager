@@ -1,5 +1,6 @@
-﻿using System.Linq;
+﻿using System.Data;
 using Contest.Core.DataStore.Sql;
+using Contest.Core.DataStore.Sql.BusinessObjectFactory;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.DataStore.Sql.SqlQuery;
 using Moq;
@@ -7,35 +8,30 @@ using NUnit.Framework;
 
 namespace Contest.Core.Repository.Sql.UnitTest
 {
-    public class SqlRepositoryTestBase<T> where T : class, IQueryable
+    [TestFixture]
+    public class SqlRepositoryTest
     {
-        public Mock<IDataContext<T>> Context { get; set; }
-        public Mock<ISqlQueryFactory<T>> SqlBuilder { get; set; }
+        public Mock<IDataContext<Identifiable<object>>> Context { get; set; }
+        public Mock<ISqlQueryFactory<Identifiable<object>>> SqlBuilder { get; set; }
         public Mock<ISqlUnitOfWorks> UnitOfWork { get; set; }
         public Mock<ISqlDataStore> SqlDataStore { get; set; }
-        public SqlRepository<T, T> SqlRepository { get; set; }
+        public Mock<IBusinessObjectFactory<Identifiable<object>>> BoFactory { get; set; }
+        public SqlRepository<Identifiable<object>> SqlRepository { get; set; }
 
         [SetUp]
         public void Init()
         {
-            Context = new Mock<IDataContext<T>>();
-            SqlBuilder = new Mock<ISqlQueryFactory<T>>();
+            Context = new Mock<IDataContext<Identifiable<object>>>();
+            SqlBuilder = new Mock<ISqlQueryFactory<Identifiable<object>>>();
             UnitOfWork = new Mock<ISqlUnitOfWorks>();
             SqlDataStore = new Mock<ISqlDataStore>();
+            BoFactory = new Mock<IBusinessObjectFactory<Identifiable<object>>>();
 
-            SqlRepository = new SqlRepository<T, T>(SqlDataStore.Object)
-            {
-                SqlQueryFactory = SqlBuilder.Object,
-                Context = Context.Object
-            };
+            SqlRepository = new SqlRepository<Identifiable<object>>(SqlDataStore.Object, SqlBuilder.Object, BoFactory.Object, Context.Object);
 
             UnitOfWork.Setup(_ => _.SqlDataStore).Returns(SqlDataStore.Object);
         }
-    }
 
-    [TestFixture]
-    public class SqlRepositoryTestPart1 : SqlRepositoryTestBase<Identifiable<object>>
-    {
         [TestCase]
         public void Constructor_ShouldBeEmptyStatement()
         {
@@ -265,32 +261,32 @@ namespace Contest.Core.Repository.Sql.UnitTest
         }
 
         [TestCase]
-        public void FillOneToManyReferences_RepositoryNoLinkedToUnitOfWork_ShouldDoNothing()
+        public void Find_RepositoryNoLinkedToUnitOfWork_ShouldDoNothing()
         {
-            SqlRepository.TryFillOneToManyReference(new Identifiable<object>());
+            SetupOneResultOneSqlResult();
+
+            SqlRepository.Find(_ => true);
         }
 
         [TestCase]
-        public void FillOneToManyReferences_NoOnToManyReference_ShouldDoNothing()
+        public void Find_RepositoryNoLinkedToUnitOfWork_ShouldCallRepository()
         {
+            SetupOneResultOneSqlResult();
             SqlRepository.UnitOfWorks = UnitOfWork.Object;
-            SqlRepository.TryFillOneToManyReference(new Identifiable<object>());
+            BoFactory.Setup(_ => _.FillReferences(UnitOfWork.Object, It.IsAny<Identifiable<object>>()));
+
+            SqlRepository.Find(_ => true);
+
+            BoFactory.Verify();
         }
-    }
 
-    [TestFixture]
-    public class SqlRepositoryTestPart2 : SqlRepositoryTestBase<OneToManyEntity>
-    {
-        [TestCase]
-        public void FillOneToManyReferences_OneToManyReference_ShouldFillIt()
+        private void SetupOneResultOneSqlResult()
         {
-            SqlRepository.UnitOfWorks = UnitOfWork.Object;
-            var expectedReference = new ManyToOneEntity();
-            var obj = new OneToManyEntity();
-
-            SqlRepository.TryFillOneToManyReference(obj);
-
-            Assert.AreEqual(expectedReference, obj.EntityList.ToList()[0]);
+            var reader = new Mock<IDataReader>();
+            reader.SetupSequence(_ => _.Read())
+                  .Returns(true)
+                  .Returns(false);
+            SqlDataStore.Setup(_ => _.Execute(It.IsAny<ISqlQuery>())).Returns(reader.Object);
         }
     }
 }

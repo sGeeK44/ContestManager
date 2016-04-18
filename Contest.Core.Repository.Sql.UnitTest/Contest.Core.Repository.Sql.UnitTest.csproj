@@ -56,8 +56,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="SqlRepositoryTest.cs" />
-    <Compile Include="ManyToOneEntity.cs" />
-    <Compile Include="OneToManyEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

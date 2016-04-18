@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using Contest.Business;
 using Contest.Core.Component;
+using Contest.Core.DataStore.Sqlite;
 using Contest.Core.Repository.Sql;
 using Contest.Core.Windows.Commands;
 using Contest.Core.Windows.Mvvm;
@@ -85,7 +86,10 @@ namespace Contest.Ihm
         {
             FlippingContainer.Instance.ComposeParts(this);
 
-            UnitOfWorks = new SqlUnitOfWorks(ConfigurationManager.AppSettings["DatabasePath"]);
+            var dataStore = new SqliteDataStore(ConfigurationManager.AppSettings["DatabasePath"]);
+            dataStore.OpenDatabase();
+
+            UnitOfWorks = new SqlUnitOfWorks(dataStore);
             UnitOfWorks.AddRepository(ContestRepository);
             UnitOfWorks.AddRepository(GameSettingRepository);
             UnitOfWorks.AddRepository(AddressRepository);

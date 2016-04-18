@@ -18,6 +18,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.Entities
         [SqlForeignKey(typeof(OneToManyEntity))]
         public Guid OneToManyEntityId { get; private set; }
 
+        [SqlManyToOneReference]
         public OneToManyEntity Entity { get; private set; }
 
         public static ManyToOneEntity Create()

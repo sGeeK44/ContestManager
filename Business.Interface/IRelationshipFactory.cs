@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Contest.Core.Repository;
+using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 
 namespace Contest.Business
 {
@@ -8,10 +8,10 @@ namespace Contest.Business
         where TIObj2 : IIdentifiable
     {
         /// <summary>
-        /// Create a new instance of <see cref="T:Business.IRelationship<TIObj1, TIObj2>"/> with specified param
+        /// Create a new instance of <see cref="T:Business.IRelationship&lt;TIObj1, TIObj2&gt;"/> with specified param
         /// </summary>
-        /// <param name="team1">First team involved in match</param>
-        /// <param name="team2">Second team involved in match</param>
+        /// <param name="first">First team involved in match</param>
+        /// <param name="second">Second team involved in match</param>
         /// <returns>New instance</returns>
         IRelationship<TIObj1, TIObj2> Create(TIObj1 first, TIObj2 second);
 

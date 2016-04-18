@@ -3,19 +3,18 @@ using System.Linq.Expressions;
 
 namespace Contest.Core.DataStore.Sql.SqlQuery
 {
-    public class SqlWhereClause<T, TI>
-        where T : class, TI
-        where TI : class
+    public class SqlWhereClause<T>
+        where T : class
     {
-        private readonly Expression<Func<TI, bool>> _expression;
+        private readonly LambdaExpression _expression;
         private const string NULL_VALUE = "NULL";
 
         private ISqlProviderStrategy ProviderStrategy { get; set; }
 
-        public SqlWhereClause(ISqlProviderStrategy providerStrategy, Expression<Func<TI, bool>> exp)
+        public SqlWhereClause(ISqlProviderStrategy providerStrategy, LambdaExpression exp)
         {
-            _expression = exp;
             ProviderStrategy = providerStrategy;
+            _expression = exp;
         }
 
         public string ToStatement()
@@ -110,7 +109,7 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
             }
             else throw new NotSupportedException(string.Format("Type not supported. Type:{0}.", m.Expression.GetType()));
 
-            if (IsLambdaArgument(fieldName)) return SqlColumnField.GetColumnName<T>(m);
+            if (IsLambdaArgument(fieldName)) return SqlFieldInfo.GetColumnName<T>(m);
 
             var objectMember = Expression.Convert(m, typeof(object));
 

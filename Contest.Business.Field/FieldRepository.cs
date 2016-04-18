@@ -6,5 +6,5 @@ namespace Contest.Business
 {
     [Export(typeof(IRepository<IField>))]
     [Export(typeof(ISqlRepository<IField>))]
-    public class FieldRepository : SqlRepository<Field, IField> { }
+    public class FieldRepository : SqlRepositoryBase<Field, IField> { }
 }

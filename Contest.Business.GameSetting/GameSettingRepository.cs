@@ -6,5 +6,5 @@ namespace Contest.Business
 {
     [Export(typeof(IRepository<IGameSetting>))]
     [Export(typeof(ISqlRepository<IGameSetting>))]
-    public class GameSettingRepository : SqlRepository<GameSetting, IGameSetting> { }
+    public class GameSettingRepository : SqlRepositoryBase<GameSetting, IGameSetting> { }
 }

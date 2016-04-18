@@ -275,6 +275,14 @@
       <Project>{ae46a224-2c96-4f3c-af4d-960cab831457}</Project>
       <Name>Contest.Core.Converters</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Contest.Core.DataStore.Sqlite\Contest.Core.DataStore.Sqlite.csproj">
+      <Project>{4b0ed7f4-49d9-4720-a4ea-4abf92ee3549}</Project>
+      <Name>Contest.Core.DataStore.Sqlite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Core.DataStore.Sql\Contest.Core.DataStore.Sql.csproj">
+      <Project>{90473DBF-5134-4C4F-A900-8CE2BD53BB49}</Project>
+      <Name>Contest.Core.DataStore.Sql</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Control\Contest.Control.csproj">
       <Project>{396a76d7-d178-4bdd-a9ff-a4af9fc21818}</Project>
       <Name>Contest.Control</Name>

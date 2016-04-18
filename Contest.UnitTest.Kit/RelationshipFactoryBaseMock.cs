@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Contest.Business;
-using Contest.Core.Repository;
+using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Moq;
 
 namespace Contest.UnitTest.Kit

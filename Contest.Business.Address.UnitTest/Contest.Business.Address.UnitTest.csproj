@@ -71,6 +71,10 @@
       <Project>{CBAAEC44-AE3C-497B-9B97-043041CA994E}</Project>
       <Name>Contest.Business.Address</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Contest.Core.DataStore.Sql\Contest.Core.DataStore.Sql.csproj">
+      <Project>{90473DBF-5134-4C4F-A900-8CE2BD53BB49}</Project>
+      <Name>Contest.Core.DataStore.Sql</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
       <Project>{1FF5796B-18D0-4BF3-919D-14166813B7B2}</Project>
       <Name>Contest.Core.Repository.Sql</Name>
