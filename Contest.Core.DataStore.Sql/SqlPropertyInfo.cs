@@ -6,13 +6,16 @@ using Contest.Core.DataStore.Sql.Attributes;
 
 namespace Contest.Core.DataStore.Sql
 {
-    public abstract class SqlPropertyInfo
+    public abstract class SqlPropertyInfo : ISqlPropertyInfo
     {
+        /// <summary>
+        /// Get associated property
+        /// </summary>
         public PropertyInfo PropertyInfo { get; private set; }
 
-        protected SqlPropertyInfo(PropertyInfo prop)
+        protected SqlPropertyInfo(PropertyInfo referenceProperty)
         {
-            PropertyInfo = prop;
+            PropertyInfo = referenceProperty;
         }
 
         protected void SetValue(object objectToSet, object innerValue)

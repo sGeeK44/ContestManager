@@ -12,9 +12,9 @@ namespace Contest.Core.DataStore.Sql
     {
         private readonly object _value;
         private readonly object[] _customAttr;
-
-        private SqlFieldInfo(PropertyInfo prop, object value, object[] customAttr)
-            : base (prop)
+        
+        private SqlFieldInfo(PropertyInfo referenceProperty, object value, object[] customAttr)
+            : base (referenceProperty)
         {
             _value = value;
             _customAttr = customAttr;
@@ -23,6 +23,11 @@ namespace Contest.Core.DataStore.Sql
         internal static List<SqlFieldInfo> GetPrimaryKeys(IEnumerable<PropertyInfo> allSqlProp)
         {
             return allSqlProp.Where(_ => _.IsDefined(typeof(SqlPrimaryKeyAttribute))).Select(_ => Create(_, null)).ToList();
+        }
+
+        internal static List<SqlFieldInfo> GetForeignKeys(IEnumerable<PropertyInfo> allSqlProp)
+        {
+            return allSqlProp.Where(_ => _.IsDefined(typeof(SqlForeignKeyAttribute))).Select(_ => Create(_, null)).ToList();
         }
 
         public object Value { get { return _value; } }

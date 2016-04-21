@@ -1,7 +1,5 @@
 ﻿using System;
-using Contest.Core.DataStore.Sql.SqlQuery;
 using Contest.Core.DataStore.Sql.UnitTest.Entities;
-using Moq;
 using NUnit.Framework;
 
 namespace Contest.Core.DataStore.Sql.UnitTest
@@ -23,19 +21,27 @@ namespace Contest.Core.DataStore.Sql.UnitTest
         }
 
         [TestCase]
-        public void GetPredicate_OneToManyEntity_ShouldReturnCorrectPredicate()
+        public void GetSqlField_Key_ShouldEqualToExpectedProperty()
         {
-            var obj = OneToManyEntity.Create();
+            var expected = typeof(OneToManyEntity).GetProperty("Id");
+            var fields = SqlOneToManyReferenceInfoTester.GetSqlReferenceTester<OneToManyEntity>();
+            Assert.AreEqual(expected, fields[0].KeyTester[0].PropertyInfo);
+        }
 
-            var fields = SqlOneToManyReferenceInfo.GetSqlReference<OneToManyEntity>();
-            var result = fields[0].GetPredicate(obj);
-            
-            var provider = new Mock<ISqlProviderStrategy>();
-            provider.Setup(_ => _.ToSqlValue(It.IsAny<object>(), It.IsAny<object[]>())).Returns("##");
-            var whereClause = new SqlWhereClause<ManyToOneEntity>(provider.Object, result);
-            var xx = whereClause.ToStatement();
+        [TestCase]
+        public void GetSqlField_ReferenceKey_ShouldEqualToExpectedProperty()
+        {
+            var expected = typeof(ManyToOneEntity).GetProperty("OneToManyEntityId");
+            var fields = SqlOneToManyReferenceInfoTester.GetSqlReferenceTester<OneToManyEntity>();
+            Assert.AreEqual(expected, fields[0].ReferenceKeyTester[0].PropertyInfo);
+        }
 
-            Assert.AreEqual("WHERE OneToManyEntityId = ##", xx);
+        [TestCase]
+        public void GetSqlField_ReferenceType_ShouldEqualToExpectedType()
+        {
+            var expected = typeof(ManyToOneEntity);
+            var fields = SqlOneToManyReferenceInfoTester.GetSqlReferenceTester<OneToManyEntity>();
+            Assert.AreEqual(expected, fields[0].ReferenceTypeTester);
         }
     }
 }

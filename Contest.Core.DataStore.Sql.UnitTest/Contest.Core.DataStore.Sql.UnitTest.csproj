@@ -32,6 +32,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="BusinessObjectFactory\SqlSerializerTest.cs" />
+    <Compile Include="SqlOneToManyReferenceInfoTester.cs" />
+    <Compile Include="SqlManyToOneReferenceInfoTester.cs" />
+    <Compile Include="SqlReferenceTest.cs" />
     <Compile Include="Entities\BasicEntity.cs" />
     <Compile Include="Entities\OneToManyWithoutIListEntity.cs" />
     <Compile Include="Entities\GenericEntity.cs" />
@@ -51,6 +54,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceManyToMany\IdentifiableTest.cs" />
     <Compile Include="ReferenceManyToMany\RelationshipTest.cs" />
+    <Compile Include="SqlManyToOneReferenceTest.cs" />
     <Compile Include="SqlOneToManyReferenceTest.cs" />
     <Compile Include="SqlColumnFieldTest.cs" />
     <Compile Include="SqlQuery\SqlWhereClauseTest.cs" />

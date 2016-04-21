@@ -34,18 +34,16 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\SqlAttribute.cs" />
     <Compile Include="Attributes\SqlForeignKeyAttribute.cs" />
     <Compile Include="Attributes\SqlPropertyAttribute.cs" />
     <Compile Include="Attributes\SqlManyToManyReferenceAttribute.cs" />
+    <Compile Include="ISqlPropertyInfo.cs" />
+    <Compile Include="SqlReferenceInfo.cs" />
+    <Compile Include="SqlManyToOneReferenceInfo.cs" />
     <Compile Include="SqlOneToManyReferenceInfo.cs" />
     <Compile Include="SqlPropertyInfo.cs" />
     <Compile Include="SqlQuery\CreateSqlQuery.cs" />

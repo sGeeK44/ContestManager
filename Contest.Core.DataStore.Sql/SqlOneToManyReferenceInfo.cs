@@ -2,69 +2,91 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.Repository;
 
 namespace Contest.Core.DataStore.Sql
 {
-    public class SqlOneToManyReferenceInfo : SqlPropertyInfo
+    public class SqlOneToManyReferenceInfo : SqlReferenceInfo
     {
-        public List<SqlFieldInfo> PrimaryKeys { get; private set; }
-        public Type ReferenceType { get; set; }
+        private readonly Type _manyToOneType;
+        private readonly IList<ISqlPropertyInfo> _oneToManyPrimaryKeys;
+        private readonly IList<ISqlPropertyInfo> _manyToOneForeignKeys;
 
-        private SqlOneToManyReferenceInfo(PropertyInfo prop)
-            : base(prop)
+        /// <summary>
+        /// Get SqlField use as key in predicate
+        /// </summary>
+        protected override IList<ISqlPropertyInfo> Key { get { return _oneToManyPrimaryKeys; } }
+
+        /// <summary>
+        /// Get SqlField to use as reference for predicate. 
+        /// </summary>
+        protected override IList<ISqlPropertyInfo> ReferenceKey { get { return _manyToOneForeignKeys; } }
+
+        /// <summary>
+        /// Get type of reference to use in predicate parameter
+        /// </summary>
+        protected override Type ReferenceType { get { return _manyToOneType; } }
+
+        private SqlOneToManyReferenceInfo(PropertyInfo referenceProperty, Type manyToOneType, IList<ISqlPropertyInfo> oneToManyPrimaryKeys, IList<ISqlPropertyInfo> manyToOneForeignKeys)
+            : base(referenceProperty)
         {
-            if (!IsList(prop.PropertyType)) throw new NotSupportedException(string.Format("Property type for OneToMany reference have to be an IList<>. Property:{0}.", prop.Name));
-            
-            ReferenceType = prop.PropertyType.GetGenericArguments()[0];
+            _manyToOneType = manyToOneType;
+            _oneToManyPrimaryKeys = oneToManyPrimaryKeys;
+            _manyToOneForeignKeys = manyToOneForeignKeys;
         }
 
-        public void FillReference(IUnitOfWorks unitOfWorks, object item)
+        protected SqlOneToManyReferenceInfo(SqlOneToManyReferenceInfo item)
+            : base(item.PropertyInfo)
         {
-            var innerValue = unitOfWorks != null
-                           ? unitOfWorks.Find(ReferenceType, GetPredicate(item))
-                           : CreateEmptyListReference();
+            _manyToOneType = item._manyToOneType;
+            _oneToManyPrimaryKeys = item._oneToManyPrimaryKeys;
+            _manyToOneForeignKeys = item._manyToOneForeignKeys;
+        }
 
-            SetValue(item, innerValue);
+        /// <summary>
+        /// Search reference value in specified unit of works for specified item
+        /// </summary>
+        /// <param name="unitOfWorks">UnitOfWorks wich contains repository of references</param>
+        /// <param name="item">Object on wich reference have to fill</param>
+        /// <returns>Reference value</returns>
+        protected override object FindReferenceValue(IUnitOfWorks unitOfWorks, object item)
+        {
+            return unitOfWorks != null
+                 ? unitOfWorks.Find(ReferenceType, GetPredicate(item))
+                 : CreateEmptyListReference();
+        }
+
+        /// <summary>
+        /// Get OneToMany reference of specified type
+        /// </summary>
+        /// <typeparam name="T">Type to analyse</typeparam>
+        /// <returns>All SqlOneToManyReferenceInfo of specified type</returns>
+        public static List<SqlOneToManyReferenceInfo> GetSqlReference<T>()
+        {
+            var oneToManySqlProperties = GetPropertiesList<T>();
+            var oneToManyPrimaryKeys = SqlFieldInfo.GetPrimaryKeys(oneToManySqlProperties).Cast<ISqlPropertyInfo>().ToList();
+
+            return oneToManySqlProperties.Where(_ => _.IsDefined(typeof(SqlOneToManyReferenceAttribute)))
+                                         .Select(_ => Create(_, oneToManyPrimaryKeys))
+                                         .ToList();
+        }
+
+        private static SqlOneToManyReferenceInfo Create(PropertyInfo oneToManyProperty, IList<ISqlPropertyInfo> oneToManyPrimaryKeys)
+        {
+            if (!IsList(oneToManyProperty.PropertyType)) throw new NotSupportedException(string.Format("Property type for OneToMany reference have to be an IList<>. Property:{0}.", oneToManyProperty.Name));
+
+            var manyToOneType = oneToManyProperty.PropertyType.GetGenericArguments()[0];
+            var manyToOneSqlProperties = GetPropertiesList(manyToOneType);
+            var manyToOneForeignKeys = SqlFieldInfo.GetForeignKeys(manyToOneSqlProperties).Cast<ISqlPropertyInfo>().ToList();
+            return new SqlOneToManyReferenceInfo(oneToManyProperty, manyToOneType, oneToManyPrimaryKeys, manyToOneForeignKeys);
         }
 
         private IList CreateEmptyListReference()
         {
             var typeList = typeof(List<>).MakeGenericType(ReferenceType);
             return Activator.CreateInstance(typeList) as IList;
-        }
-
-        public LambdaExpression GetPredicate(object item)
-        {
-            // Manually build the expression tree for 
-            // the lambda expression _ => _.ForeignKey == item.PrimaryKey.
-            var foreignEntity = Expression.Parameter(ReferenceType, "_");
-            var foreignKeyProp = Expression.Property(foreignEntity, "OneToManyEntityId");
-            var primaryKeyProp = Expression.MakeMemberAccess(Expression.Constant(item), PrimaryKeys[0].PropertyInfo);
-
-            var condition = Expression.Equal(foreignKeyProp, primaryKeyProp);
-            var type = typeof(Func<,>).MakeGenericType(ReferenceType, typeof(bool));
-            return Expression.Lambda(type, condition, new[] { foreignEntity });
-        }
-
-        public static List<SqlOneToManyReferenceInfo> GetSqlReference<T>()
-        {
-            var allSqlProp = GetPropertiesList<T>();
-            var primaryKeys = SqlFieldInfo.GetPrimaryKeys(allSqlProp);
-            return allSqlProp.Where(_ => _.IsDefined(typeof(SqlOneToManyReferenceAttribute)))
-                                          .Select(_ => Create(_, primaryKeys))
-                                          .ToList();
-        }
-
-        private static SqlOneToManyReferenceInfo Create(PropertyInfo prop, List<SqlFieldInfo> primaryKeys)
-        {
-            return new SqlOneToManyReferenceInfo(prop)
-            {
-                PrimaryKeys = primaryKeys
-            };
         }
 
         private static bool IsList(Type t)
