@@ -56,7 +56,7 @@
     <Compile Include="ReferenceManyToMany\RelationshipTest.cs" />
     <Compile Include="SqlManyToOneReferenceTest.cs" />
     <Compile Include="SqlOneToManyReferenceTest.cs" />
-    <Compile Include="SqlColumnFieldTest.cs" />
+    <Compile Include="SqlFieldInfoTest.cs" />
     <Compile Include="SqlQuery\SqlWhereClauseTest.cs" />
     <Compile Include="SqlQuery\SqlQueryTest.cs" />
     <Compile Include="SqlQuery\SqlQueryTester.cs" />
