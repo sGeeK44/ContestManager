@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.Serialization;
 using Contest.Core.Component;
+using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.Repository;
 using Contest.Core.Repository.Sql;
@@ -88,7 +89,7 @@ namespace Contest.Business
         /// <summary>
         /// Get phase Id linked.
         /// </summary>
-        [DataMember(Name = "PHASE_ID")]
+        [SqlField(Name = "PHASE_ID")]
         public Guid PhaseId { get; private set; }
 
         /// <summary>
@@ -117,7 +118,7 @@ namespace Contest.Business
         /// <summary>
         /// Get setting game Id for current step
         /// </summary>
-        [DataMember(Name = "CURRENT_MATCH_SETTING_ID")]
+        [SqlField(Name = "CURRENT_MATCH_SETTING_ID")]
         public Guid CurrentMatchSettingId { get; protected set; }
 
         /// <summary>
@@ -158,7 +159,7 @@ namespace Contest.Business
         /// <summary>
         /// Get boolean to know if current game step is finished.
         /// </summary>
-        [DataMember(Name = "IS_FINISHED")]
+        [SqlField(Name = "IS_FINISHED")]
         public bool IsFinished { get; private set; }
 
         /// <summary>

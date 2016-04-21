@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition;
 using System.Runtime.Serialization;
 using Contest.Core.Component;
+using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.Repository;
 using Contest.Core.Repository.Sql;
@@ -71,7 +72,7 @@ namespace Contest.Business
         /// <summary>
         /// Get game step id linked
         /// </summary>
-        [DataMember(Name = "GAME_STEP_ID")]
+        [SqlField(Name = "GAME_STEP_ID")]
         public Guid GameStepId { get; private set; }
 
         /// <summary>
@@ -90,7 +91,7 @@ namespace Contest.Business
         /// <summary>
         /// Get first involved team Id in current match
         /// </summary>
-        [DataMember(Name = "TEAM_1_ID")]
+        [SqlField(Name = "TEAM_1_ID")]
         public Guid Team1Id { get; private set; }
 
         /// <summary>
@@ -109,13 +110,13 @@ namespace Contest.Business
         /// <summary>
         /// Get first team match score
         /// </summary>
-        [DataMember(Name = "TEAM_SCORE_1")]
+        [SqlField(Name = "TEAM_SCORE_1")]
         public ushort TeamScore1 { get; internal set; }
 
         /// <summary>
         /// Get second involved team Id in current match
         /// </summary>
-        [DataMember(Name = "TEAM_2_ID")]
+        [SqlField(Name = "TEAM_2_ID")]
         public Guid Team2Id { get; private set; }
 
         /// <summary>
@@ -134,13 +135,13 @@ namespace Contest.Business
         /// <summary>
         /// Get second team match score
         /// </summary>
-        [DataMember(Name = "TEAM_SCORE_2")]
+        [SqlField(Name = "TEAM_SCORE_2")]
         public ushort TeamScore2 { get; internal set; }
 
         /// <summary>
         /// Get place Id where match is played
         /// </summary>
-        [DataMember(Name = "FIELD_ID")]
+        [SqlField(Name = "FIELD_ID")]
         public Guid MatchFieldId { get; private set; }
 
         /// <summary>
@@ -159,7 +160,7 @@ namespace Contest.Business
         /// <summary>
         /// Get Time of beginning match
         /// </summary>
-        [DataMember(Name = "DATE_BEGUIN")]
+        [SqlField(Name = "DATE_BEGUIN")]
         public DateTime? Beginning { get; internal set; }
 
         /// <summary>
@@ -182,7 +183,7 @@ namespace Contest.Business
         /// <summary>
         /// Get Time of end match
         /// </summary>
-        [DataMember(Name = "DATE_ENDED")]
+        [SqlField(Name = "DATE_ENDED")]
         public DateTime? Endded { get; internal set; }
 
         /// <summary>
@@ -208,7 +209,7 @@ namespace Contest.Business
         /// <summary>
         /// Get boolean to know if current match is ended
         /// </summary>
-        [DataMember(Name = "STATE")]
+        [SqlField(Name = "STATE")]
         public MatchState MatchState
         {
             get { return CurrentState.State; }
@@ -239,7 +240,7 @@ namespace Contest.Business
         /// <summary>
         /// Get current match setting Id
         /// </summary>
-        [DataMember(Name = "SETTING_ID")]
+        [SqlField(Name = "SETTING_ID")]
         public Guid SettingId { get; private set; }
 
         /// <summary>

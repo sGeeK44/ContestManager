@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition;
 using System.Runtime.Serialization;
 using Contest.Core.Component;
+using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.Repository;
 using Contest.Core.Repository.Sql;
@@ -29,19 +30,19 @@ namespace Contest.Business
             FlippingContainer.Instance.ComposeParts(this);
         }
 
-        [DataMember(Name = "LAST_NAME")]
+        [SqlField(Name = "LAST_NAME")]
         public string LastName { get; set; }
-        [DataMember(Name = "FIRST_NAME")]
+        [SqlField(Name = "FIRST_NAME")]
         public string FirstName { get; set; }
-        [DataMember(Name = "ALIAS")]
+        [SqlField(Name = "ALIAS")]
         public string Alias { get; set; }
-        [DataMember(Name = "MAIL")]
+        [SqlField(Name = "MAIL")]
         public string Mail { get; set; }
-        [DataMember(Name = "CAN_MAILING")]
+        [SqlField(Name = "CAN_MAILING")]
         public bool CanMailing { get; set; }
-        [DataMember(Name = "IS_MEMBER")]
+        [SqlField(Name = "IS_MEMBER")]
         public bool IsMember { get; set; }
-        [DataMember(Name = "AFFECTED_TEAM")]
+        [SqlField(Name = "AFFECTED_TEAM")]
         public Guid AffectedTeamId
         {
             get { return _affectedTeamId; }

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
 using Contest.Core.Component;
+using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.FrameworkExtension;
 using Contest.Core.Repository;
@@ -78,13 +79,13 @@ namespace Contest.Business
         /// <summary>
         /// Get planned date for contest.
         /// </summary>
-        [DataMember(Name = "DATE_PLANNED")]
+        [SqlField(Name = "DATE_PLANNED")]
         public DateTime DatePlanned { get; set; }
 
         /// <summary>
         /// Get beginning date for contest.
         /// </summary>
-        [DataMember(Name = "DATE_BEGUIN")]
+        [SqlField(Name = "DATE_BEGUIN")]
         public DateTime? BeginningDate { get; set; }
 
         /// <summary>
@@ -106,13 +107,13 @@ namespace Contest.Business
         /// <summary>
         /// Get end date for contest.
         /// </summary>
-        [DataMember(Name = "DATE_ENDED")]
+        [SqlField(Name = "DATE_ENDED")]
         public DateTime? EndedDate { get; set; }
 
         /// <summary>
         /// Get end date for contest.
         /// </summary>
-        [DataMember(Name = "GAME_SETTING")]
+        [SqlField(Name = "GAME_SETTING")]
         public Guid GameSettingId { get; private set; }
 
         /// <summary>
@@ -131,7 +132,7 @@ namespace Contest.Business
         /// <summary>
         /// Get end date for contest.
         /// </summary>
-        [DataMember(Name = "PHYSICAL_SETTING")]
+        [SqlField(Name = "PHYSICAL_SETTING")]
         public Guid PhysicalSettingId { get; private set; }
 
         /// <summary>
@@ -203,7 +204,7 @@ namespace Contest.Business
         /// <summary>
         /// Get end date for contest.
         /// </summary>
-        [DataMember(Name = "ELIMINATION_SETTING_ID")]
+        [SqlField(Name = "ELIMINATION_SETTING_ID")]
         public Guid EliminationSettingId { get; private set; }
 
         /// <summary>
@@ -231,7 +232,7 @@ namespace Contest.Business
         /// <summary>
         /// Get end date for contest.
         /// </summary>
-        [DataMember(Name = "CONSOLING_ELIMINATION_SETTING_ID")]
+        [SqlField(Name = "CONSOLING_ELIMINATION_SETTING_ID")]
         public Guid ConsolingEliminationSettingId { get; private set; }
 
         /// <summary>
@@ -260,7 +261,7 @@ namespace Contest.Business
         /// <summary>
         /// Get end date for contest.
         /// </summary>
-        [DataMember(Name = "QUALIFICATION_SETTING_ID")]
+        [SqlField(Name = "QUALIFICATION_SETTING_ID")]
         public Guid QualificationSettingId { get; private set; }
 
         /// <summary>

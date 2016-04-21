@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
@@ -29,7 +30,7 @@ namespace Contest.Business
         /// <summary>
         /// Get first elimination step
         /// </summary>
-        [DataMember(Name = "FIRST_STEP")]
+        [SqlField(Name = "FIRST_STEP")]
         public EliminationType FirstStep { get; set; }
 
         #endregion

@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Ihm", "Ihm\Contest.Ihm.csproj", "{B39A4F9E-0484-4346-95A9-3AF5D62236BB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Core", "Contest.Core\Contest.Core.csproj", "{AA703556-DD37-4B27-986D-9B8C01C24040}"

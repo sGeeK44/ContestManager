@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.Serialization;
 using Contest.Core.Component;
+using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.Repository;
 using Contest.Core.Repository.Sql;
@@ -61,13 +62,13 @@ namespace Contest.Business
         /// <summary>
         /// Get identifier of current match.
         /// </summary>
-        [DataMember(Name = "CONTEST_ID")]
+        [SqlField(Name = "CONTEST_ID")]
         public Guid ContestId { get; private set; }
 
         /// <summary>
         /// Get type of current game step.
         /// </summary>
-        [DataMember(Name = "TYPE_OF")]
+        [SqlField(Name = "TYPE_OF")]
         public PhaseType Type { get; private set; }
 
         /// <summary>

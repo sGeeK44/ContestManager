@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition;
 using System.Runtime.Serialization;
 using Contest.Core.Component;
+using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.Repository;
 using Contest.Core.Repository.Sql;
@@ -61,13 +62,13 @@ namespace Contest.Business
         /// <summary>
         /// Get physical type
         /// </summary>
-        [DataMember(Name = "TYPE")]
+        [SqlField(Name = "TYPE")]
         public AreaType PhysicalType { get; set; }
 
         /// <summary>
         /// Get number of field available for contest
         /// </summary>
-        [DataMember(Name = "NUMBER_FIELD")]
+        [SqlField(Name = "NUMBER_FIELD")]
         public ushort CountField { get; set; }
 
         #endregion

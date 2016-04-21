@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.Repository;
 using Contest.Core.Repository.Sql;
@@ -55,7 +56,7 @@ namespace Contest.Business
 
         #region Properties
 
-        [DataMember(Name = "TYPE_OF_END")]
+        [SqlField(Name = "TYPE_OF_END")]
         public EndTypeConstaint EndBy
         {
             get { return CurrentEndType.EndBy; }
@@ -80,13 +81,13 @@ namespace Contest.Business
         /// <summary>
         /// Get if match can be duce
         /// </summary>
-        [DataMember(Name = "CAN_BE_DUCE")]
+        [SqlField(Name = "CAN_BE_DUCE")]
         public bool CanBeDuce { get; set; }
 
         /// <summary>
         /// Get number of point need to end a match
         /// </summary>
-        [DataMember(Name = "MATCH_POINT")]
+        [SqlField(Name = "MATCH_POINT")]
         public ushort MatchPoint
         {
             get
@@ -104,19 +105,19 @@ namespace Contest.Business
         /// <summary>
         /// Get point earn when match is win
         /// </summary>
-        [DataMember(Name = "WIN_POINT")]
+        [SqlField(Name = "WIN_POINT")]
         public ushort PointForWin { get; set; }
 
         /// <summary>
         /// Get point earn when match is loosed
         /// </summary>
-        [DataMember(Name = "LOOSE_POINT")]
+        [SqlField(Name = "LOOSE_POINT")]
         public ushort PointForLoose { get; set; }
 
         /// <summary>
         /// Get point earn when match have no winner
         /// </summary>
-        [DataMember(Name = "DUCE_POINT")]
+        [SqlField(Name = "DUCE_POINT")]
         public ushort PointForDuce { get; set; }
 
         #endregion

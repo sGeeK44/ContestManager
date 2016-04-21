@@ -5,7 +5,7 @@ namespace Contest.Business
     /// <summary>
     /// Represent all avalaible elimination type
     /// </summary>
-    public enum EliminationType : ushort
+    public enum EliminationType
     {
         /// <summary>
         /// Final step

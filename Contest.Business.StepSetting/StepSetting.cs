@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition;
 using System.Runtime.Serialization;
 using Contest.Core.Component;
+using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.Repository;
 using Contest.Core.Repository.Sql;
@@ -52,7 +53,7 @@ namespace Contest.Business
         /// <summary>
         /// Get match's setting for  step
         /// </summary>
-        [DataMember(Name = "MATCH_SETTING_ID")]
+        [SqlField(Name = "MATCH_SETTING_ID")]
         public Guid MatchSettingId { get; private set; }
 
         /// <summary>

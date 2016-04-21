@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition;
 using System.Runtime.Serialization;
 using Contest.Core.Component;
+using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.Repository;
 using Contest.Core.Repository.Sql;
@@ -59,7 +60,7 @@ namespace Contest.Business
         /// <summary>
         /// Get name of current field
         /// </summary>
-        [DataMember(Name = "NAME")]
+        [SqlField(Name = "NAME")]
         public string Name { get; internal set; }
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace Contest.Business
         /// <summary>
         /// Get current match id in progress on current field if it is allocated, else null.
         /// </summary>
-        [DataMember(Name = "MATCH_IN_PROGRESS_ID")]
+        [SqlField(Name = "MATCH_IN_PROGRESS_ID")]
         public Guid MatchInProgessId { get; private set; }
 
         /// <summary>
@@ -89,7 +90,7 @@ namespace Contest.Business
         /// <summary>
         /// Get current contest id
         /// </summary>
-        [DataMember(Name = "CURRENT_CONTEST_ID")]
+        [SqlField(Name = "CURRENT_CONTEST_ID")]
         public Guid CurrentContestId { get; private set; }
 
         /// <summary>

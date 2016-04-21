@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.Repository.Sql;
 
@@ -22,25 +23,25 @@ namespace Contest.Business
         /// <summary>
         /// Get number in street of address
         /// </summary>
-        [DataMember(Name = "STREET_NUMBER")]
+        [SqlField(Name = "STREET_NUMBER")]
         public int StreetNumber { get; set; }
 
         /// <summary>
         /// Get street of address
         /// </summary>
-        [DataMember(Name = "STREET")]
+        [SqlField(Name = "STREET")]
         public string Street { get; set; }
 
         /// <summary>
         /// Get zip code of address
         /// </summary>
-        [DataMember(Name = "ZIP_CODE")]
+        [SqlField(Name = "ZIP_CODE")]
         public string ZipCode { get; set; }
 
         /// <summary>
         /// Get city of address
         /// </summary>
-        [DataMember(Name = "CITY")]
+        [SqlField(Name = "CITY")]
         public string City { get; set; }
 
         #endregion

@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
@@ -48,25 +49,25 @@ namespace Contest.Business
         /// <summary>
         /// Get number of group in qualification step
         /// </summary>
-        [DataMember(Name = "NUMBER_GROUP")]
+        [SqlField(Name = "NUMBER_GROUP")]
         public ushort CountGroup { get; private set; }
 
         /// <summary>
         /// Get number of qualified team per group
         /// </summary>
-        [DataMember(Name = "NUMBER_QUALIFIED_TEAM")]
+        [SqlField(Name = "NUMBER_QUALIFIED_TEAM")]
         public ushort CountTeamQualified { get; private set; }
 
         /// <summary>
         /// Get number of fished team
         /// </summary>
-        [DataMember(Name = "NUMBER_TEAM_FISHED")]
+        [SqlField(Name = "NUMBER_TEAM_FISHED")]
         public ushort CountTeamFished { get; private set; }
 
         /// <summary>
         /// Indicate if match have revenche
         /// </summary>
-        [DataMember(Name = "WITH_REVANCHE")]
+        [SqlField(Name = "WITH_REVANCHE")]
         public bool MatchWithRevenche { get; set; }
 
         /// <summary>

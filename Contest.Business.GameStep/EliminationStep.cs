@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.Repository.Sql;
 using Contest.Core.Windows;
 
@@ -33,7 +34,7 @@ namespace Contest.Business
         /// <summary>
         /// Get type of current game step.
         /// </summary>
-        [DataMember(Name = "TYPE")]
+        [SqlField(Name = "TYPE")]
         public EliminationType Type { get; private set; }
 
         /// <summary>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
@@ -40,19 +41,19 @@ namespace Contest.Business
         /// <summary>
         /// Get number of qualification group
         /// </summary>
-        [DataMember(Name = "NUMBER")]
+        [SqlField(Name = "NUMBER")]
         public int Number { get; set; }
 
         /// <summary>
         /// Get boolean to know if match in current qualification step is played with revenge.
         /// </summary>
-        [DataMember(Name = "WITH_REVENCHE")]
+        [SqlField(Name = "WITH_REVENCHE")]
         public bool MatchWithRevenge { get; private set; }
 
         /// <summary>
         /// Get number of qualified team for current game step
         /// </summary>
-        [DataMember(Name = "NUMBER_QUALIFIED")]
+        [SqlField(Name = "NUMBER_QUALIFIED")]
         public ushort NumberOfQualifiedTeam { get; private set; }
 
         /// <summary>
