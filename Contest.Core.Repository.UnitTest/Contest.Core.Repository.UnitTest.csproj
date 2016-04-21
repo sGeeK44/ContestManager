@@ -35,13 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -57,18 +54,6 @@
     <Compile Include="StringTester.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Contest.Core\Contest.Core.csproj">
-      <Project>{aa703556-dd37-4b27-986d-9b8c01c24040}</Project>
-      <Name>Contest.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Contest.Core.Converters\Contest.Core.Converters.csproj">
-      <Project>{AE46A224-2C96-4F3C-AF4D-960CAB831457}</Project>
-      <Name>Contest.Core.Converters</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
-      <Project>{1FF5796B-18D0-4BF3-919D-14166813B7B2}</Project>
-      <Name>Contest.Core.Repository.Sql</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Contest.Core.Repository\Contest.Core.Repository.csproj">
       <Project>{4194f8f9-57e1-4d31-b4e3-a989f0d786f0}</Project>
       <Name>Contest.Core.Repository</Name>

@@ -30,32 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.6.0.2\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\packages\EntityFramework.6.0.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.SQLite">
-      <HintPath>..\packages\System.Data.SQLite.Core.1.0.98.1\lib\net45\System.Data.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.SQLite.EF6">
-      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.98.1\lib\net45\System.Data.SQLite.EF6.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.SQLite.Linq">
-      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.98.1\lib\net45\System.Data.SQLite.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ISqlPersistable.cs" />
@@ -70,14 +47,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Contest.Core.Component\Contest.Core.Component.csproj">
-      <Project>{6CC897AB-E169-4F20-A56D-0BC0AF8E451D}</Project>
-      <Name>Contest.Core.Component</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Contest.Core.DataStore.Sqlite\Contest.Core.DataStore.Sqlite.csproj">
-      <Project>{4B0ED7F4-49D9-4720-A4EA-4ABF92EE3549}</Project>
-      <Name>Contest.Core.DataStore.Sqlite</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Contest.Core.DataStore.Sql\Contest.Core.DataStore.Sql.csproj">
       <Project>{90473DBF-5134-4C4F-A900-8CE2BD53BB49}</Project>
       <Name>Contest.Core.DataStore.Sql</Name>
@@ -85,14 +54,6 @@
     <ProjectReference Include="..\Contest.Core.Repository\Contest.Core.Repository.csproj">
       <Project>{4194f8f9-57e1-4d31-b4e3-a989f0d786f0}</Project>
       <Name>Contest.Core.Repository</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Contest.Core.Converters\Contest.Core.Converters.csproj">
-      <Project>{AE46A224-2C96-4F3C-AF4D-960CAB831457}</Project>
-      <Name>Contest.Core.Converters</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Contest.Core.Serialization\Contest.Core.Serialization.csproj">
-      <Project>{8719BBF7-2B85-425D-9605-7D2DE6AEB907}</Project>
-      <Name>Contest.Core.Serialization</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -35,16 +35,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Moq">
-      <HintPath>..\packages\Moq.4.2.1510.2205\lib\net40\Moq.dll</HintPath>
-    </Reference>
     <Reference Include="nunit.framework, Version=3.0.5813.39031, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.0.1\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -60,25 +55,13 @@
     <Compile Include="SqlProviderStrategyBaseTester.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Contest.Core.Component\Contest.Core.Component.csproj">
-      <Project>{6CC897AB-E169-4F20-A56D-0BC0AF8E451D}</Project>
-      <Name>Contest.Core.Component</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Contest.Core.DataStore.Sql\Contest.Core.DataStore.Sql.csproj">
       <Project>{90473DBF-5134-4C4F-A900-8CE2BD53BB49}</Project>
       <Name>Contest.Core.DataStore.Sql</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Contest.Core.Repository\Contest.Core.Repository.csproj">
-      <Project>{4194F8F9-57E1-4D31-B4E3-A989F0D786F0}</Project>
-      <Name>Contest.Core.Repository</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Contest.Core.Converters\Contest.Core.Converters.csproj">
       <Project>{AE46A224-2C96-4F3C-AF4D-960CAB831457}</Project>
       <Name>Contest.Core.Converters</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
-      <Project>{1FF5796B-18D0-4BF3-919D-14166813B7B2}</Project>
-      <Name>Contest.Core.Repository.Sql</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

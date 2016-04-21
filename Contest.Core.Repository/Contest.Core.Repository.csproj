@@ -43,32 +43,8 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.6.0.2\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\packages\EntityFramework.6.0.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.SQLite, Version=1.0.98.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\System.Data.SQLite.Core.1.0.98.1\lib\net45\System.Data.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.SQLite.EF6">
-      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.98.1\lib\net45\System.Data.SQLite.EF6.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.SQLite.Linq">
-      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.98.1\lib\net45\System.Data.SQLite.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataContext.cs" />
@@ -83,21 +59,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Contest.Core\Contest.Core.csproj">
-      <Project>{aa703556-dd37-4b27-986d-9b8c01c24040}</Project>
-      <Name>Contest.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Contest.Core.Converters\Contest.Core.Converters.csproj">
-      <Project>{AE46A224-2C96-4F3C-AF4D-960CAB831457}</Project>
-      <Name>Contest.Core.Converters</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Contest.Core.Exceptions\Contest.Core.Exceptions.csproj">
       <Project>{0B7C9EAB-E419-4DA4-BEE0-8FD3F4ADB324}</Project>
       <Name>Contest.Core.Exceptions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Contest.Core.Serialization\Contest.Core.Serialization.csproj">
-      <Project>{8719BBF7-2B85-425D-9605-7D2DE6AEB907}</Project>
-      <Name>Contest.Core.Serialization</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
