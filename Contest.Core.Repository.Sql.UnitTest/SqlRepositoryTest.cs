@@ -15,6 +15,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
         public Mock<ISqlQueryFactory<Identifiable<object>>> SqlBuilder { get; set; }
         public Mock<ISqlUnitOfWorks> UnitOfWork { get; set; }
         public Mock<ISqlDataStore> SqlDataStore { get; set; }
+        public Mock<ISqlDataStore> UnitOfWorkDataStore { get; set; }
         public Mock<IBusinessObjectFactory<Identifiable<object>>> BoFactory { get; set; }
         public Mock<IDataReader> Reader { get; set; }
         public SqlRepository<Identifiable<object>> SqlRepository { get; set; }
@@ -28,19 +29,13 @@ namespace Contest.Core.Repository.Sql.UnitTest
             SqlDataStore = new Mock<ISqlDataStore>();
             BoFactory = new Mock<IBusinessObjectFactory<Identifiable<object>>>();
             Reader = new Mock<IDataReader>();
+            UnitOfWorkDataStore = new Mock<ISqlDataStore>();
 
             SqlRepository = new SqlRepository<Identifiable<object>>(SqlDataStore.Object, SqlBuilder.Object, BoFactory.Object, Context.Object);
 
-            UnitOfWork.Setup(_ => _.SqlDataStore).Returns(SqlDataStore.Object);
+            UnitOfWork.Setup(_ => _.SqlDataStore).Returns(UnitOfWorkDataStore.Object);
         }
-
-        [TestCase]
-        public void Constructor_ShouldBeEmptyStatement()
-        {
-            SqlDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
-            SqlDataStore.Verify();
-        }
-
+        
         [TestCase]
         public void Insert_ContextShouldBeUpdated()
         {
@@ -49,7 +44,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
 
             SqlRepository.Insert(obj);
 
-            Context.Verify();
+            Context.VerifyAll();
         }
 
         [TestCase]
@@ -60,31 +55,31 @@ namespace Contest.Core.Repository.Sql.UnitTest
 
             SqlRepository.Insert(obj);
 
-            SqlDataStore.Verify();
+            SqlDataStore.VerifyAll();
         }
 
         [TestCase]
-        public void Insert_WithUnitOfWork_InnerStatementShouldNotBeUpdate()
+        public void Insert_WithUnitOfWork_InnerStatementShouldBeUpdate()
         {
-            SqlDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
+            UnitOfWorkDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             var obj = new Identifiable<object>();
             SqlRepository.UnitOfWorks = UnitOfWork.Object;
 
             SqlRepository.Insert(obj);
 
-            SqlDataStore.Verify();
+            UnitOfWorkDataStore.VerifyAll();
         }
 
         [TestCase]
-        public void Insert_WithUnitOfWork_UnitOfWorkStatementShouldNotBeUpdate()
+        public void Insert_WithUnitOfWork_UnitOfWorkDataStoreShouldBeUpdate()
         {
             var obj = new Identifiable<object>();
-            UnitOfWork.Setup(_ => _.Insert(obj));
+            UnitOfWorkDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             SqlRepository.UnitOfWorks = UnitOfWork.Object;
 
             SqlRepository.Insert(obj);
 
-            UnitOfWork.Verify();
+            UnitOfWorkDataStore.VerifyAll();
         }
 
         [TestCase]
@@ -95,7 +90,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
 
             SqlRepository.InsertOrUpdate(obj);
 
-            Context.Verify();
+            Context.VerifyAll();
         }
 
         [TestCase]
@@ -106,7 +101,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
 
             SqlRepository.InsertOrUpdate(obj);
 
-            SqlDataStore.Verify();
+            SqlDataStore.VerifyAll();
         }
 
         [TestCase]
@@ -118,7 +113,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
 
             SqlRepository.InsertOrUpdate(obj);
 
-            Context.Verify();
+            Context.VerifyAll();
         }
 
         [TestCase]
@@ -130,31 +125,31 @@ namespace Contest.Core.Repository.Sql.UnitTest
 
             SqlRepository.InsertOrUpdate(obj);
 
-            SqlDataStore.Verify();
+            SqlDataStore.VerifyAll();
         }
 
         [TestCase]
-        public void InsertOrUpdate_WithUnitOfWork_InnerStatementShouldNotBeUpdate()
+        public void InsertOrUpdate_WithUnitOfWork_InnerStatementShouldBeUpdate()
         {
-            SqlDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
+            UnitOfWorkDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             var obj = new Identifiable<object>();
             SqlRepository.UnitOfWorks = UnitOfWork.Object;
 
             SqlRepository.InsertOrUpdate(obj);
 
-            SqlDataStore.Verify();
+            UnitOfWorkDataStore.VerifyAll();
         }
 
         [TestCase]
-        public void InsertOrUpdate_WithUnitOfWork_UnitOfWorkStatementShouldNotBeUpdate()
+        public void InsertOrUpdate_WithUnitOfWork_UnitOfWorkDataStoreShouldBeUpdate()
         {
             var obj = new Identifiable<object>();
-            UnitOfWork.Setup(_ => _.InsertOrUpdate(obj));
+            UnitOfWorkDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             SqlRepository.UnitOfWorks = UnitOfWork.Object;
 
             SqlRepository.InsertOrUpdate(obj);
 
-            UnitOfWork.Verify();
+            UnitOfWorkDataStore.VerifyAll();
         }
 
         [TestCase]
@@ -165,7 +160,7 @@ namespace Contest.Core.Repository.Sql.UnitTest
 
             SqlRepository.Update(obj);
 
-            Context.Verify();
+            Context.VerifyAll();
         }
 
         [TestCase]
@@ -176,31 +171,31 @@ namespace Contest.Core.Repository.Sql.UnitTest
 
             SqlRepository.Update(obj);
 
-            SqlDataStore.Verify();
+            SqlDataStore.VerifyAll();
         }
 
         [TestCase]
-        public void Update_WithUnitOfWork_InnerStatementShouldNotBeUpdate()
+        public void Update_WithUnitOfWork_InnerStatementShouldBeUpdate()
         {
-            SqlDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
+            UnitOfWorkDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             var obj = new Identifiable<object>();
             SqlRepository.UnitOfWorks = UnitOfWork.Object;
 
             SqlRepository.Update(obj);
 
-            SqlDataStore.Verify();
+            UnitOfWorkDataStore.VerifyAll();
         }
 
         [TestCase]
-        public void Update_WithUnitOfWork_UnitOfWorkStatementShouldNotBeUpdate()
+        public void Update_WithUnitOfWork_UnitOfWorkDataStoreShouldBeUpdate()
         {
             var obj = new Identifiable<object>();
-            UnitOfWork.Setup(_ => _.Update(obj));
+            UnitOfWorkDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             SqlRepository.UnitOfWorks = UnitOfWork.Object;
 
             SqlRepository.Update(obj);
 
-            UnitOfWork.Verify();
+            UnitOfWorkDataStore.VerifyAll();
         }
 
         [TestCase]
@@ -211,19 +206,18 @@ namespace Contest.Core.Repository.Sql.UnitTest
 
             SqlRepository.Delete(obj);
 
-            SqlDataStore.Verify();
+            SqlDataStore.VerifyAll();
         }
 
         [TestCase]
         public void Delete_AlreadyPresentObject_ContextShouldBeUpdated()
         {
             var obj = new Identifiable<object>();
-            Context.Setup(_ => _.IsExist(obj)).Returns(true);
             Context.Setup(_ => _.Delete(obj));
 
             SqlRepository.Delete(obj);
 
-            Context.Verify();
+            Context.VerifyAll();
         }
 
         [TestCase]
@@ -235,31 +229,31 @@ namespace Contest.Core.Repository.Sql.UnitTest
 
             SqlRepository.Delete(obj);
 
-            SqlDataStore.Verify();
+            SqlDataStore.VerifyAll();
         }
 
         [TestCase]
-        public void Delete_WithUnitOfWork_InnerStatementShouldNotBeUpdate()
+        public void Delete_WithUnitOfWork_InnerStatementShouldBeUpdate()
         {
-            SqlDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
+            UnitOfWorkDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             var obj = new Identifiable<object>();
             SqlRepository.UnitOfWorks = UnitOfWork.Object;
 
             SqlRepository.Delete(obj);
 
-            SqlDataStore.Verify();
+            UnitOfWorkDataStore.VerifyAll();
         }
 
         [TestCase]
-        public void Delete_WithUnitOfWork_UnitOfWorkStatementShouldNotBeUpdate()
+        public void Delete_WithUnitOfWork_UnitOfWorkDataStoreShouldBeUpdate()
         {
             var obj = new Identifiable<object>();
-            UnitOfWork.Setup(_ => _.Delete(obj));
+            UnitOfWorkDataStore.Setup(_ => _.AddRequest(It.IsAny<ISqlQuery>()));
             SqlRepository.UnitOfWorks = UnitOfWork.Object;
 
             SqlRepository.Delete(obj);
 
-            UnitOfWork.Verify();
+            UnitOfWorkDataStore.VerifyAll();
         }
 
         [TestCase]
