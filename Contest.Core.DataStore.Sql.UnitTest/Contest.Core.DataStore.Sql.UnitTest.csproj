@@ -32,6 +32,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="BusinessObjectFactory\SqlSerializerTest.cs" />
+    <Compile Include="Entities\ManyToManySecondEntity.cs" />
+    <Compile Include="Entities\ManyToManyFirstEntity.cs" />
     <Compile Include="SqlEntityInfoTest.cs" />
     <Compile Include="SqlOneToManyReferenceInfoTester.cs" />
     <Compile Include="SqlManyToOneReferenceInfoTester.cs" />
