@@ -131,19 +131,17 @@ namespace Contest.Core.Repository.Sql
         public IList<TI> Find(Expression<Func<TI, bool>> predicate)
         {
             var request = SqlQueryFactory.Select(predicate);
-            var result = SqlDataStore.Execute(request);
+            var sqlResult = SqlDataStore.Execute(request);
 
-            while (result.Read())
+            while (sqlResult.Read())
             {
-                var item = BoFactory.Convert(result);
-
-                //Update context
-                if (!Context.IsExist(item)) Context.Insert(item);
+                var item = BoFactory.Convert(sqlResult);
+                BoFactory.FillReferences(UnitOfWorks, item);
+                UpdateContextOnNeed(item);
             }
-            result.Close();
+            sqlResult.Close();
 
-            //Return response
-            return Context.Find(predicate.Compile());
+            return GetFromContext(predicate);
         }
 
         public IList Find(Type objectTypeSearch, LambdaExpression predicate)
@@ -157,6 +155,16 @@ namespace Contest.Core.Repository.Sql
         public void ClearCache()
         {
             Context.Clear();
+        }
+
+        private IList<TI> GetFromContext(Expression<Func<TI, bool>> predicate)
+        {
+            return Context.Find(predicate.Compile());
+        }
+
+        private void UpdateContextOnNeed(TI item)
+        {
+            if (!Context.IsExist(item)) Context.Insert(item);
         }
     }
 }
