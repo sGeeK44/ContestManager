@@ -3,7 +3,7 @@ using Contest.Core.DataStore.Sql.Attributes;
 
 namespace Contest.Core.DataStore.Sql.UnitTest.Entities
 {
-    [DataContract]
+    [SqlEntity]
     public class NoOverrideNameEntity
     {
         [SqlField]

@@ -38,10 +38,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\SqlAttribute.cs" />
+    <Compile Include="Attributes\SqlEntityAttribute.cs" />
     <Compile Include="Attributes\SqlForeignKeyAttribute.cs" />
     <Compile Include="Attributes\SqlPropertyAttribute.cs" />
     <Compile Include="Attributes\SqlManyToManyReferenceAttribute.cs" />
+    <Compile Include="ISqlEntityInfo.cs" />
     <Compile Include="ISqlPropertyInfo.cs" />
+    <Compile Include="SqlEntityInfo.cs" />
     <Compile Include="SqlReferenceInfo.cs" />
     <Compile Include="SqlManyToOneReferenceInfo.cs" />
     <Compile Include="SqlOneToManyReferenceInfo.cs" />

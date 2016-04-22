@@ -5,7 +5,7 @@ using Contest.Core.DataStore.Sql.Attributes;
 
 namespace Contest.Core.DataStore.Sql.UnitTest.Entities
 {
-    [DataContract(Name = "ONE_TO_MANY")]
+    [SqlEntity(Name = "ONE_TO_MANY")]
     public class OneToManyEntity
     {
         public static Guid Guid = new Guid("B495217D-C029-4295-88A9-4F6A9E8DC6A8");

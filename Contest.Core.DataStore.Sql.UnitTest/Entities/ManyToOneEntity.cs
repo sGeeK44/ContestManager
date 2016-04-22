@@ -6,7 +6,7 @@ using Contest.Core.Repository;
 
 namespace Contest.Core.DataStore.Sql.UnitTest.Entities
 {
-    [DataContract]
+    [SqlEntity]
     public class ManyToOneEntity : IIdentifiable, IQueryable
     {
         [SqlPrimaryKey]

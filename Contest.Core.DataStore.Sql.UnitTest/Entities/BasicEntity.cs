@@ -3,6 +3,7 @@ using Contest.Core.DataStore.Sql.Attributes;
 
 namespace Contest.Core.DataStore.Sql.UnitTest.Entities
 {
+    [SqlEntity]
     public class BasicEntity
     {
         public static Guid Guid = new Guid("27C36EC4-1AF1-40CB-95B5-6F5655B146E4");

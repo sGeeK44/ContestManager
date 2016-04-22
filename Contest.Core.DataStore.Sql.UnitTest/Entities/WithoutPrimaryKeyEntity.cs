@@ -4,7 +4,7 @@ using Contest.Core.DataStore.Sql.Attributes;
 
 namespace Contest.Core.DataStore.Sql.UnitTest.Entities
 {
-    [DataContract(Name = "ENTITY_3")]
+    [SqlEntity(Name = "ENTITY_3")]
     public class WithoutPrimaryKeyEntity
     {
         [SqlField(Name = "ID")]

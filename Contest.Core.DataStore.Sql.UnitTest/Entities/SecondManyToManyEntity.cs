@@ -6,7 +6,7 @@ using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 
 namespace Contest.Core.DataStore.Sql.UnitTest.Entities
 {
-    [DataContract]
+    [SqlEntity]
     public class SecondManyToManyEntity : IIdentifiable
     {
         public static Guid Guid = new Guid("937E83C6-61C4-41E2-BD99-4B6A99E1B7FC");
