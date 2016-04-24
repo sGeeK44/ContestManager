@@ -7,9 +7,7 @@ namespace Contest.Core.DataStore.Sql.ReferenceManyToMany
     /// <summary>
     /// Represent a relation n to n between two object
     /// </summary>
-    public class Relationship<TObj1, TIObj1, TObj2, TIObj2>
-        where TObj1 : class, TIObj1
-        where TObj2 : class, TIObj2
+    public class Relationship<TIObj1, TIObj2>
         where TIObj1 : class, IIdentifiable
         where TIObj2 : class, IIdentifiable
     {
@@ -20,8 +18,10 @@ namespace Contest.Core.DataStore.Sql.ReferenceManyToMany
 
         public IRepository<TIObj2> SecondItemRepository { get; set; }
 
-        public Relationship()
+        public Relationship(IRepository<TIObj1> firstItemRepository, IRepository<TIObj2> secondItemRepository)
         {
+            FirstItemRepository = firstItemRepository;
+            SecondItemRepository = secondItemRepository;
             _firstItemInvolve = new Lazy<TIObj1>(() => FirstItemRepository.FirstOrDefault(_ => _.Id == FirstItemInvolveId));
             _secondItemInvolve = new Lazy<TIObj2>(() => SecondItemRepository.FirstOrDefault(_ => _.Id == SecondItemInvolveId));
         }
@@ -72,7 +72,7 @@ namespace Contest.Core.DataStore.Sql.ReferenceManyToMany
 
         public bool AreSame(object other)
         {
-            var castedObject = other as Relationship<TObj1, TIObj1, TObj2, TIObj2>;
+            var castedObject = other as Relationship<TIObj1, TIObj2>;
             if (castedObject == null) return false;
 
             return FirstItemInvolve.Id == castedObject.FirstItemInvolve.Id
