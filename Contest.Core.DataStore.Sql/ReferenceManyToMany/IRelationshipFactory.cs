@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 
-namespace Contest.Business
+namespace Contest.Core.DataStore.Sql.ReferenceManyToMany
 {
     public interface IRelationshipFactory<TIObj1, TIObj2>
         where TIObj1 : IIdentifiable

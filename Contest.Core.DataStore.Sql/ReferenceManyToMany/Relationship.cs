@@ -7,7 +7,7 @@ namespace Contest.Core.DataStore.Sql.ReferenceManyToMany
     /// <summary>
     /// Represent a relation n to n between two object
     /// </summary>
-    public class Relationship<TIObj1, TIObj2>
+    public class Relationship<TIObj1, TIObj2> : IRelationship<TIObj1, TIObj2>
         where TIObj1 : class, IIdentifiable
         where TIObj2 : class, IIdentifiable
     {
