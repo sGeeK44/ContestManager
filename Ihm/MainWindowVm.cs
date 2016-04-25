@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using Contest.Business;
 using Contest.Core.Component;
+using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.DataStore.Sqlite;
 using Contest.Core.Repository.Sql;
 using Contest.Core.Windows.Commands;

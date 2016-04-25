@@ -125,10 +125,12 @@ namespace Contest.Business
             {
                 gameStep.PrepareCommit(unitOfWorks);
             }
-            if (_phaseTeamRelationshipList.Value != null)
-            foreach (var relation in _phaseTeamRelationshipList.Value)
+            if (_phaseTeamRelationshipList.Value == null) return;
+            
+            // TODO Save de la table des relations
+            foreach (var team in _phaseTeamRelationshipList.Value.Select(_ => _.FirstItemInvolve))
             {
-                relation.PrepareCommit(unitOfWorks);
+                team.PrepareCommit(unitOfWorks);
             }
         }
 

@@ -215,9 +215,10 @@ namespace Contest.Business
             }
             if (_gameStepTeamRelationshipList.Value == null) return;
 
-            foreach (var relation in _gameStepTeamRelationshipList.Value)
+            // TODO Save de la table des relations
+            foreach (var team in _gameStepTeamRelationshipList.Value.Select(_ => _.FirstItemInvolve))
             {
-                relation.PrepareCommit(unitOfWorks);
+                team.PrepareCommit(unitOfWorks);
             }
         }
 

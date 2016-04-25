@@ -18,10 +18,8 @@ namespace Contest.Core.DataStore.Sql.ReferenceManyToMany
 
         public IRepository<TIObj2> SecondItemRepository { get; set; }
 
-        public Relationship(IRepository<TIObj1> firstItemRepository, IRepository<TIObj2> secondItemRepository)
+        public Relationship(IUnitOfWorks unitOfWork)
         {
-            FirstItemRepository = firstItemRepository;
-            SecondItemRepository = secondItemRepository;
             _firstItemInvolve = new Lazy<TIObj1>(() => FirstItemRepository.FirstOrDefault(_ => _.Id == FirstItemInvolveId));
             _secondItemInvolve = new Lazy<TIObj2>(() => SecondItemRepository.FirstOrDefault(_ => _.Id == SecondItemInvolveId));
         }

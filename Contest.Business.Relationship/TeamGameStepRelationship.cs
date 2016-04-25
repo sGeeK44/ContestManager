@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
+using Contest.Core.Repository;
 using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
@@ -9,9 +10,10 @@ namespace Contest.Business
     /// Represent a relation between a Team and a GameStep
     /// </summary>
     [DataContract(Name = "TEAM_GAME_STEP_RELATION")]
-    public class TeamGameStepRelationship : Relationship<Team, ITeam, GameStep, IGameStep>, IRelationship<ITeam, IGameStep>
+    public class TeamGameStepRelationship : Relationship<ITeam, IGameStep>, ISqlPersistable
     {
-        public TeamGameStepRelationship()
+        public TeamGameStepRelationship(IUnitOfWorks unitOfWorks)
+            : base(unitOfWorks)
         { }
 
         /// <summary>

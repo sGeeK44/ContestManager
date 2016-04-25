@@ -208,16 +208,6 @@ namespace Contest.Business
             {
                 member.PrepareCommit(unitOfWorks);
             }
-            if (_gameStepTeamRelationshipList.Value != null)
-            foreach (var relation in _gameStepTeamRelationshipList.Value)
-            {
-                relation.PrepareCommit(unitOfWorks);
-            }
-            if (_phaseTeamRelationshipList.Value != null)
-            foreach (var relation in _phaseTeamRelationshipList.Value)
-            {
-                relation.PrepareCommit(unitOfWorks);
-            }
         }
 
         public void PrepareDelete(ISqlUnitOfWorks unitOfWorks)
