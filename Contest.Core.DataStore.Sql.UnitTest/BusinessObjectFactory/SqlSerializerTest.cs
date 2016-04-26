@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using Contest.Core.Converters;
 using Contest.Core.DataStore.Sql.BusinessObjectFactory;
+using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.DataStore.Sql.UnitTest.Entities;
 using Contest.Core.Repository;
 using Moq;
@@ -204,11 +203,20 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
         }
         
         [TestCase]
-        public void FillOneToManyReferences_NullEntity_ShouldThrowException()
+        public void FillOneToManyReferences_NullUnitOfWork_ShouldNotThrowException()
+        {
+            var obj = new OneToManyEntity();
+            var serializer = CreateSqlSerializer<OneToManyEntity>();
+
+            Assert.DoesNotThrow(() => serializer.FillOneToManyReference(null, obj));
+        }
+        
+        [TestCase]
+        public void FillOneToManyReferences_NullEntity_ShouldNotThrowException()
         {
             var serializer = CreateSqlSerializer<OneToManyEntity>();
 
-            Assert.Throws<TargetException>(() => serializer.FillOneToManyReference(null, null));
+            Assert.DoesNotThrow(() => serializer.FillOneToManyReference(new Mock<IUnitOfWorks>().Object, null));
         }
         
         [TestCase]
@@ -224,6 +232,71 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
             serializer.FillOneToManyReference(unitOfWorks.Object, obj);
 
             Assert.AreEqual(expectedReference, obj.EntityList[0]);
+        }
+        
+        [TestCase]
+        public void FillManyToOneReferences_NullUnitOfWork_ShouldNotThrowException()
+        {
+            var obj = new ManyToOneEntity();
+            var serializer = CreateSqlSerializer<ManyToOneEntity>();
+
+            Assert.DoesNotThrow(() => serializer.FillManyToOneReference(null, obj));
+        }
+
+        [TestCase]
+        public void FillManyToOneReferences_NullEntity_ShouldNotThrowException()
+        {
+            var serializer = CreateSqlSerializer<ManyToOneEntity>();
+
+            Assert.DoesNotThrow(() => serializer.FillManyToOneReference(new Mock<IUnitOfWorks>().Object, null));
+        }
+
+        [TestCase]
+        public void FillManyToOneReferences_ManyToOneReferenceProperties_ShouldBeFill()
+        {
+            var obj = new ManyToOneEntity();
+            var expectedReference = new OneToManyEntity();
+            var unitOfWorks = new Mock<IUnitOfWorks>();
+            unitOfWorks.Setup(_ => _.Find(typeof(OneToManyEntity), It.IsAny<LambdaExpression>()))
+                       .Returns(new List<OneToManyEntity> { expectedReference });
+            var serializer = CreateSqlSerializer<ManyToOneEntity>();
+
+            serializer.FillManyToOneReference(unitOfWorks.Object, obj);
+
+            Assert.AreEqual(expectedReference, obj.Entity);
+        }
+
+        [TestCase]
+        public void FillManyToManyReferences_NullUnitOfWork_ShouldNotThrowException()
+        {
+            var obj = new ManyToManyFirstEntity();
+            var serializer = CreateSqlSerializer<ManyToManyFirstEntity>();
+
+            Assert.DoesNotThrow(() => serializer.FillManyToManyReference(null, obj));
+        }
+
+        [TestCase]
+        public void FillManyToManyReferences_NullEntity_ShouldNotThrowException()
+        {
+            var serializer = CreateSqlSerializer<ManyToManyFirstEntity>();
+
+            Assert.DoesNotThrow(() => serializer.FillManyToManyReference(new Mock<IUnitOfWorks>().Object, null));
+        }
+
+        [TestCase]
+        public void FillManyToManyReferences_ManyToManyReferenceProperties_ShouldBeFill()
+        {
+            var first = new ManyToManyFirstEntity();
+            var second = new ManyToManySecondEntity();
+            var expectedReference = new Relationship<ManyToManyFirstEntity, ManyToManySecondEntity>(first, second);
+            var unitOfWorks = new Mock<IUnitOfWorks>();
+            unitOfWorks.Setup(_ => _.Find(typeof(Relationship<ManyToManyFirstEntity, ManyToManySecondEntity>), It.IsAny<LambdaExpression>()))
+                       .Returns(new List<Relationship<ManyToManyFirstEntity, ManyToManySecondEntity>> { expectedReference });
+            var serializer = CreateSqlSerializer<ManyToManyFirstEntity>();
+
+            serializer.FillManyToManyReference(unitOfWorks.Object, first);
+
+            Assert.AreEqual(expectedReference, first.SecondEntityList[0]);
         }
 
         private SqlSerializer<T, T> CreateSqlSerializer<T>()

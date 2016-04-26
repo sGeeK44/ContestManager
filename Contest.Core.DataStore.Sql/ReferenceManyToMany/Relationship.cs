@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
 using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.Repository;
 
@@ -14,14 +16,10 @@ namespace Contest.Core.DataStore.Sql.ReferenceManyToMany
         private Lazy<TIObj1> _firstItemInvolve;
         private Lazy<TIObj2> _secondItemInvolve;
         
-        public IRepository<TIObj1> FirstItemRepository { get; set; }
-
-        public IRepository<TIObj2> SecondItemRepository { get; set; }
-
         public Relationship(IUnitOfWorks unitOfWork)
         {
-            _firstItemInvolve = new Lazy<TIObj1>(() => FirstItemRepository.FirstOrDefault(_ => _.Id == FirstItemInvolveId));
-            _secondItemInvolve = new Lazy<TIObj2>(() => SecondItemRepository.FirstOrDefault(_ => _.Id == SecondItemInvolveId));
+            _firstItemInvolve = new Lazy<TIObj1>(() => unitOfWork.Find(typeof(TIObj1), CreateLambda<TIObj1>(_ => _.Id == FirstItemInvolveId)).Cast<TIObj1>().FirstOrDefault());
+            _secondItemInvolve = new Lazy<TIObj2>(() => unitOfWork.Find(typeof(TIObj2), CreateLambda<TIObj2>(_ => _.Id == SecondItemInvolveId)).Cast<TIObj2>().FirstOrDefault());
         }
 
         public Relationship(TIObj1 first, TIObj2 second)
@@ -75,6 +73,11 @@ namespace Contest.Core.DataStore.Sql.ReferenceManyToMany
 
             return FirstItemInvolve.Id == castedObject.FirstItemInvolve.Id
                 && SecondItemInvolve.Id == castedObject.SecondItemInvolve.Id;
+        }
+
+        private static LambdaExpression CreateLambda<T>(Expression<Func<T, bool>> predicate)
+        {
+            return predicate;
         }
     }
 }

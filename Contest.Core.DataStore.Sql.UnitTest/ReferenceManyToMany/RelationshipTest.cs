@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq.Expressions;
-using Contest.Core.DataStore.Sql.ReferenceManyToMany;
+﻿using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.DataStore.Sql.UnitTest.Entities;
 using Contest.Core.Repository;
 using Moq;
@@ -12,35 +10,46 @@ namespace Contest.Core.DataStore.Sql.UnitTest.ReferenceManyToMany
     public class RelationshipTest
     {
         [TestCase]
-        public void Create()
+        public void Constructor_WithItemRelation_ShouldFillFirstItemProp()
         {
-            var first = new FirstManyToManyEntity();
-            var second = new SecondManyToManyEntity();
-            var relationship = new Relationship<FirstManyToManyEntity, FirstManyToManyEntity, SecondManyToManyEntity, SecondManyToManyEntity>(first, second);
+            var first = new ManyToManyFirstEntity();
+            var second = new ManyToManySecondEntity();
+
+            var relationship = new Relationship<ManyToManyFirstEntity, ManyToManySecondEntity>(first, second);
 
             Assert.AreEqual(first, relationship.FirstItemInvolve);
-            Assert.AreEqual(first.Id, relationship.FirstItemInvolveId);
-            Assert.AreEqual(second, relationship.SecondItemInvolve);
-            Assert.AreEqual(second.Id, relationship.SecondItemInvolveId);
         }
 
         [TestCase]
-        public void GettingFromRepo()
+        public void Constructor_WithItemRelation_ShouldFillFirstItemIdProp()
         {
-            var first = new FirstManyToManyEntity();
-            var second = new SecondManyToManyEntity();
-            var relationship = new Relationship<FirstManyToManyEntity, FirstManyToManyEntity, SecondManyToManyEntity, SecondManyToManyEntity>();
-            var repositoryMock1 = new Mock<IRepository<FirstManyToManyEntity>>();
-            repositoryMock1.Setup(_ => _.FirstOrDefault(It.IsAny<Expression<Func<FirstManyToManyEntity, bool>>>())).Returns(first);
-            relationship.FirstItemRepository = repositoryMock1.Object;
+            var first = new ManyToManyFirstEntity();
+            var second = new ManyToManySecondEntity();
 
-            var repositoryMock2 = new Mock<IRepository<SecondManyToManyEntity>>();
-            repositoryMock2.Setup(_ => _.FirstOrDefault(It.IsAny<Expression<Func<SecondManyToManyEntity, bool>>>())).Returns(second);
-            relationship.SecondItemRepository = repositoryMock2.Object;
+            var relationship = new Relationship<ManyToManyFirstEntity, ManyToManySecondEntity>(first, second);
 
-            Assert.AreEqual(first, relationship.FirstItemInvolve);
             Assert.AreEqual(first.Id, relationship.FirstItemInvolveId);
+        }
+
+        [TestCase]
+        public void Constructor_WithItemRelation_ShouldFillSecondItemProp()
+        {
+            var first = new ManyToManyFirstEntity();
+            var second = new ManyToManySecondEntity();
+
+            var relationship = new Relationship<ManyToManyFirstEntity, ManyToManySecondEntity>(first, second);
+
             Assert.AreEqual(second, relationship.SecondItemInvolve);
+        }
+
+        [TestCase]
+        public void Constructor_WithItemRelation_ShouldFillSecondItemIdProp()
+        {
+            var first = new ManyToManyFirstEntity();
+            var second = new ManyToManySecondEntity();
+
+            var relationship = new Relationship<ManyToManyFirstEntity, ManyToManySecondEntity>(first, second);
+
             Assert.AreEqual(second.Id, relationship.SecondItemInvolveId);
         }
     }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.Repository;
@@ -16,7 +15,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.Entities
         public Guid Id { get; set; }
 
         [SqlManyToManyReference]
-        public IList<ManyToManySecondEntity> SecondEntityList { get; private set; }
+        public IList<Relationship<ManyToManyFirstEntity, ManyToManySecondEntity>> SecondEntityList { get; private set; }
 
         public static ManyToManyFirstEntity Create()
         {

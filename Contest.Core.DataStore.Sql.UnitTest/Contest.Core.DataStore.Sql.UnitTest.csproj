@@ -35,8 +35,11 @@
     <Compile Include="Entities\ManyToManySecondEntity.cs" />
     <Compile Include="Entities\ManyToManyFirstEntity.cs" />
     <Compile Include="SqlEntityInfoTest.cs" />
+    <Compile Include="SqlManyToManyReferenceInfoTester.cs" />
+    <Compile Include="SqlManyToManyReferenceTest.cs" />
     <Compile Include="SqlOneToManyReferenceInfoTester.cs" />
     <Compile Include="SqlManyToOneReferenceInfoTester.cs" />
+    <Compile Include="SqlReferenceInfoTester.cs" />
     <Compile Include="SqlReferenceTest.cs" />
     <Compile Include="Entities\BasicEntity.cs" />
     <Compile Include="Entities\OneToManyWithoutIListEntity.cs" />
@@ -45,8 +48,6 @@
     <Compile Include="Entities\DynamicEntity.cs" />
     <Compile Include="Entities\EnumPivot.cs" />
     <Compile Include="Entities\EnumPivotEntity.cs" />
-    <Compile Include="Entities\SecondManyToManyEntity.cs" />
-    <Compile Include="Entities\FirstManyToManyEntity.cs" />
     <Compile Include="Entities\NoDataContractEntity.cs" />
     <Compile Include="Entities\OverrideNameEntity.cs" />
     <Compile Include="Entities\ManyToOneEntity.cs" />

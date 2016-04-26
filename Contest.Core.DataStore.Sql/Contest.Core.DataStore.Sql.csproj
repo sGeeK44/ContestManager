@@ -44,7 +44,10 @@
     <Compile Include="Attributes\SqlManyToManyReferenceAttribute.cs" />
     <Compile Include="ISqlEntityInfo.cs" />
     <Compile Include="ISqlPropertyInfo.cs" />
+    <Compile Include="ReferenceManyToMany\IRelationship.cs" />
+    <Compile Include="ReferenceManyToMany\IRelationshipFactory.cs" />
     <Compile Include="SqlEntityInfo.cs" />
+    <Compile Include="SqlManyToManyReferenceInfo.cs" />
     <Compile Include="SqlReferenceInfo.cs" />
     <Compile Include="SqlManyToOneReferenceInfo.cs" />
     <Compile Include="SqlOneToManyReferenceInfo.cs" />

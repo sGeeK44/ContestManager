@@ -26,9 +26,9 @@ namespace Contest.Core.DataStore.Sql
         /// <summary>
         /// Initialize a new Instance for spcified reference property
         /// </summary>
-        /// <param name="referenceProperty">Property to link</param>
-        protected SqlReferenceInfo(PropertyInfo referenceProperty)
-            : base(referenceProperty) { }
+        /// <param name="propertyInfo">Property to link</param>
+        protected SqlReferenceInfo(PropertyInfo propertyInfo)
+            : base(propertyInfo) { }
 
         /// <summary>
         /// Build a Lambda expression to retreive references
@@ -61,6 +61,8 @@ namespace Contest.Core.DataStore.Sql
         /// <param name="item">Object on wich reference have to fill</param>
         public void FillReference(IUnitOfWorks unitOfWorks, object item)
         {
+            if (item == null) return;
+
             SetValue(item, FindReferenceValue(unitOfWorks, item));
         }
     }

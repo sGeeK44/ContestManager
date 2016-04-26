@@ -64,6 +64,28 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
             }
         }
 
+        public void FillManyToOneReference(IUnitOfWorks unitOfWorks, TI item)
+        {
+            var propertiesToFill = SqlManyToOneReferenceInfo.GetSqlReference<T>();
+            if (propertiesToFill.Count == 0) return;
+
+            foreach (var property in propertiesToFill)
+            {
+                property.FillReference(unitOfWorks, item);
+            }
+        }
+
+        public void FillManyToManyReference(IUnitOfWorks unitOfWorks, TI item)
+        {;
+            var propertiesToFill = SqlManyToManyReferenceInfo.GetSqlReference<T>();
+            if (propertiesToFill.Count == 0) return;
+
+            foreach (var property in propertiesToFill)
+            {
+                property.FillReference(unitOfWorks, item);
+            }
+        }
+
         public Type GetRealObjectType(Type objectType, IDataReader row)
         {
             if (objectType == null) throw new ArgumentNullException("objectType");

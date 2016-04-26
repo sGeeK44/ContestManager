@@ -6,8 +6,8 @@ namespace Contest.Core.DataStore.Sql
 {
     public class SqlEntityInfo : ISqlEntityInfo
     {
-        private Type _classInfo;
-        private SqlEntityAttribute _entityAttribute;
+        private readonly Type _classInfo;
+        private readonly SqlEntityAttribute _entityAttribute;
 
         public string TableName { get { return _entityAttribute.Name ?? _classInfo.Name; } }
 

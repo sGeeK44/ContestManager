@@ -13,9 +13,9 @@ namespace Contest.Core.DataStore.Sql
         /// </summary>
         public PropertyInfo PropertyInfo { get; private set; }
 
-        protected SqlPropertyInfo(PropertyInfo referenceProperty)
+        protected SqlPropertyInfo(PropertyInfo propertyInfo)
         {
-            PropertyInfo = referenceProperty;
+            PropertyInfo = propertyInfo;
         }
 
         protected void SetValue(object objectToSet, object innerValue)
