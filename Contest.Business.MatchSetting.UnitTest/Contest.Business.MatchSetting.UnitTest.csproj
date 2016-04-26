@@ -65,10 +65,6 @@
       <Project>{50fa9f63-d0e3-4019-8833-38e129418942}</Project>
       <Name>Contest.Business.MatchSetting</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Contest.Core\Contest.Core.csproj">
-      <Project>{AA703556-DD37-4B27-986D-9B8C01C24040}</Project>
-      <Name>Contest.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Business.Interface\Contest.Business.Interface.csproj">
       <Project>{1E4D7146-80A7-452E-871E-C5551D230714}</Project>
       <Name>Contest.Business.Interface</Name>

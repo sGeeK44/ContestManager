@@ -33,12 +33,6 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EndByNoSpecifiq.cs" />
@@ -52,10 +46,6 @@
     <ProjectReference Include="..\Contest.Core.DataStore.Sql\Contest.Core.DataStore.Sql.csproj">
       <Project>{90473DBF-5134-4C4F-A900-8CE2BD53BB49}</Project>
       <Name>Contest.Core.DataStore.Sql</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Contest.Core\Contest.Core.csproj">
-      <Project>{aa703556-dd37-4b27-986d-9b8c01c24040}</Project>
-      <Name>Contest.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Business.Interface\Contest.Business.Interface.csproj">
       <Project>{1e4d7146-80a7-452e-871e-c5551d230714}</Project>

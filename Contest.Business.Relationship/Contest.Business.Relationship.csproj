@@ -33,13 +33,6 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -56,22 +49,6 @@
       <Project>{1e4d7146-80a7-452e-871e-c5551d230714}</Project>
       <Name>Contest.Business.Interface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Contest.Business.GameStep\Contest.Business.GameStep.csproj">
-      <Project>{d0f224fa-5797-4c7c-87ab-4168ef306526}</Project>
-      <Name>Contest.Business.GameStep</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Contest.Business.Match\Contest.Business.Match.csproj">
-      <Project>{a91498d5-363d-48a6-98b2-e5120386c877}</Project>
-      <Name>Contest.Business.Match</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Contest.Business.Phase\Contest.Business.Phase.csproj">
-      <Project>{315452f5-6c38-49c1-9bad-0dd5ff8c5207}</Project>
-      <Name>Contest.Business.Phase</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Contest.Business.Team\Contest.Business.Team.csproj">
-      <Project>{d7d40bae-46cf-4caf-8c0a-445b0d7f7260}</Project>
-      <Name>Contest.Business.Team</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Contest.Core.DataStore.Sql\Contest.Core.DataStore.Sql.csproj">
       <Project>{90473DBF-5134-4C4F-A900-8CE2BD53BB49}</Project>
       <Name>Contest.Core.DataStore.Sql</Name>
@@ -79,10 +56,6 @@
     <ProjectReference Include="..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
       <Project>{1ff5796b-18d0-4bf3-919d-14166813b7b2}</Project>
       <Name>Contest.Core.Repository.Sql</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Contest.Core\Contest.Core.csproj">
-      <Project>{aa703556-dd37-4b27-986d-9b8c01c24040}</Project>
-      <Name>Contest.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Contest.Core.Repository\Contest.Core.Repository.csproj">
       <Project>{4194f8f9-57e1-4d31-b4e3-a989f0d786f0}</Project>
