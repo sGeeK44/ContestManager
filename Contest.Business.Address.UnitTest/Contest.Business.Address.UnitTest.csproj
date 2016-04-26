@@ -6,7 +6,7 @@
     <ProjectGuid>{4BC87D9E-F103-4692-B029-101DCE7AA32C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Contest.Business.Address.UnitTest</RootNamespace>
+    <RootNamespace>Contest.Business.UnitTest</RootNamespace>
     <AssemblyName>Contest.Business.Address.UnitTest</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

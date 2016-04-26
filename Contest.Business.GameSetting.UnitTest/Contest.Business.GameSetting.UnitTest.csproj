@@ -6,7 +6,7 @@
     <ProjectGuid>{D858B14C-C4E4-426C-AB77-0D4CA3DB37C7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Contest.Business.GameSetting.UnitTest</RootNamespace>
+    <RootNamespace>Contest.Business.UnitTest</RootNamespace>
     <AssemblyName>Contest.Business.GameSetting.UnitTest</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

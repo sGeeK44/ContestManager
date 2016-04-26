@@ -1,11 +1,11 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using Contest.Core.Component;
-using Moq;
 using Contest.Core.Repository.Sql;
 using Contest.UnitTest.Kit;
+using Moq;
+using NUnit.Framework;
 
-namespace Contest.Business.Fields.UnitTest
+namespace Contest.Business.UnitTest
 {
     [TestFixture]
     public class FieldTest

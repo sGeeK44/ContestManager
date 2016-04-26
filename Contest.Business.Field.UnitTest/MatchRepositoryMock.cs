@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.Composition;
-using Contest.UnitTest.Kit;
 using Contest.Core.Repository;
+using Contest.UnitTest.Kit;
 
-namespace Contest.Business.Fields.UnitTest
+namespace Contest.Business.UnitTest
 {
     [Export(typeof(IRepository<IMatch>))]
     public class MatchRepositoryMock : RepositoryBaseMock<IMatch> { }

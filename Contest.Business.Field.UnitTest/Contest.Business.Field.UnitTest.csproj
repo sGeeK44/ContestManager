@@ -6,7 +6,7 @@
     <ProjectGuid>{70262575-B762-4EA7-8579-F2D5F8A67F01}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Contest.Business.Field.UnitTest</RootNamespace>
+    <RootNamespace>Contest.Business.UnitTest</RootNamespace>
     <AssemblyName>Contest.Business.Field.UnitTest</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

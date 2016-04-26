@@ -7,7 +7,7 @@
     <ProjectGuid>{F53A6D92-00CE-4C7B-A0CC-C6DBA2D6206E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Contest.Business.Person</RootNamespace>
+    <RootNamespace>Contest.Business</RootNamespace>
     <AssemblyName>Contest.Business.Person</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

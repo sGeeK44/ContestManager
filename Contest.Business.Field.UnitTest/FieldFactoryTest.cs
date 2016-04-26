@@ -3,7 +3,7 @@ using Contest.UnitTest.Kit;
 using Moq;
 using NUnit.Framework;
 
-namespace Contest.Business.Fields.UnitTest
+namespace Contest.Business.UnitTest
 {
     [TestFixture]
     public class FieldFactoryTest
