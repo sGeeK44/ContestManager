@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using Contest.Business;
 using Contest.Core.Component;
-using Contest.Core.Helper;
 using Contest.Core.Windows.Commands;
 using Contest.Core.Windows.Mvvm;
 

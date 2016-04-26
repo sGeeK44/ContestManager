@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
-using Contest.Core.Repository;
 
 namespace Contest.Business
 {

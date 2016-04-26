@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    [DataContract(Name = "GAME_SETTING")]
+    [SqlEntity(Name = "GAME_SETTING")]
     public class GameSetting : Identifiable<GameSetting>, IGameSetting
     {
         #region Constructors

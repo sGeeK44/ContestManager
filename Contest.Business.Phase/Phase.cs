@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Runtime.Serialization;
 using Contest.Core.Component;
 using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
@@ -11,7 +10,7 @@ using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    [DataContract(Name = "PHASE")]
+    [SqlEntity(Name = "PHASE")]
     public class Phase : Identifiable<Phase>, IPhase
     {
         #region Fields

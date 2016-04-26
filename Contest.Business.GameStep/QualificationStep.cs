@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    [DataContract(Name = "QUALIFICATION_STEP")]
+    [SqlEntity(Name = "QUALIFICATION_STEP")]
     public class QualificationStep : GameStep, IQualificationStep
     {
         #region Constantes

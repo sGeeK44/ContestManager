@@ -1,6 +1,4 @@
-﻿using Contest.Core.Repository;
-
-namespace Contest.Business
+﻿namespace Contest.Business
 {
     public interface IEliminationStepSetting : IStepSetting
     {

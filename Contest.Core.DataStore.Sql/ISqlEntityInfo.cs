@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Contest.Core.DataStore.Sql
+﻿namespace Contest.Core.DataStore.Sql
 {
     public interface ISqlEntityInfo
     {

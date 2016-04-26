@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.Repository;
 using Contest.Core.Repository.Sql;
@@ -9,7 +8,7 @@ namespace Contest.Business
     /// <summary>
     /// Represent a relation between a Team and a Phase
     /// </summary>
-    [DataContract(Name = "TEAM_PHASE_RELATION")]
+    [SqlEntity(Name = "TEAM_PHASE_RELATION")]
     public class TeamPhaseRelationship : Relationship<ITeam, IPhase>, IRelationship<ITeam, IPhase>
     {
         public TeamPhaseRelationship(IUnitOfWorks unitOfWork)

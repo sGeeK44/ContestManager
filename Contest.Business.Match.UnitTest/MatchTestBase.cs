@@ -1,5 +1,4 @@
-﻿using System;
-using Contest.Core.Component;
+﻿using Contest.Core.Component;
 using Contest.UnitTest.Kit;
 using Moq;
 using NUnit.Framework;

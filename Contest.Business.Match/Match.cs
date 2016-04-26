@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using System.Runtime.Serialization;
 using Contest.Core.Component;
 using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
@@ -12,7 +11,7 @@ namespace Contest.Business
     /// <summary>
     /// Represent a Match beween two team
     /// </summary>
-    [DataContract(Name = "MATCH")]
+    [SqlEntity(Name = "MATCH")]
     public class Match : Identifiable<Match>, IMatch
     {
         #region Fields

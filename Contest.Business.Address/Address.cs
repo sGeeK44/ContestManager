@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.Repository.Sql;
@@ -9,7 +8,7 @@ namespace Contest.Business
     /// <summary>
     /// Represent an address.
     /// </summary>
-    [DataContract(Name = "ADDRESS")]
+    [SqlEntity(Name = "ADDRESS")]
     public class Address : Identifiable<Address>, IAddress
     {
         #region Constructors

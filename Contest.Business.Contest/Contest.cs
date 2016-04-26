@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.Serialization;
 using Contest.Core.Component;
 using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
@@ -13,7 +12,7 @@ using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    [DataContract(Name = "CONTEST")]
+    [SqlEntity(Name = "CONTEST")]
     public class Contest : Identifiable<Contest>, IContest
     {
         #region Fields

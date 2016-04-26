@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Contest.Business
 {
     public interface IEliminationStep : IGameStep

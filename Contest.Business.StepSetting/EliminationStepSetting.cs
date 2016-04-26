@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
 {
-    [DataContract(Name = "ELIMINATION_STEP_SETTING")]
+    [SqlEntity(Name = "ELIMINATION_STEP_SETTING")]
     public class EliminationStepSetting : StepSetting, IEliminationStepSetting
     {
         #region Constructors

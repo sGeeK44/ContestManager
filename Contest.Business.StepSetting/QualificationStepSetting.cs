@@ -1,5 +1,4 @@
-﻿using System.Runtime.Serialization;
-using Contest.Core.DataStore.Sql.Attributes;
+﻿using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.Repository.Sql;
 
 namespace Contest.Business
@@ -7,7 +6,7 @@ namespace Contest.Business
     /// <summary>
     /// Represent a QualificationStepSetting
     /// </summary>
-    [DataContract(Name = "QUALIFICATION_STEP_SETTING")]
+    [SqlEntity(Name = "QUALIFICATION_STEP_SETTING")]
     public class QualificationStepSetting : StepSetting, IQualificationStepSetting
     {
         #region Constructors

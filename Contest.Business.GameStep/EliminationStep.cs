@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.Repository.Sql;
 using Contest.Core.Windows;
 
 namespace Contest.Business
 {
-    [DataContract(Name = "ELIMINATION_STEP")]
+    [SqlEntity(Name = "ELIMINATION_STEP")]
     public class EliminationStep : GameStep, IEliminationStep
     {
         #region Enum

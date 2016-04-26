@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using System.Runtime.Serialization;
 using Contest.Core.Component;
 using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
@@ -10,7 +9,7 @@ using Contest.Core.Repository.Sql;
 namespace Contest.Business
 {
     [Serializable]
-    [DataContract(Name = "PERSON")]
+    [SqlEntity(Name = "PERSON")]
     public class Person : Identifiable<Person>, IPerson
     {
         [NonSerialized]

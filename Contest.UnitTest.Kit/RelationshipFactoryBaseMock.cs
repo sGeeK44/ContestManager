@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Contest.Business;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Moq;
 

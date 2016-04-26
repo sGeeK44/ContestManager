@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using System.Runtime.Serialization;
 using Contest.Core.Component;
 using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
@@ -12,7 +11,7 @@ namespace Contest.Business
     /// <summary>
     /// Represent all physical setting for a tournament.
     /// </summary>
-    [DataContract(Name = "PHYSICAL_SETTING")]
+    [SqlEntity(Name = "PHYSICAL_SETTING")]
     public class PhysicalSetting : Identifiable<PhysicalSetting>, IPhysicalSetting
     {
         #region Fields
