@@ -65,5 +65,14 @@ namespace Contest.Core.DataStore.Sql
 
             SetValue(item, FindReferenceValue(unitOfWorks, item));
         }
+        /// <summary>
+        /// Indicate if current property is a foreign key of specified property
+        /// </summary>
+        /// <param name="prop">ManyToOne property</param>
+        /// <returns>True if current part is foreign key, false else</returns>
+        public override bool IsForeignKeyOf(PropertyInfo prop)
+        {
+            return false;
+        }
     }
 }

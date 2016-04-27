@@ -38,7 +38,7 @@ namespace Contest.Core.Repository.FeatureTest
         [SqlPrimaryKey]
         public Guid Id { get; set; }
 
-        [SqlForeignKey(typeof(OneToManyEntity))]
+        [SqlForeignKey("Entity")]
         public Guid OneToManyEntityId { get; set; }
 
         [SqlManyToOneReference]

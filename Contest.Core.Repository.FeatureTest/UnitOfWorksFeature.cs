@@ -6,6 +6,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using Contest.Core.DataStore.Sql.BusinessObjectFactory;
+using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.DataStore.Sql.SqlQuery;
 using Contest.Core.DataStore.Sqlite;
 using Contest.Core.Repository.Sql;
@@ -97,69 +98,98 @@ namespace Contest.Core.Repository.FeatureTest
         [TestCase]
         public void ReadItemWithManyToOneReference()
         {
-            const string entityGuid = "62B819A7-E20D-4728-94FD-2A10C62EEC2E";
-            const string referenceGuid = "0A9E8A83-2DD2-4912-AE6C-25B9770D0F30";
-
+            OneToManyEntity oneToMany;
+            ManyToOneEntity manyToOne;
             CreateNewDataStore("UnitsOfWorksFeature.ReadItemWithManyToOneReference.db");
-            InitReferenceItemDatabase(entityGuid, referenceGuid);
-
-            var oneToMany = new OneToManyEntity
-            {
-                Id = new Guid(entityGuid),
-                EntityList = new List<ManyToOneEntity>()
-            };
-            var manyToOne = new ManyToOneEntity
-            {
-                Id = new Guid(referenceGuid),
-                OneToManyEntityId = new Guid(entityGuid)
-            };
-            oneToMany.EntityList.Add(manyToOne);
-
+            ManyToOneEntity(out manyToOne, out oneToMany);
             CreateRepository<ManyToOneEntity, ManyToOneEntity>();
             var oneToManyEntityRepository = CreateRepository<OneToManyEntity, OneToManyEntity>();
 
-            var guid = new Guid(entityGuid);
-            var databaseResult = oneToManyEntityRepository.Find(_ => _.Id == guid).First();
+            var databaseResult = oneToManyEntityRepository.Find(_ => _.Id == oneToMany.Id).First();
+
             Assert.AreEqual(oneToMany, databaseResult);
         }
 
         [TestCase]
         public void ReadItemWithOneToManyReference()
         {
+            OneToManyEntity oneToMany;
+            ManyToOneEntity manyToOne;
+            CreateNewDataStore("UnitsOfWorksFeature.ReadItemWithOneToManyReference.db");
+            ManyToOneEntity(out manyToOne, out oneToMany);
+            CreateRepository<OneToManyEntity, OneToManyEntity>();
+            var repository = CreateRepository<ManyToOneEntity, ManyToOneEntity>();
+
+            var databaseResult = repository.Find(_ => _.Id == manyToOne.Id).First();
+
+            Assert.AreEqual(manyToOne, databaseResult);
+        }
+
+        private void ManyToOneEntity(out ManyToOneEntity manyToOne, out OneToManyEntity oneToMany)
+        {
             const string entityGuid = "62B819A7-E20D-4728-94FD-2A10C62EEC2E";
             const string referenceGuid = "0A9E8A83-2DD2-4912-AE6C-25B9770D0F30";
+            ExecuteQuery("CREATE TABLE OneToManyEntity (Id text primary key);");
+            ExecuteQuery("CREATE TABLE ManyToOneEntity (Id text primary key, OneToManyEntityId text);");
+            ExecuteQuery(string.Format("INSERT INTO OneToManyEntity (Id) VALUES ('{0}');", entityGuid));
+            ExecuteQuery(string.Format("INSERT INTO ManyToOneEntity (Id, OneToManyEntityId) VALUES ('{0}', '{1}');", referenceGuid, entityGuid));
 
-            CreateNewDataStore("UnitsOfWorksFeature.ReadItemWithOneToManyReference.db");
-            InitReferenceItemDatabase(entityGuid, referenceGuid);
-
-            var oneToMany = new OneToManyEntity
+            oneToMany = new OneToManyEntity
             {
                 Id = new Guid(entityGuid),
                 EntityList = new List<ManyToOneEntity>()
             };
-            var manyToOne = new ManyToOneEntity
+            manyToOne = new ManyToOneEntity
             {
                 Id = new Guid(referenceGuid),
                 OneToManyEntityId = new Guid(entityGuid),
                 Entity = oneToMany
             };
             oneToMany.EntityList.Add(manyToOne);
-
-            var repository = CreateRepository<ManyToOneEntity, ManyToOneEntity>();
-            CreateRepository<OneToManyEntity, OneToManyEntity>();
-
-            var guid = new Guid(referenceGuid);
-            var databaseResult = repository.Find(_ => _.Id == guid).First();
-            Assert.AreEqual(manyToOne, databaseResult);
         }
 
-        private void InitReferenceItemDatabase(string entityGuid, string referenceGuid)
+        [TestCase]
+        public void ReadItemWithManyToManyReference()
         {
-            ExecuteQuery("CREATE TABLE OneToManyEntity (Id text primary key);");
-            ExecuteQuery("CREATE TABLE ManyToOneEntity (Id text primary key, OneToManyEntityId text);");
-            ExecuteQuery(string.Format("INSERT INTO OneToManyEntity (Id) VALUES ('{0}');", entityGuid));
-            ExecuteQuery(string.Format("INSERT INTO ManyToOneEntity (Id, OneToManyEntityId) VALUES ('{0}', '{1}');",
-                referenceGuid, entityGuid));
+            CreateNewDataStore("UnitsOfWorksFeature.ReadItemWithManyToManyReference.db");
+            ManyToManyFirstEntity first;
+            ManyToManySecondEntity second;
+            InitManyToManyItemDatabase(out first, out second);
+            var repository = CreateRepository<ManyToManyFirstEntity, ManyToManyFirstEntity>();
+            CreateRepository<Relationship<ManyToManyFirstEntity, ManyToManySecondEntity>, Relationship<ManyToManyFirstEntity, ManyToManySecondEntity>>();
+            CreateRepository<ManyToManySecondEntity, ManyToManySecondEntity>();
+
+            var databaseResult = repository.Find(_ => _.Id == first.Id).First();
+
+            Assert.AreEqual(first, databaseResult);
+        }
+
+        private void InitManyToManyItemDatabase(out ManyToManyFirstEntity first, out ManyToManySecondEntity second)
+        {
+            const string firstGuid = "62B819A7-E20D-4728-94FD-2A10C62EEC2E";
+            const string secondGuid = "0A9E8A83-2DD2-4912-AE6C-25B9770D0F30";
+            ExecuteQuery("CREATE TABLE ManyToManyFirstEntity (Id text primary key);");
+            ExecuteQuery("CREATE TABLE ManyToManySecondEntity (Id text primary key);");
+            ExecuteQuery("CREATE TABLE R_ManyToManyFirstEntity_ManyToManySecondEntity (FirstItemInvolveId text, SecondItemInvolveId text, PRIMARY KEY(FirstItemInvolveId, SecondItemInvolveId));");
+            ExecuteQuery(string.Format("INSERT INTO ManyToManyFirstEntity (Id) VALUES ('{0}');", firstGuid));
+            ExecuteQuery(string.Format("INSERT INTO ManyToManySecondEntity (Id) VALUES ('{0}');", secondGuid));
+            ExecuteQuery(string.Format("INSERT INTO R_ManyToManyFirstEntity_ManyToManySecondEntity (FirstItemInvolveId, SecondItemInvolveId) VALUES ('{0}', '{1}');", firstGuid, secondGuid));
+
+            first = new ManyToManyFirstEntity
+            {
+                Id = new Guid(firstGuid),
+                SecondEntityList = new List<Relationship<ManyToManyFirstEntity, ManyToManySecondEntity>>()
+            };
+
+            second = new ManyToManySecondEntity
+            {
+                Id = new Guid(secondGuid),
+                FirstEntityList = new List<Relationship<ManyToManyFirstEntity, ManyToManySecondEntity>>()
+            };
+
+            var relation = new Relationship<ManyToManyFirstEntity, ManyToManySecondEntity>(first, second);
+            first.SecondEntityList.Add(relation);
+            second.FirstEntityList.Add(relation);
         }
 
         private void ExecuteQuery(string query)

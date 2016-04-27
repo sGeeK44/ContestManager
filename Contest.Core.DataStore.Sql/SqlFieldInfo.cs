@@ -12,36 +12,23 @@ namespace Contest.Core.DataStore.Sql
     {
         private readonly object _value;
         private readonly object[] _customAttr;
-        
-        private SqlFieldInfo(PropertyInfo referenceProperty, object value, object[] customAttr)
+        private readonly string _columnName;
+
+        internal SqlFieldInfo(PropertyInfo referenceProperty, string columnName, object value, object[] customAttr)
             : base (referenceProperty)
         {
             _value = value;
             _customAttr = customAttr;
-        }
-
-        internal static List<SqlFieldInfo> GetPrimaryKeys(IEnumerable<PropertyInfo> allSqlProp)
-        {
-            return allSqlProp.Where(_ => _.IsDefined(typeof(SqlPrimaryKeyAttribute))).Select(_ => Create(_, null)).ToList();
-        }
-
-        internal static List<SqlFieldInfo> GetForeignKeys(IEnumerable<PropertyInfo> allSqlProp)
-        {
-            return allSqlProp.Where(_ => _.IsDefined(typeof(SqlForeignKeyAttribute))).Select(_ => Create(_, null)).ToList();
+            _columnName = columnName;
         }
 
         public object Value { get { return _value; } }
-        public string ColumnName { get; private set; }
-        public bool IsPrimaryKey { get; private set; }
+        public string ColumnName { get { return _columnName; } }
+        public virtual bool IsPrimaryKey { get { return false; } }
 
         public string ToSqlValue(ISqlProviderStrategy sqlProviderStrategy)
         {
             return ToSqlValue(sqlProviderStrategy, _value, _customAttr);
-        }
-
-        public static string ToSqlValue(ISqlProviderStrategy sqlProviderStrategy, object value, object[] customAttr)
-        {
-            return sqlProviderStrategy.ToSqlValue(value, customAttr);
         }
 
         public void SetValue(IConverter converter, object objectToSet, string sqlValue)
@@ -50,33 +37,43 @@ namespace Contest.Core.DataStore.Sql
             SetValue(objectToSet, innerValue);
         }
 
+        public override bool IsForeignKeyOf(PropertyInfo prop)
+        {
+            return false;
+        }
+
+        public static string ToSqlValue(ISqlProviderStrategy sqlProviderStrategy, object value, object[] customAttr)
+        {
+            return sqlProviderStrategy.ToSqlValue(value, customAttr);
+        }
+
+        internal static List<SqlFieldInfo> GetPrimaryKeys(IEnumerable<PropertyInfo> allSqlProp)
+        {
+            return allSqlProp.Where(_ => _.IsDefined(typeof(SqlPrimaryKeyAttribute))).Select(_ => CreatePrimaryKey(_, null)).ToList();
+        }
+
+        internal static List<SqlFieldInfo> GetForeignKeys(IEnumerable<PropertyInfo> allSqlProp)
+        {
+            return allSqlProp.Where(_ => _.IsDefined(typeof(SqlForeignKeyAttribute))).Select(_ => CreateForeignKey(_, null)).ToList();
+        }
+
         public static SqlFieldInfo Create(string name, object value, object[] customAttr)
         {
-            return Create(null, name, value, customAttr);
-        }
-
-        private static SqlFieldInfo Create(PropertyInfo prop, object item)
-        {
-            var customAttr = prop.GetCustomAttributes(true);
-            var columnName = GetColumnName(prop);
-            var itemValue = item != null ? prop.GetValue(item, null) : null;
-            return Create(prop, columnName, itemValue, customAttr);
-        }
-
-        private static SqlFieldInfo Create(PropertyInfo prop, string name, object value, object[] customAttr)
-        {
-            return new SqlFieldInfo(prop, value, customAttr)
-            {
-                ColumnName = name,
-                IsPrimaryKey = customAttr != null && customAttr.OfType<SqlPrimaryKeyAttribute>().Any()
-            };
+            return new SqlFieldInfo(null, name, value, customAttr);
         }
 
         public static List<SqlFieldInfo> GetSqlField<T>(object item = null)
         {
-            return GetPropertiesList<T>().Where(_ => _.IsDefined(typeof(SqlFieldAttribute)))
-                                         .Select(_ => Create(_, item))
-                                         .ToList();
+            var result = new List<SqlFieldInfo>();
+            foreach (var prop in GetPropertiesList<T>().Where(_ => _.IsDefined(typeof (SqlFieldAttribute))))
+            {
+                SqlFieldInfo field;
+                if (prop.IsDefined(typeof (SqlPrimaryKeyAttribute))) field = CreatePrimaryKey(prop, item);
+                else if (prop.IsDefined(typeof (SqlForeignKeyAttribute))) field = CreateForeignKey(prop, item);
+                else field = Create(prop, item);
+                result.Add(field);
+            }
+            return result;
         }
 
         public static string GetColumnName<TObj, TPropOrField>(Expression<Func<TObj, TPropOrField>> propertyorFieldExpression)
@@ -93,6 +90,33 @@ namespace Contest.Core.DataStore.Sql
             if (memberExpression == null) throw new ArgumentNullException("memberExpression");
 
             return GetColumnName<T>(memberExpression.Member as PropertyInfo);
+        }
+
+        private static SqlFieldInfo CreatePrimaryKey(PropertyInfo prop, object item)
+        {
+            var customAttr = prop.GetCustomAttributes(true);
+            var columnName = GetColumnName(prop);
+            var itemValue = item != null ? prop.GetValue(item, null) : null;
+
+            return new SqlPrimaryKeyFieldInfo(prop, columnName, itemValue, customAttr);
+        }
+
+        private static SqlFieldInfo CreateForeignKey(PropertyInfo prop, object item)
+        {
+            var customAttr = prop.GetCustomAttributes(true);
+            var columnName = GetColumnName(prop);
+            var itemValue = item != null ? prop.GetValue(item, null) : null;
+
+            return new SqlForeignKeyFieldInfo(prop, columnName, itemValue, customAttr);
+        }
+
+        private static SqlFieldInfo Create(PropertyInfo prop, object item)
+        {
+            var customAttr = prop.GetCustomAttributes(true);
+            var columnName = GetColumnName(prop);
+            var itemValue = item != null ? prop.GetValue(item, null) : null;
+
+            return new SqlFieldInfo(prop, columnName, itemValue, customAttr);
         }
 
         private static string GetColumnName<T>(PropertyInfo property)

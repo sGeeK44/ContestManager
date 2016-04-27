@@ -13,6 +13,13 @@ namespace Contest.Core.DataStore.Sql
         /// </summary>
         public PropertyInfo PropertyInfo { get; private set; }
 
+        /// <summary>
+        /// Indicate if current property is a foreign key of specified property
+        /// </summary>
+        /// <param name="prop">ManyToOne property</param>
+        /// <returns>True if current part is foreign key, false else</returns>
+        public abstract bool IsForeignKeyOf(PropertyInfo prop);
+
         protected SqlPropertyInfo(PropertyInfo propertyInfo)
         {
             PropertyInfo = propertyInfo;

@@ -52,6 +52,7 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
         {
             FillOneToManyReference(unitOfWorks, item);
             FillManyToOneReference(unitOfWorks, item);
+            FillManyToManyReference(unitOfWorks, item);
         }
 
         public void FillOneToManyReference(IUnitOfWorks unitOfWorks, TI item)

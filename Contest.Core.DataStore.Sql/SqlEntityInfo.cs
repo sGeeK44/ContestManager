@@ -9,7 +9,7 @@ namespace Contest.Core.DataStore.Sql
         private readonly Type _classInfo;
         private readonly SqlEntityAttribute _entityAttribute;
 
-        public string TableName { get { return _entityAttribute.Name ?? _classInfo.Name; } }
+        public string TableName { get { return _entityAttribute.GetTableName(_classInfo); } }
 
         private SqlEntityInfo(Type classInfo, SqlEntityAttribute entityAttribute)
         {
@@ -24,7 +24,13 @@ namespace Contest.Core.DataStore.Sql
 
         public static SqlEntityInfo GetEntityInfo<T>()
         {
-            var classInfo = typeof(T);
+            return GetEntityInfo(typeof(T));
+        }
+
+        public static SqlEntityInfo GetEntityInfo(Type classInfo)
+        {
+            if (classInfo == null) throw new ArgumentNullException("classInfo");
+
             var entityAttribute = classInfo.GetCustomAttributes(typeof(SqlEntityAttribute), true)
                                            .Cast<SqlEntityAttribute>()
                                            .FirstOrDefault();

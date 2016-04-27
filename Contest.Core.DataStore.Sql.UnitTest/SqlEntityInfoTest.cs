@@ -1,4 +1,5 @@
 ﻿using System;
+using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.DataStore.Sql.UnitTest.Entities;
 using NUnit.Framework;
 
@@ -31,6 +32,13 @@ namespace Contest.Core.DataStore.Sql.UnitTest
         {
             var entityInfo = SqlEntityInfo.GetEntityInfo<OverrideNameEntity>();
             Assert.AreEqual("ENTITY_1", entityInfo.TableName);
+        }
+
+        [TestCase]
+        public void TableName_RelationEntity_ShouldReturnConcatenedValue()
+        {
+            var entityInfo = SqlEntityInfo.GetEntityInfo<Relationship<ManyToManyFirstEntity, ManyToManySecondEntity>>();
+            Assert.AreEqual("R_ManyToManyFirstEntity_ManyToManySecondEntity", entityInfo.TableName);
         }
     }
 }

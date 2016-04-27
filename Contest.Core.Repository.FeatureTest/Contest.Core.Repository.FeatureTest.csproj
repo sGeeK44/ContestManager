@@ -59,6 +59,8 @@
     <Compile Include="IEntity.cs" />
     <Compile Include="IEntityWithReference.cs" />
     <Compile Include="MainEntity.cs" />
+    <Compile Include="ManyToManyFirstEntity.cs" />
+    <Compile Include="ManyToManySecondEntity.cs" />
     <Compile Include="ManyToOneEntity.cs" />
     <Compile Include="OneToManyEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
