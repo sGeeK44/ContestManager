@@ -50,7 +50,8 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
 
         public void FillReferences(IUnitOfWorks unitOfWorks, TI item)
         {
-            throw new NotImplementedException();
+            FillOneToManyReference(unitOfWorks, item);
+            FillManyToOneReference(unitOfWorks, item);
         }
 
         public void FillOneToManyReference(IUnitOfWorks unitOfWorks, TI item)

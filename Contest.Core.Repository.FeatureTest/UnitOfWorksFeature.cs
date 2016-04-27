@@ -16,59 +16,218 @@ namespace Contest.Core.Repository.FeatureTest
     [TestFixture]
     public class UnitOfWorksFeature
     {
-        private const string FILE_PATH = "UnitsOfWorksFeature.db";
-
         public DbConnection DatabaseConnection { get; set; }
-        public SqlRepository<IEntity> Repository { get; set; }
-        public IUnitOfWorks UnitOfWork { get; set; }
+        public SqliteDataStore DataStore { get; set; }
+        public ISqlUnitOfWorks UnitOfWork { get; set; }
 
-        [SetUp]
-        public void Init()
+        [TestCase]
+        public void CreateTable()
         {
-            var dataStore = CreateDataStore();
-            var context = new DataContext<IEntity>();
-            var sqlBuilder = new SqlQueryFactory<MainEntity, IEntity>(new SqliteStrategy());
-            var boFactory = new SqlSerializer<MainEntity, IEntity>();
+            CreateNewDataStore("UnitsOfWorksFeature.CreateTable.db");
+            var repository = CreateRepository<MainEntity, IEntity>();
 
-            var unitOfWork = new SqlUnitOfWorks(dataStore);
-            Repository = new SqlRepository<IEntity>(dataStore, sqlBuilder, boFactory, context)
+            repository.CreateTable();
+            UnitOfWork.Commit();
+
+            AssertMainEntityTable();
+        }
+
+        [TestCase]
+        public void InsertItem()
+        {
+            CreateNewDataStore("UnitsOfWorksFeature.InsertItem.db");
+            ExecuteQuery("CREATE TABLE MainEntity (Key text primary key, BasicField text, OVERRIDE_COLUMN_NAME text, IntegerField integer);");
+            var newItem = new MainEntity
             {
-                UnitOfWorks = unitOfWork
+                Key = Guid.NewGuid(),
+                BasicField = "Value_1",
+                OverrideColumnName = "Value_2",
+                IntegerField = 1
             };
-            UnitOfWork = unitOfWork;
+            var repository = CreateRepository<MainEntity, IEntity>();
 
+            repository.Insert(newItem);
+            UnitOfWork.Commit();
+
+            Assert.AreEqual(1, CountMainEntityRow());
         }
 
-        private SqliteDataStore CreateDataStore()
+        [TestCase]
+        public void ReadItem()
         {
-            if (File.Exists(FILE_PATH)) File.Delete(FILE_PATH);
-            DatabaseConnection = GetNewConnection();
+            CreateNewDataStore("UnitsOfWorksFeature.ReadItem.db");
+            ExecuteQuery("CREATE TABLE MainEntity (Key text primary key, BasicField text, OVERRIDE_COLUMN_NAME text, IntegerField integer);");
+            ExecuteQuery("INSERT INTO MainEntity (Key, BasicField, OVERRIDE_COLUMN_NAME, IntegerField) VALUES ('62B819A7-E20D-4728-94FD-2A10C62EEC2E', 'Value_1', 'Value_2', 1);");
+            var expectedItem = new MainEntity
+            {
+                Key = new Guid("62B819A7-E20D-4728-94FD-2A10C62EEC2E"),
+                BasicField = "Value_1",
+                OverrideColumnName = "Value_2",
+                IntegerField = 1
+            };
+            var repository = CreateRepository<MainEntity, IEntity>();
 
-            var dataStore = new SqliteDataStore(FILE_PATH);
-            dataStore.OpenDatabase();
-            return dataStore;
+            var databaseResult = repository.Find(_ => _.Key == expectedItem.Key).First();
+            Assert.AreEqual(expectedItem, databaseResult);
         }
 
-        public DbConnection GetNewConnection()
+        [TestCase]
+        public void DeleteItem()
+        {
+            CreateNewDataStore("UnitsOfWorksFeature.DeleteItem.db");
+            ExecuteQuery("CREATE TABLE MainEntity (Key text primary key, BasicField text, OVERRIDE_COLUMN_NAME text, IntegerField integer);");
+            ExecuteQuery("INSERT INTO MainEntity (Key, BasicField, OVERRIDE_COLUMN_NAME, IntegerField) VALUES ('62B819A7-E20D-4728-94FD-2A10C62EEC2E', 'Value_1', 'Value_2', 1);");
+            var itemToDelete = new MainEntity
+            {
+                Key = new Guid("62B819A7-E20D-4728-94FD-2A10C62EEC2E"),
+                BasicField = "Value_1",
+                OverrideColumnName = "Value_2",
+                IntegerField = 1
+            };
+            var repository = CreateRepository<MainEntity, IEntity>();
+
+            repository.Delete(itemToDelete);
+            UnitOfWork.Commit();
+
+            CountMainEntityRow();
+
+            Assert.AreEqual(0, CountMainEntityRow());
+        }
+
+        [TestCase]
+        public void ReadItemWithManyToOneReference()
+        {
+            const string entityGuid = "62B819A7-E20D-4728-94FD-2A10C62EEC2E";
+            const string referenceGuid = "0A9E8A83-2DD2-4912-AE6C-25B9770D0F30";
+
+            CreateNewDataStore("UnitsOfWorksFeature.ReadItemWithManyToOneReference.db");
+            InitReferenceItemDatabase(entityGuid, referenceGuid);
+
+            var oneToMany = new OneToManyEntity
+            {
+                Id = new Guid(entityGuid),
+                EntityList = new List<ManyToOneEntity>()
+            };
+            var manyToOne = new ManyToOneEntity
+            {
+                Id = new Guid(referenceGuid),
+                OneToManyEntityId = new Guid(entityGuid)
+            };
+            oneToMany.EntityList.Add(manyToOne);
+
+            CreateRepository<ManyToOneEntity, ManyToOneEntity>();
+            var oneToManyEntityRepository = CreateRepository<OneToManyEntity, OneToManyEntity>();
+
+            var guid = new Guid(entityGuid);
+            var databaseResult = oneToManyEntityRepository.Find(_ => _.Id == guid).First();
+            Assert.AreEqual(oneToMany, databaseResult);
+        }
+
+        [TestCase]
+        public void ReadItemWithOneToManyReference()
+        {
+            const string entityGuid = "62B819A7-E20D-4728-94FD-2A10C62EEC2E";
+            const string referenceGuid = "0A9E8A83-2DD2-4912-AE6C-25B9770D0F30";
+
+            CreateNewDataStore("UnitsOfWorksFeature.ReadItemWithOneToManyReference.db");
+            InitReferenceItemDatabase(entityGuid, referenceGuid);
+
+            var oneToMany = new OneToManyEntity
+            {
+                Id = new Guid(entityGuid),
+                EntityList = new List<ManyToOneEntity>()
+            };
+            var manyToOne = new ManyToOneEntity
+            {
+                Id = new Guid(referenceGuid),
+                OneToManyEntityId = new Guid(entityGuid),
+                Entity = oneToMany
+            };
+            oneToMany.EntityList.Add(manyToOne);
+
+            var repository = CreateRepository<ManyToOneEntity, ManyToOneEntity>();
+            CreateRepository<OneToManyEntity, OneToManyEntity>();
+
+            var guid = new Guid(referenceGuid);
+            var databaseResult = repository.Find(_ => _.Id == guid).First();
+            Assert.AreEqual(manyToOne, databaseResult);
+        }
+
+        private void InitReferenceItemDatabase(string entityGuid, string referenceGuid)
+        {
+            ExecuteQuery("CREATE TABLE OneToManyEntity (Id text primary key);");
+            ExecuteQuery("CREATE TABLE ManyToOneEntity (Id text primary key, OneToManyEntityId text);");
+            ExecuteQuery(string.Format("INSERT INTO OneToManyEntity (Id) VALUES ('{0}');", entityGuid));
+            ExecuteQuery(string.Format("INSERT INTO ManyToOneEntity (Id, OneToManyEntityId) VALUES ('{0}', '{1}');",
+                referenceGuid, entityGuid));
+        }
+
+        private void ExecuteQuery(string query)
+        {
+            using (var dbTransaction = DatabaseConnection.BeginTransaction())
+            using (var cmd = DatabaseConnection.CreateCommand())
+            {
+                cmd.Transaction = dbTransaction;
+                cmd.CommandText = query;
+                cmd.ExecuteNonQuery();
+                dbTransaction.Commit();
+            }
+        }
+
+        private int CountMainEntityRow()
+        {
+            using (IDbCommand command = new SQLiteCommand())
+            {
+                command.Connection = DatabaseConnection;
+                var sql = string.Format("SELECT * FROM {0}", MainEntity.TableName);
+                command.CommandText = sql;
+                var count = 0;
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
+
+        public SqlRepository<TI> CreateRepository<T, TI>()
+            where TI : class, IQueryable
+            where T : class, TI
+        {
+            var sqlBuilder = new SqlQueryFactory<T, TI>(new SqliteStrategy());
+            var boFactory = new SqlSerializer<T, TI>();
+            var context = new DataContext<TI>();
+
+            var repository = new SqlRepository<TI>(DataStore, sqlBuilder, boFactory, context);
+            UnitOfWork.AddRepository(repository);
+            return repository;
+        }
+
+        private void CreateNewDataStore(string filePath)
+        {
+            if (File.Exists(filePath)) File.Delete(filePath);
+            DatabaseConnection = GetNewConnection(filePath);
+
+            DataStore = new SqliteDataStore(filePath);
+            DataStore.OpenDatabase();
+
+            UnitOfWork = new SqlUnitOfWorks(DataStore);
+        }
+
+        public DbConnection GetNewConnection(string filePath)
         {
             using (var factory = new SQLiteFactory())
             {
                 var databaseConnection = factory.CreateConnection();
                 if (databaseConnection == null) throw new Exception();
 
-                databaseConnection.ConnectionString = string.Format(@"Data Source={0}; Pooling=false; FailIfMissing=false;", FILE_PATH);
+                databaseConnection.ConnectionString = string.Format(@"Data Source={0}; Pooling=false; FailIfMissing=false;", filePath);
                 databaseConnection.Open();
                 return databaseConnection;
             }
-        }
-
-        [TestCase]
-        public void CreateTable()
-        {
-            Repository.CreateTable();
-            UnitOfWork.Commit();
-
-            ValidateMainEnityTable();
         }
 
         private bool IsTableExiste(string tableName)
@@ -104,7 +263,7 @@ namespace Contest.Core.Repository.FeatureTest
             return fieldData;
         }
 
-        public void ValidateMainEnityTable()
+        public void AssertMainEntityTable()
         {
             Assert.IsTrue(IsTableExiste(MainEntity.TableName));
 

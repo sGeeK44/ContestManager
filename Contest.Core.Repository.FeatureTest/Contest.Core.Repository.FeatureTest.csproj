@@ -57,7 +57,10 @@
   </Choose>
   <ItemGroup>
     <Compile Include="IEntity.cs" />
+    <Compile Include="IEntityWithReference.cs" />
     <Compile Include="MainEntity.cs" />
+    <Compile Include="ManyToOneEntity.cs" />
+    <Compile Include="OneToManyEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitOfWorksFeature.cs" />
   </ItemGroup>

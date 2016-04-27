@@ -54,7 +54,10 @@ namespace Contest.Core.DataStore.Sql
         {
             if (unitOfWorks == null) return null;
 
-            var list = unitOfWorks.Find(ReferenceType, GetPredicate(item));
+            var list = unitOfWorks.FindInContext(ReferenceType, GetPredicate(item));
+            if (list != null && list.Count == 1) return list[0];
+
+            list = unitOfWorks.Find(ReferenceType, GetPredicate(item));
             if (list == null || list.Count != 1) return null;
 
             return list[0];

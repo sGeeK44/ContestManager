@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using Contest.Core.DataStore.Sql;
 using Contest.Core.DataStore.Sql.BusinessObjectFactory;
 using Contest.Core.DataStore.Sql.SqlQuery;
+using Contest.Core.Repository.Exceptions;
 
 namespace Contest.Core.Repository.Sql
 {
@@ -95,8 +96,8 @@ namespace Contest.Core.Repository.Sql
         /// <param name="item">Old item to delete</param>
         public void Delete(TI item)
         {
-            //Update local cache
-            Context.Delete(item);
+            try { Context.Delete(item); }
+            catch (ItemNotFoundException) { }
 
             //Build request and append it for next commit
             var request = SqlQueryFactory.Delete(item);
@@ -136,8 +137,8 @@ namespace Contest.Core.Repository.Sql
             while (sqlResult.Read())
             {
                 var item = BoFactory.Convert(sqlResult);
-                BoFactory.FillReferences(UnitOfWorks, item);
                 UpdateContextOnNeed(item);
+                BoFactory.FillReferences(UnitOfWorks, item);
             }
             sqlResult.Close();
 
@@ -147,6 +148,16 @@ namespace Contest.Core.Repository.Sql
         public IList Find(Type objectTypeSearch, LambdaExpression predicate)
         {
             return Find(predicate as Expression<Func<TI, bool>>) as IList;
+        }
+
+        public IList FindInContext(Type objectTypeSearch, LambdaExpression predicate)
+        {
+            return FindInContext(predicate as Expression<Func<TI, bool>>) as IList;
+        }
+
+        public IList FindInContext(Expression<Func<TI, bool>> predicate)
+        {
+            return Context.Find(predicate.Compile()) as IList;
         }
 
         /// <summary>

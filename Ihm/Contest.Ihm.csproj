@@ -249,9 +249,25 @@
       <Project>{cbaaec44-ae3c-497b-9b97-043041ca994e}</Project>
       <Name>Contest.Business.Address</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.Field\Contest.Business.Field.csproj">
+      <Project>{22fe8cf8-7973-4a27-8300-1ea82dfc133d}</Project>
+      <Name>Contest.Business.Field</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Contest.Business.GameSetting\Contest.Business.GameSetting.csproj">
       <Project>{94336f05-1311-448b-8ef6-aeba3069f4d9}</Project>
       <Name>Contest.Business.GameSetting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.Match\Contest.Business.Match.csproj">
+      <Project>{a91498d5-363d-48a6-98b2-e5120386c877}</Project>
+      <Name>Contest.Business.Match</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.Phase\Contest.Business.Phase.csproj">
+      <Project>{315452f5-6c38-49c1-9bad-0dd5ff8c5207}</Project>
+      <Name>Contest.Business.Phase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contest.Business.Relationship\Contest.Business.Relationship.csproj">
+      <Project>{20163db4-efb9-4f0b-8b94-985a848864ae}</Project>
+      <Name>Contest.Business.Relationship</Name>
     </ProjectReference>
     <ProjectReference Include="..\Contest.Core.Component\Contest.Core.Component.csproj">
       <Project>{6CC897AB-E169-4F20-A56D-0BC0AF8E451D}</Project>

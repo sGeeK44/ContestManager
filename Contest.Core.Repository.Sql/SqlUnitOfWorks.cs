@@ -73,6 +73,11 @@ namespace Contest.Core.Repository.Sql
             return GetRepository(objectTypeSearch).Find(objectTypeSearch, predicate);
         }
 
+        public IList FindInContext(Type objectTypeSearch, LambdaExpression predicate)
+        {
+            return GetRepository(objectTypeSearch).FindInContext(objectTypeSearch, predicate);
+        }
+
         /// <summary>
         /// Insert new item from repository
         /// </summary>
