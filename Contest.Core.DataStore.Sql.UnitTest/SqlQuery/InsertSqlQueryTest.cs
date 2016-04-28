@@ -34,7 +34,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
         public InsertSqlQuery<T, TI> CreateInsertSqlQuery<T, TI>(TI item)
             where T : class
         {
-            return new InsertSqlQuery<T, TI>(SqlStrategy.Object, item);
+            return new InsertSqlQuery<T, TI>(SqlStrategy.Object, EntityInfoFactory, item);
         }
     }
 }

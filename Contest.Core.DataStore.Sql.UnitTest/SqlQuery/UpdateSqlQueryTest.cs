@@ -42,7 +42,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
         public UpdateSqlQuery<T, TI> CreateUpdateSqlQuery<T, TI>(TI item)
             where T : class
         {
-            return new UpdateSqlQuery<T, TI>(SqlStrategy.Object, item);
+            return new UpdateSqlQuery<T, TI>(SqlStrategy.Object, EntityInfoFactory, item);
         }
     }
 }

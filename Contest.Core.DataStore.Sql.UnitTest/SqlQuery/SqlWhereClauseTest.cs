@@ -21,6 +21,22 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
         }
 
         [TestCase]
+        public void GetColumnName_NoOverrideNameEntity_ShouldReturnPropName()
+        {
+            var query = CreateSqlWhereClause<BasicEntity>(_ => true);
+            var colunmName = query.GetColumnName(_ => _.Name);
+            Assert.AreEqual("Name", colunmName);
+        }
+
+        [TestCase]
+        public void GetColumnName_OverrideNameEntity_ShouldReturnAttributeNameProperty()
+        {
+            var query = CreateSqlWhereClause<OverrideNameEntity>(_ => true);
+            var colunmName = query.GetColumnName(_ => _.Name);
+            Assert.AreEqual("NAME", colunmName);
+        }
+
+        [TestCase]
         public void ToStatement_TruePredicate_ShouldReturnNull()
         {
             var query = CreateSqlWhereClause<OverrideNameEntity>(_ => true);

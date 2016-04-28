@@ -29,7 +29,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
         public SelectSqlQuery<T> CreateSelectSqlQuery<T>(Expression<Func<T, bool>> predicate)
             where T : class
         {
-            return new SelectSqlQuery<T>(SqlStrategy.Object, predicate);
+            return new SelectSqlQuery<T>(SqlStrategy.Object, EntityInfoFactory, predicate);
         }
     }
 }

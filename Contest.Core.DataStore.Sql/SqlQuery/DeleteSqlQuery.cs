@@ -8,19 +8,21 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
     {
         private readonly TI _item;
 
-        public DeleteSqlQuery(ISqlProviderStrategy sqlProviderStrategy, TI item) : base(sqlProviderStrategy)
+        public DeleteSqlQuery(ISqlProviderStrategy sqlProviderStrategy, IEntityInfoFactory entityInfoFactory, TI item)
+            : base(sqlProviderStrategy, entityInfoFactory)
         {
             _item = item;
         }
 
         public override string ToStatement()
         {
-            var arg = EntityInfoFactory.GetSqlField<T>(_item).Where(_ => _.IsPrimaryKey).ToList();
+            var entity = EntityInfoFactory.GetEntityInfo<T>();
+            var primaryField = entity.FieldList.Where(_ => _.IsPrimaryKey);
             StringBuilder keys = null;
             //For each primary keys
-            foreach (var sqlField in arg)
+            foreach (var sqlField in primaryField)
             {
-                var value = sqlField.ToSqlValue(SqlProviderStrategy);
+                var value = sqlField.ToSqlValue(SqlProviderStrategy, _item);
                 // Add field to where clause.
                 if (keys == null) keys = new StringBuilder(sqlField.ColumnName + " = " + value);
                 else keys.Append(" AND " + sqlField.ColumnName + " = " + value);

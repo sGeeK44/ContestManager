@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Contest.Core.DataStore.Sql.Attributes;
+using Contest.Core.DataStore.Sql.SqlQuery;
 
 namespace Contest.Core.DataStore.Sql
 {
@@ -8,10 +10,16 @@ namespace Contest.Core.DataStore.Sql
         private readonly Type _classInfo;
         private readonly SqlEntityAttribute _entityAttribute;
 
-        public string TableName { get { return _entityAttribute.GetTableName(_classInfo); } }
+        private IEntityInfoFactory EntityInfoFactory { get; set; }
 
-        internal SqlEntityInfo(Type classInfo, SqlEntityAttribute entityAttribute)
+        public string TableName { get { return _entityAttribute.GetTableName(EntityInfoFactory, _classInfo); } }
+
+        public IList<ISqlPropertyInfo> FieldList { get; set; }
+
+        internal SqlEntityInfo(IEntityInfoFactory entityInfoFactory, Type classInfo, SqlEntityAttribute entityAttribute)
         {
+            EntityInfoFactory = entityInfoFactory;
+
             _classInfo = classInfo;
             _entityAttribute = entityAttribute;
         }

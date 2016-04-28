@@ -18,7 +18,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
         public CreateSqlQuery<T> CreateCreateSqlQuery<T>()
             where T : class
         {
-            return new CreateSqlQuery<T>(SqlStrategy.Object);
+            return new CreateSqlQuery<T>(SqlStrategy.Object, EntityInfoFactory);
         }
     }
 }

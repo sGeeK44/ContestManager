@@ -5,11 +5,12 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
 {
     public class CreateSqlQuery<T> : SqlQuery<T>
     {
-        public CreateSqlQuery(ISqlProviderStrategy sqlProviderStrategy) : base(sqlProviderStrategy) { }
+        public CreateSqlQuery(ISqlProviderStrategy sqlProviderStrategy, IEntityInfoFactory entityInfoFactory)
+            : base(sqlProviderStrategy, entityInfoFactory) { }
 
         public override string ToStatement()
         {
-            var fieldList = (from propertyInfo in EntityInfoFactory.GetSqlField<T>()
+            var fieldList = (from propertyInfo in EntityInfoFactory.GetEntityInfo<T>().FieldList
                              select string.Format("{0} {1}{2}",
                                                  propertyInfo.ColumnName,
                                                  SqlProviderStrategy.ToSqlType(propertyInfo.PropertyInfo.PropertyType),

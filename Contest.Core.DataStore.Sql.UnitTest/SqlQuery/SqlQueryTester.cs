@@ -5,7 +5,8 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
 {
     public class SqlQueryTester<T> : SqlQuery<T>
     {
-        public SqlQueryTester(ISqlProviderStrategy sqlProviderStrategy) : base(sqlProviderStrategy)
+        public SqlQueryTester(ISqlProviderStrategy sqlProviderStrategy, IEntityInfoFactory entityInfoFactory)
+            : base(sqlProviderStrategy, entityInfoFactory)
         {
         }
 

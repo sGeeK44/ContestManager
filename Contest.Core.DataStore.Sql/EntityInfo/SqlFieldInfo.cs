@@ -1,29 +1,39 @@
-﻿using System.Reflection;
+﻿using System.Linq;
+using System.Reflection;
 using Contest.Core.Converters;
+using Contest.Core.DataStore.Sql.Attributes;
 
 namespace Contest.Core.DataStore.Sql
 {
     public class SqlFieldInfo : SqlPropertyInfo
     {
-        private readonly object _value;
         private readonly object[] _customAttr;
         private readonly string _columnName;
 
-        internal SqlFieldInfo(PropertyInfo referenceProperty, string columnName, object value, object[] customAttr)
+        internal SqlFieldInfo(PropertyInfo referenceProperty, object[] customAttr)
             : base (referenceProperty)
         {
-            _value = value;
             _customAttr = customAttr;
-            _columnName = columnName;
+            _columnName = GetColumnName();
         }
 
-        public object Value { get { return _value; } }
-        public string ColumnName { get { return _columnName; } }
-        public virtual bool IsPrimaryKey { get { return false; } }
-
-        public string ToSqlValue(ISqlProviderStrategy sqlProviderStrategy)
+        private string GetColumnName()
         {
-            return ToSqlValue(sqlProviderStrategy, _value, _customAttr);
+            // Entity field can be PrimaryKey and ForeignKey at same time. in this case Column Name is carry by primary key.
+            var sqlFieldAttribute = (SqlFieldAttribute)_customAttr.SingleOrDefault(_ => _ is SqlPrimaryKeyAttribute)
+                                 ?? (SqlFieldAttribute)_customAttr.Single(_ => _ is SqlFieldAttribute);
+
+            return sqlFieldAttribute.GetColumnName(PropertyInfo);
+        }
+
+        public override string ColumnName { get { return _columnName; } }
+
+        public override bool IsPrimaryKey { get { return false; } }
+
+        public override string ToSqlValue(ISqlProviderStrategy sqlProviderStrategy, object value)
+        {
+            var propValue = PropertyInfo.GetValue(value);
+            return sqlProviderStrategy.ToSqlValue(propValue, _customAttr);
         }
 
         public void SetValue(IConverter converter, object objectToSet, string sqlValue)
@@ -35,11 +45,6 @@ namespace Contest.Core.DataStore.Sql
         public override bool IsForeignKeyOf(PropertyInfo prop)
         {
             return false;
-        }
-
-        public static string ToSqlValue(ISqlProviderStrategy sqlProviderStrategy, object value, object[] customAttr)
-        {
-            return sqlProviderStrategy.ToSqlValue(value, customAttr);
         }
     }
 }

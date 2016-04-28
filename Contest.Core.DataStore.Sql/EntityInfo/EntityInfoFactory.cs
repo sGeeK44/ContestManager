@@ -1,29 +1,28 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
+using Contest.Core.DataStore.Sql.SqlQuery;
 
 namespace Contest.Core.DataStore.Sql
 {
-    public class EntityInfoFactory
+    public class EntityInfoFactory : IEntityInfoFactory
     {
-        #region Entity class
-
-        private static SqlEntityInfo Create(Type classInfo, SqlEntityAttribute attr)
-        {
-            return new SqlEntityInfo(classInfo, attr);
-        }
-
-        public static SqlEntityInfo GetEntityInfo<T>()
+        public ISqlEntityInfo GetEntityInfo<T>()
         {
             return GetEntityInfo(typeof(T));
         }
 
-        public static SqlEntityInfo GetEntityInfo(Type classInfo)
+        #region Entity class
+             
+        private SqlEntityInfo Create(Type classInfo, SqlEntityAttribute attr)
+        {
+            return new SqlEntityInfo(this, classInfo, attr);
+        }
+
+        public ISqlEntityInfo GetEntityInfo(Type classInfo)
         {
             if (classInfo == null) throw new ArgumentNullException("classInfo");
 
@@ -33,14 +32,14 @@ namespace Contest.Core.DataStore.Sql
 
             if (entityAttribute == null) throw new NotSupportedException(string.Format("Class {0} has no SqlEntity attribute.", classInfo.Name));
 
-            return Create(classInfo, entityAttribute);
+            var entityInfo = Create(classInfo, entityAttribute);
+            entityInfo.FieldList = GetSqlField(classInfo).Cast<ISqlPropertyInfo>().ToList();
+            return entityInfo;
         }
 
         #endregion
 
-        #region Entity Properties
-
-        private static List<PropertyInfo> GetPropertiesList<T>()
+        public static List<PropertyInfo> GetPropertiesList<T>()
         {
             return GetPropertiesList(typeof(T));
         }
@@ -53,116 +52,70 @@ namespace Contest.Core.DataStore.Sql
                     .ToList();
         }
 
-        private static PropertyInfo GetPropertyOnRequestedType<T>(PropertyInfo property)
-        {
-            var requestedProperty = GetPropertiesList<T>().FirstOrDefault(_ => _.Name == property.Name);
-
-            if (requestedProperty == null) throw new NotSupportedException(string.Format("Type doesn't contains member expression property. Requested type:{0}. Property name:{1}.", typeof(T), property.Name));
-            return requestedProperty;
-        }
-
-        private static T GetAttribute<T>(PropertyInfo propertyOnRequestedType) where T : SqlPropertyAttribute
-        {
-            var sqlAttribute = propertyOnRequestedType.GetCustomAttributes(typeof(T), true).Cast<T>().FirstOrDefault();
-            if (sqlAttribute == null) throw new NotSupportedException(string.Format("ProperType doesn't contains {0} attribute. Property:{1}", typeof(T).Name, propertyOnRequestedType.Name));
-
-            return sqlAttribute;
-        }
-
-        #region PrimaryKey
+        #region PrimaryKey field
 
         internal static List<SqlFieldInfo> GetPrimaryKeys(IEnumerable<PropertyInfo> allSqlProp)
         {
-            return allSqlProp.Where(_ => _.IsDefined(typeof(SqlPrimaryKeyAttribute))).Select(_ => CreatePrimaryKey(_, null)).ToList();
+            return allSqlProp.Where(_ => _.IsDefined(typeof(SqlPrimaryKeyAttribute))).Select(CreatePrimaryKey).ToList();
+        }
+
+        private static SqlFieldInfo CreatePrimaryKey(PropertyInfo prop)
+        {
+            var customAttr = prop.GetCustomAttributes(true);
+
+            return new SqlPrimaryKeyFieldInfo(prop, customAttr);
         }
 
         #endregion
 
-        #region ForeignKey
+        #region ForeignKey field
 
         internal static List<SqlFieldInfo> GetForeignKeys(IEnumerable<PropertyInfo> allSqlProp)
         {
-            return allSqlProp.Where(_ => _.IsDefined(typeof(SqlForeignKeyAttribute))).Select(_ => CreateForeignKey(_, null)).ToList();
+            return allSqlProp.Where(_ => _.IsDefined(typeof(SqlForeignKeyAttribute))).Select(CreateForeignKey).ToList();
+        }
+
+        private static SqlFieldInfo CreateForeignKey(PropertyInfo prop)
+        {
+            var customAttr = prop.GetCustomAttributes(true);
+
+            return new SqlForeignKeyFieldInfo(prop, customAttr);
         }
 
         #endregion
 
-        #region Field
+        #region Basic field
 
-        public static SqlFieldInfo Create(string name, object value, object[] customAttr)
-        {
-            return new SqlFieldInfo(null, name, value, customAttr);
-        }
 
         public static List<SqlFieldInfo> GetSqlField<T>(object item = null)
         {
+            return GetSqlField(typeof(T), item);
+        }
+
+        public static List<SqlFieldInfo> GetSqlField(Type type, object item = null)
+        {
             var result = new List<SqlFieldInfo>();
-            foreach (var prop in GetPropertiesList<T>().Where(_ => _.IsDefined(typeof(SqlFieldAttribute))))
+            foreach (var prop in GetPropertiesList(type).Where(_ => _.IsDefined(typeof(SqlFieldAttribute))))
             {
                 SqlFieldInfo field;
-                if (prop.IsDefined(typeof(SqlPrimaryKeyAttribute))) field = CreatePrimaryKey(prop, item);
-                else if (prop.IsDefined(typeof(SqlForeignKeyAttribute))) field = CreateForeignKey(prop, item);
-                else field = Create(prop, item);
+                if (prop.IsDefined(typeof(SqlPrimaryKeyAttribute))) field = CreatePrimaryKey(prop);
+                else if (prop.IsDefined(typeof(SqlForeignKeyAttribute))) field = CreateForeignKey(prop);
+                else field = Create(prop);
                 result.Add(field);
             }
             return result;
         }
 
-        public static string GetColumnName<TObj, TPropOrField>(Expression<Func<TObj, TPropOrField>> propertyorFieldExpression)
+        public static SqlFieldInfo Create(string name, object[] customAttr)
         {
-            if (propertyorFieldExpression == null) throw new ArgumentNullException("propertyorFieldExpression");
-
-            var body = propertyorFieldExpression.Body as MemberExpression;
-
-            return GetColumnName<TObj>(body);
+            return new SqlFieldInfo(null, customAttr);
         }
 
-        public static string GetColumnName<T>(MemberExpression memberExpression)
-        {
-            if (memberExpression == null) throw new ArgumentNullException("memberExpression");
-
-            return GetColumnName<T>(memberExpression.Member as PropertyInfo);
-        }
-
-        private static SqlFieldInfo CreatePrimaryKey(PropertyInfo prop, object item)
+        private static SqlFieldInfo Create(PropertyInfo prop)
         {
             var customAttr = prop.GetCustomAttributes(true);
-            var columnName = GetColumnName(prop);
-            var itemValue = item != null ? prop.GetValue(item, null) : null;
 
-            return new SqlPrimaryKeyFieldInfo(prop, columnName, itemValue, customAttr);
-        }
-
-        private static SqlFieldInfo CreateForeignKey(PropertyInfo prop, object item)
-        {
-            var customAttr = prop.GetCustomAttributes(true);
-            var columnName = GetColumnName(prop);
-            var itemValue = item != null ? prop.GetValue(item, null) : null;
-
-            return new SqlForeignKeyFieldInfo(prop, columnName, itemValue, customAttr);
-        }
-
-        private static SqlFieldInfo Create(PropertyInfo prop, object item)
-        {
-            var customAttr = prop.GetCustomAttributes(true);
-            var columnName = GetColumnName(prop);
-            var itemValue = item != null ? prop.GetValue(item, null) : null;
-
-            return new SqlFieldInfo(prop, columnName, itemValue, customAttr);
-        }
-
-        private static string GetColumnName<T>(PropertyInfo property)
-        {
-            if (property == null) throw new ArgumentNullException("property");
-
-            var propertyOnRequestedType = GetPropertyOnRequestedType<T>(property);
-            return GetColumnName(propertyOnRequestedType);
-        }
-
-        private static string GetColumnName(PropertyInfo prop)
-        {
-            var attr = GetAttribute<SqlFieldAttribute>(prop);
-            return attr.Name ?? prop.Name;
+            return new SqlFieldInfo(prop, customAttr);
         }
 
         #endregion
@@ -272,8 +225,6 @@ namespace Contest.Core.DataStore.Sql
             var manyToOneForeignKeys = GetForeignKeys(manyToOneSqlProperties).Cast<ISqlPropertyInfo>().ToList();
             return new SqlOneToManyReferenceInfo(oneToManyProperty, manyToOneType, oneToManyPrimaryKeys, manyToOneForeignKeys);
         }
-
-        #endregion
 
         #endregion
     }

@@ -5,6 +5,7 @@ using System.Data.Common;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
+using Contest.Core.DataStore.Sql;
 using Contest.Core.DataStore.Sql.BusinessObjectFactory;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.DataStore.Sql.SqlQuery;
@@ -20,6 +21,7 @@ namespace Contest.Core.Repository.FeatureTest
         public DbConnection DatabaseConnection { get; set; }
         public SqliteDataStore DataStore { get; set; }
         public ISqlUnitOfWorks UnitOfWork { get; set; }
+        private static EntityInfoFactory EntityInfoFactory { get; set; }
 
         [TestCase]
         public void CreateTable()
@@ -227,7 +229,7 @@ namespace Contest.Core.Repository.FeatureTest
             where TI : class, IQueryable
             where T : class, TI
         {
-            var sqlBuilder = new SqlQueryFactory<T, TI>(new SqliteStrategy());
+            var sqlBuilder = new SqlQueryFactory<T, TI>(new SqliteStrategy(), EntityInfoFactory);
             var boFactory = new SqlSerializer<T, TI>();
             var context = new DataContext<TI>();
 
@@ -245,6 +247,7 @@ namespace Contest.Core.Repository.FeatureTest
             DataStore.OpenDatabase();
 
             UnitOfWork = new SqlUnitOfWorks(DataStore);
+            EntityInfoFactory = new EntityInfoFactory();
         }
 
         public DbConnection GetNewConnection(string filePath)

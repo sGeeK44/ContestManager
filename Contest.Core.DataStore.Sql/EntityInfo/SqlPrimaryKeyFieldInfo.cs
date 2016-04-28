@@ -4,8 +4,8 @@ namespace Contest.Core.DataStore.Sql
 {
     public class SqlPrimaryKeyFieldInfo : SqlFieldInfo
     {
-        internal SqlPrimaryKeyFieldInfo(PropertyInfo prop, string columnName, object itemValue, object[] customAttr)
-            : base(prop, columnName, itemValue, customAttr) { }
+        internal SqlPrimaryKeyFieldInfo(PropertyInfo prop, object[] customAttr)
+            : base(prop, customAttr) { }
 
         public override bool IsPrimaryKey { get { return true; } }
     }

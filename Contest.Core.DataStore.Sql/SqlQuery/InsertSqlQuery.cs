@@ -6,8 +6,8 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
     {
         private readonly TI _item;
 
-        public InsertSqlQuery(ISqlProviderStrategy sqlProviderStrategy, TI item)
-            : base(sqlProviderStrategy)
+        public InsertSqlQuery(ISqlProviderStrategy sqlProviderStrategy, IEntityInfoFactory entityInfoFactory, TI item)
+            : base(sqlProviderStrategy, entityInfoFactory)
         {
             _item = item;
         }
@@ -20,15 +20,15 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
         {
             StringBuilder columnsName = null;
             StringBuilder columnsValue = null;
-            var arg = EntityInfoFactory.GetSqlField<T>(_item);
-            foreach (var sqlField in arg)
+            var entity = EntityInfoFactory.GetEntityInfo<T>();
+            foreach (var sqlField in entity.FieldList)
             {
                 //Add field name
                 if (columnsName == null) columnsName = new StringBuilder(sqlField.ColumnName);
                 else columnsName.Append(", " + sqlField.ColumnName);
 
                 // Add marker to values.
-                var value = sqlField.ToSqlValue(SqlProviderStrategy);
+                var value = sqlField.ToSqlValue(SqlProviderStrategy, _item);
                 if (columnsValue == null) columnsValue = new StringBuilder(value);
                 else columnsValue.Append(", " + value);
             }

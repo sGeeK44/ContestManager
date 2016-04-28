@@ -8,7 +8,8 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
     {
         private readonly SqlWhereClause<T> _sqlWhereClause;
 
-        public SelectSqlQuery(ISqlProviderStrategy sqlProviderStrategy, LambdaExpression predicate) : base(sqlProviderStrategy)
+        public SelectSqlQuery(ISqlProviderStrategy sqlProviderStrategy, IEntityInfoFactory entityInfoFactory, LambdaExpression predicate)
+            : base(sqlProviderStrategy, entityInfoFactory)
         {
             _sqlWhereClause = new SqlWhereClause<T>(sqlProviderStrategy, predicate);
         }
@@ -21,8 +22,8 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
         {
             StringBuilder columns = null;
 
-            var columnField = EntityInfoFactory.GetSqlField<T>();
-            foreach (var value in columnField)
+            var entity = EntityInfoFactory.GetEntityInfo<T>();
+            foreach (var value in entity.FieldList)
             {
                 //Add marker to set clause
                 if (columns == null) columns = new StringBuilder(value.ColumnName);

@@ -60,6 +60,7 @@
     <Compile Include="ReferenceManyToMany\Identifiable.cs" />
     <Compile Include="ReferenceManyToMany\IIdentifiable.cs" />
     <Compile Include="SqlQuery\DeleteSqlQuery.cs" />
+    <Compile Include="EntityInfo\IEntityInfoFactory.cs" />
     <Compile Include="SqlQuery\InsertSqlQuery.cs" />
     <Compile Include="SqlQuery\ISqlQueryFactory.cs" />
     <Compile Include="ISqlDataStore.cs" />

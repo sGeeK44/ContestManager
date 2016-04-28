@@ -42,7 +42,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
         public DeleteSqlQuery<T, TI> CreateDeleteSqlQuery<T, TI>(TI item)
             where T : class
         {
-            return new DeleteSqlQuery<T, TI>(SqlStrategy.Object, item);
+            return new DeleteSqlQuery<T, TI>(SqlStrategy.Object, EntityInfoFactory, item);
         }
     }
 }

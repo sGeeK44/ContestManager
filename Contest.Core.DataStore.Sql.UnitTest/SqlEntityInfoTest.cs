@@ -8,6 +8,14 @@ namespace Contest.Core.DataStore.Sql.UnitTest
     [TestFixture]
     public class SqlEntityInfoTest
     {
+        public EntityInfoFactory EntityInfoFactory { get; set; }
+
+        [SetUp]
+        public void Init()
+        {
+            EntityInfoFactory = new EntityInfoFactory();
+        }
+
         [TestCase]
         public void GetSqlEntity_ClassNotMarked_ShouldThrowException()
         {

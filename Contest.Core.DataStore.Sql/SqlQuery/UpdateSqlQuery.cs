@@ -7,8 +7,8 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
     {
         private readonly TI _item;
 
-        public UpdateSqlQuery(ISqlProviderStrategy sqlProviderStrategy, TI item)
-            : base(sqlProviderStrategy)
+        public UpdateSqlQuery(ISqlProviderStrategy sqlProviderStrategy, IEntityInfoFactory entityInfoFactory, TI item)
+            : base(sqlProviderStrategy, entityInfoFactory)
         {
             _item = item;
         }
@@ -21,10 +21,10 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
         {
             StringBuilder values = null;
             StringBuilder keys = null;
-            var arg = EntityInfoFactory.GetSqlField<T>(_item);
-            foreach (var sqlField in arg)
+            var entityInfo = EntityInfoFactory.GetEntityInfo<T>();
+            foreach (var sqlField in entityInfo.FieldList)
             {
-                var value = sqlField.ToSqlValue(SqlProviderStrategy);
+                var value = sqlField.ToSqlValue(SqlProviderStrategy, _item);
                 if (sqlField.IsPrimaryKey)
                 {
                     // Add field to where clause.

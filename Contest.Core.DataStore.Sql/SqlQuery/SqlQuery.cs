@@ -4,15 +4,20 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
 {
     public abstract class SqlQuery<T> : ISqlQuery
     {
-        private readonly Lazy<string> _tableName = new Lazy<string>(GetTableName);
+        private readonly Lazy<string> _tableName;
 
         protected ISqlProviderStrategy SqlProviderStrategy { get; set; }
-    
-        protected SqlQuery(ISqlProviderStrategy sqlProviderStrategy)
+        protected IEntityInfoFactory EntityInfoFactory { get; set; }
+
+        protected SqlQuery(ISqlProviderStrategy sqlProviderStrategy, IEntityInfoFactory entityInfoFactory)
         {
             if (sqlProviderStrategy == null) throw new ArgumentNullException("sqlProviderStrategy");
+            if (entityInfoFactory == null) throw new ArgumentNullException("entityInfoFactory");
 
             SqlProviderStrategy = sqlProviderStrategy;
+            EntityInfoFactory = entityInfoFactory;
+
+            _tableName = new Lazy<string>(() => EntityInfoFactory.GetEntityInfo<T>().TableName);
         }
 
         /// <summary>
@@ -25,10 +30,5 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
         /// </summary>
         /// <returns></returns>
         public abstract string ToStatement();
-
-        private static string GetTableName()
-        {
-            return EntityInfoFactory.GetEntityInfo<T>().TableName;
-        }
     }
 }

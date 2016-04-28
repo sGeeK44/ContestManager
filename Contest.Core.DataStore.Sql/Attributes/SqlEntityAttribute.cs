@@ -1,4 +1,5 @@
 ﻿using System;
+using Contest.Core.DataStore.Sql.SqlQuery;
 
 namespace Contest.Core.DataStore.Sql.Attributes
 {
@@ -6,7 +7,7 @@ namespace Contest.Core.DataStore.Sql.Attributes
     {
         public string Name { get; set; }
 
-        internal virtual string GetTableName(Type classInfo)
+        internal virtual string GetTableName(IEntityInfoFactory entityInfoFactory, Type classInfo)
         {
             return Name ?? classInfo.Name;
         }

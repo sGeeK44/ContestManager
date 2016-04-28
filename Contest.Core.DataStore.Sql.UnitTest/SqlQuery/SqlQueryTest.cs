@@ -10,7 +10,13 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
         [TestCase]
         public void Constructor_WithNullSqlStrategy_ShouldThrowException()
         {
-            Assert.Throws<ArgumentNullException>(() => new SqlQueryTester<object>(null));
+            Assert.Throws<ArgumentNullException>(() => new SqlQueryTester<object>(null, null));
+        }
+
+        [TestCase]
+        public void Constructor_WithNullEntityInfoFactory_ShouldThrowException()
+        {
+            Assert.Throws<ArgumentNullException>(() => new SqlQueryTester<object>(SqlStrategy.Object, null));
         }
 
         [TestCase]
@@ -37,7 +43,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
         public SqlQueryTester<T> CreateSqlQuery<T>()
             where T : class
         {
-            return new SqlQueryTester<T>(SqlStrategy.Object);
+            return new SqlQueryTester<T>(SqlStrategy.Object, EntityInfoFactory);
         }
     }
 }

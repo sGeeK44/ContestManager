@@ -65,6 +65,17 @@ namespace Contest.Core.DataStore.Sql
 
             SetValue(item, FindReferenceValue(unitOfWorks, item));
         }
+
+        /// <summary>
+        /// Get sql column name
+        /// </summary>
+        public override string ColumnName { get { throw new NotSupportedException("Reference property can not provide sql column name."); } }
+
+        /// <summary>
+        /// Indicate if current property is a primary key
+        /// </summary>
+        public override bool IsPrimaryKey { get { throw new NotSupportedException("Reference property can not be a primary key."); } }
+
         /// <summary>
         /// Indicate if current property is a foreign key of specified property
         /// </summary>
@@ -72,7 +83,18 @@ namespace Contest.Core.DataStore.Sql
         /// <returns>True if current part is foreign key, false else</returns>
         public override bool IsForeignKeyOf(PropertyInfo prop)
         {
-            return false;
+            throw new NotSupportedException("Reference property can not provide sql value equivalent.");
+        }
+
+        /// <summary>
+        /// Convert property value on specified entity to sql string value equivalent
+        /// </summary>
+        /// <param name="sqlProviderStrategy">Strategy used to converter value</param>
+        /// <param name="entity">Entity on wich getting property value</param>
+        /// <returns>Sql string value equivalent</returns>
+        public override string ToSqlValue(ISqlProviderStrategy sqlProviderStrategy, object entity)
+        {
+            throw new NotSupportedException("Reference property can not be a foreign key.");
         }
     }
 }
