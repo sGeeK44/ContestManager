@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.DataStore.Sql.EntityInfo;
 
 namespace Contest.Core.DataStore.Sql.SqlQuery
@@ -14,10 +13,12 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
         private const string NULL_VALUE = "NULL";
 
         private ISqlProviderStrategy ProviderStrategy { get; set; }
+        private IEntityInfoFactory EntityInfoFactory { get; set; }
 
-        public SqlWhereClause(ISqlProviderStrategy providerStrategy, LambdaExpression exp)
+        public SqlWhereClause(ISqlProviderStrategy providerStrategy, IEntityInfoFactory entityInfoFactory, LambdaExpression exp)
         {
             ProviderStrategy = providerStrategy;
+            EntityInfoFactory = entityInfoFactory;
             _expression = exp;
         }
 
@@ -199,30 +200,17 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
         {
             if (memberExpression == null) throw new ArgumentNullException("memberExpression");
 
-            var propertyOnRequestedType = GetPropertyOnRequestedType(memberExpression.Member as PropertyInfo);
-            return GetColumnName(propertyOnRequestedType);
+            var propertyWithSqlInfo = GetConcreteClassProperty(memberExpression.Member as PropertyInfo);
+            return propertyWithSqlInfo.ColumnName;
         }
 
-        private static string GetColumnName(PropertyInfo prop)
+        private ISqlPropertyInfo GetConcreteClassProperty(PropertyInfo property)
         {
-            var attr = GetAttribute<SqlFieldAttribute>(prop);
-            return attr.GetColumnName(prop);
-        }
+            var requestedProperty = EntityInfoFactory.GetEntityInfo<T>().FieldList.FirstOrDefault(_ => _.PropertyInfo.Name == property.Name);
 
-        private static TAttr GetAttribute<TAttr>(PropertyInfo propertyOnRequestedType) where TAttr : SqlPropertyAttribute
-        {
-            var sqlAttribute = propertyOnRequestedType.GetCustomAttributes(typeof(TAttr), true).Cast<TAttr>().FirstOrDefault();
-            if (sqlAttribute == null) throw new NotSupportedException(string.Format("ProperType doesn't contains {0} attribute. Property:{1}", typeof(TAttr).Name, propertyOnRequestedType.Name));
-
-            return sqlAttribute;
-        }
-
-        private static PropertyInfo GetPropertyOnRequestedType(PropertyInfo property)
-        {
-            var requestedProperty = EntityInfoFactory.GetPropertiesList<T>().FirstOrDefault(_ => _.Name == property.Name);
-
-            if (requestedProperty == null) throw new NotSupportedException(string.Format("Type doesn't contains member expression property. Requested type:{0}. Property name:{1}.", typeof(T), property.Name));
-            return requestedProperty;
+            if (requestedProperty != null) return requestedProperty;
+            
+            throw new NotSupportedException(string.Format("Type doesn't contains member expression property. Requested type:{0}. Property name:{1}.", typeof(T), property.Name));
         }
     }
 }

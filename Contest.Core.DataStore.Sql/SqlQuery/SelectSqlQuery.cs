@@ -12,7 +12,7 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
         public SelectSqlQuery(ISqlProviderStrategy sqlProviderStrategy, IEntityInfoFactory entityInfoFactory, LambdaExpression predicate)
             : base(sqlProviderStrategy, entityInfoFactory)
         {
-            _sqlWhereClause = new SqlWhereClause<T>(sqlProviderStrategy, predicate);
+            _sqlWhereClause = new SqlWhereClause<T>(sqlProviderStrategy, entityInfoFactory, predicate);
         }
 
         /// <summary>

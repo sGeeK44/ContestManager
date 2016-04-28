@@ -207,7 +207,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.SqlQuery
         public SqlWhereClause<T> CreateSqlWhereClause<T>(Expression<Func<T, bool>> predicate)
             where T : class
         {
-            return new SqlWhereClause<T>(SqlStrategy.Object, predicate);
+            return new SqlWhereClause<T>(SqlStrategy.Object, new EntityInfoFactory(), predicate);
         }
     }
 }

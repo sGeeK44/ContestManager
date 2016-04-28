@@ -14,13 +14,6 @@ namespace Contest.Core.DataStore.Sql.EntityInfo
             return GetEntityInfo(typeof(T));
         }
 
-        #region Entity class
-             
-        private SqlEntityInfo Create(Type classInfo, SqlEntityAttribute attr)
-        {
-            return new SqlEntityInfo(this, classInfo, attr);
-        }
-
         public ISqlEntityInfo GetEntityInfo(Type classInfo)
         {
             if (classInfo == null) throw new ArgumentNullException("classInfo");
@@ -34,6 +27,13 @@ namespace Contest.Core.DataStore.Sql.EntityInfo
             var entityInfo = Create(classInfo, entityAttribute);
             entityInfo.FieldList = GetSqlField(classInfo).Cast<ISqlPropertyInfo>().ToList();
             return entityInfo;
+        }
+
+        #region Entity class
+             
+        private SqlEntityInfo Create(Type classInfo, SqlEntityAttribute attr)
+        {
+            return new SqlEntityInfo(this, classInfo, attr);
         }
 
         #endregion
