@@ -1,4 +1,5 @@
-﻿using Contest.Core.DataStore.Sql.UnitTest.Entities;
+﻿using Contest.Core.DataStore.Sql.EntityInfo;
+using Contest.Core.DataStore.Sql.UnitTest.Entities;
 using NUnit.Framework;
 
 namespace Contest.Core.DataStore.Sql.UnitTest

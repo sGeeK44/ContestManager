@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Contest.Core.DataStore.Sql.EntityInfo;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.DataStore.Sql.UnitTest.Entities;
 using NUnit.Framework;

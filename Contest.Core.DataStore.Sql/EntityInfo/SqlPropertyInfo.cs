@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Contest.Core.DataStore.Sql
+namespace Contest.Core.DataStore.Sql.EntityInfo
 {
     public abstract class SqlPropertyInfo : ISqlPropertyInfo
     {

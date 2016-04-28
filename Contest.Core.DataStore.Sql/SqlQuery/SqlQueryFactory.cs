@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Contest.Core.DataStore.Sql.EntityInfo;
 
 namespace Contest.Core.DataStore.Sql.SqlQuery
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Contest.Core.DataStore.Sql.EntityInfo;
 using Contest.Core.DataStore.Sql.UnitTest.Entities;
 using Moq;
 using NUnit.Framework;

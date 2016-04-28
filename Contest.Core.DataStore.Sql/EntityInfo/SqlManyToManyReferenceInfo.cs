@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Contest.Core.Repository;
 
-namespace Contest.Core.DataStore.Sql
+namespace Contest.Core.DataStore.Sql.EntityInfo
 {
     public class SqlManyToManyReferenceInfo : SqlReferenceInfo
     {

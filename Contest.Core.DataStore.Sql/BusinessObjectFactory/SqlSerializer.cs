@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using Contest.Core.Converters;
+using Contest.Core.DataStore.Sql.EntityInfo;
 using Contest.Core.Repository;
 using Contest.Core.Serialization;
 

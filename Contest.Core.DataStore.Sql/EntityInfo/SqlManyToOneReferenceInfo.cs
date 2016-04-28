@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.Repository;
 
-namespace Contest.Core.DataStore.Sql
+namespace Contest.Core.DataStore.Sql.EntityInfo
 {
     public class SqlManyToOneReferenceInfo : SqlReferenceInfo
     {

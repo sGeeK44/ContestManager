@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Contest.Core.DataStore.Sql.EntityInfo;
 using Contest.Core.Repository;
 
 namespace Contest.Core.DataStore.Sql.UnitTest

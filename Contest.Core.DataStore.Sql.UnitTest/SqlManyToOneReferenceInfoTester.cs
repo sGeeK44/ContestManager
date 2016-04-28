@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Contest.Core.DataStore.Sql.EntityInfo;
 
 namespace Contest.Core.DataStore.Sql.UnitTest
 {

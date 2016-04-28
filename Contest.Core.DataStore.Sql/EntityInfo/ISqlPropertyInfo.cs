@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace Contest.Core.DataStore.Sql
+namespace Contest.Core.DataStore.Sql.EntityInfo
 {
     public interface ISqlPropertyInfo
     {

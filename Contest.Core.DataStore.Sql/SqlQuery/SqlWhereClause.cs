@@ -3,6 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Contest.Core.DataStore.Sql.Attributes;
+using Contest.Core.DataStore.Sql.EntityInfo;
 
 namespace Contest.Core.DataStore.Sql.SqlQuery
 {

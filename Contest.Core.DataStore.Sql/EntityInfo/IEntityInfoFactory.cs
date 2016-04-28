@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Contest.Core.DataStore.Sql.SqlQuery
+namespace Contest.Core.DataStore.Sql.EntityInfo
 {
     public interface IEntityInfoFactory
     {

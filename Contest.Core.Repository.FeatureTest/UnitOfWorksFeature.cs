@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using Contest.Core.DataStore.Sql;
 using Contest.Core.DataStore.Sql.BusinessObjectFactory;
+using Contest.Core.DataStore.Sql.EntityInfo;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.DataStore.Sql.SqlQuery;
 using Contest.Core.DataStore.Sqlite;

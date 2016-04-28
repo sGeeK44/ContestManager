@@ -1,4 +1,5 @@
 ﻿using System;
+using Contest.Core.DataStore.Sql.EntityInfo;
 using Contest.Core.DataStore.Sql.UnitTest.Entities;
 using NUnit.Framework;
 

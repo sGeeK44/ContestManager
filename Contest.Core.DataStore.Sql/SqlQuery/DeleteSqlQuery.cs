@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using Contest.Core.DataStore.Sql.EntityInfo;
 
 namespace Contest.Core.DataStore.Sql.SqlQuery
 {

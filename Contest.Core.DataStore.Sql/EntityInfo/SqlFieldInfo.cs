@@ -3,7 +3,7 @@ using System.Reflection;
 using Contest.Core.Converters;
 using Contest.Core.DataStore.Sql.Attributes;
 
-namespace Contest.Core.DataStore.Sql
+namespace Contest.Core.DataStore.Sql.EntityInfo
 {
     public class SqlFieldInfo : SqlPropertyInfo
     {
