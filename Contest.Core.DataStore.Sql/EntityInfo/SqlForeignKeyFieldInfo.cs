@@ -8,16 +8,21 @@ namespace Contest.Core.DataStore.Sql.EntityInfo
     {
         private readonly string _oneToManyPropertyName;
 
-        internal SqlForeignKeyFieldInfo(PropertyInfo prop, object[] customAttr)
-            : base(prop, customAttr)
+        internal SqlForeignKeyFieldInfo(PropertyInfo prop)
+            : base(prop)
         {
-            var attr = (SqlForeignKeyAttribute)customAttr.Single(_ => _ is SqlForeignKeyAttribute);
-            _oneToManyPropertyName = attr.OneToManyPropertyName;
+            var foreignKey = GetSqlForeignKeyAttribute();
+            _oneToManyPropertyName = foreignKey.OneToManyPropertyName;
         }
 
         public override bool IsForeignKeyOf(PropertyInfo prop)
         {
             return prop.Name == _oneToManyPropertyName;
+        }
+
+        private SqlForeignKeyAttribute GetSqlForeignKeyAttribute()
+        {
+            return (SqlForeignKeyAttribute)CustomAttr.Single(_ => _ is SqlForeignKeyAttribute);
         }
     }
 }

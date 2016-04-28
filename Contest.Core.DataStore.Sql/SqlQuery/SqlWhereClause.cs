@@ -204,7 +204,7 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
             return propertyWithSqlInfo.ColumnName;
         }
 
-        private ISqlPropertyInfo GetConcreteClassProperty(PropertyInfo property)
+        private ISqlFieldInfo GetConcreteClassProperty(PropertyInfo property)
         {
             var requestedProperty = EntityInfoFactory.GetEntityInfo<T>().FieldList.FirstOrDefault(_ => _.PropertyInfo.Name == property.Name);
 

@@ -14,12 +14,14 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
         where TI : class
     {
         private IConverter Converter { get; set; }
+        private ISqlProviderStrategy SqlProviderStrategy { get; set; }
+        private IEntityInfoFactory EntityInfoFactory { get; set; }
 
-        public SqlSerializer() : this (Converters.Converter.Instance) { }
-
-        public SqlSerializer(IConverter converter)
+        public SqlSerializer(IConverter converter, ISqlProviderStrategy sqlProviderStrategy, IEntityInfoFactory entityInfoFactory)
         {
             Converter = converter;
+            SqlProviderStrategy = sqlProviderStrategy;
+            EntityInfoFactory = entityInfoFactory;
         }
 
         public TI Convert(object from)
@@ -38,49 +40,20 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
             var constructor = GetDefaultConstructor(realObjectType);
             var result = (TI)constructor.Invoke(null);
 
-            foreach (var field in EntityInfoFactory.GetSqlField<T>())
+            foreach (var field in EntityInfoFactory.GetEntityInfo<T>().FieldList)
             {
                 // Converter value
                 var sqlValue = row[field.ColumnName];
                 if (sqlValue == null) continue;
                 
-                field.SetValue(Converter, result, sqlValue.ToString());
+                field.SetValue(SqlProviderStrategy, result, sqlValue.ToString());
             }
             return result;
         }
 
         public void FillReferences(IUnitOfWorks unitOfWorks, TI item)
         {
-            FillOneToManyReference(unitOfWorks, item);
-            FillManyToOneReference(unitOfWorks, item);
-            FillManyToManyReference(unitOfWorks, item);
-        }
-
-        public void FillOneToManyReference(IUnitOfWorks unitOfWorks, TI item)
-        {
-            var propertiesToFill = EntityInfoFactory.GetOneToManySqlReference<T>();
-            if (propertiesToFill.Count == 0) return;
-
-            foreach (var property in propertiesToFill)
-            {
-                property.FillReference(unitOfWorks, item);
-            }
-        }
-
-        public void FillManyToOneReference(IUnitOfWorks unitOfWorks, TI item)
-        {
-            var propertiesToFill = EntityInfoFactory.GetManyToOneSqlReference<T>();
-            if (propertiesToFill.Count == 0) return;
-
-            foreach (var property in propertiesToFill)
-            {
-                property.FillReference(unitOfWorks, item);
-            }
-        }
-
-        public void FillManyToManyReference(IUnitOfWorks unitOfWorks, TI item)
-        {;
-            var propertiesToFill = EntityInfoFactory.GetManyToManySqlReference<T>();
+            var propertiesToFill = EntityInfoFactory.GetEntityInfo<T>().ReferenceList;
             if (propertiesToFill.Count == 0) return;
 
             foreach (var property in propertiesToFill)
@@ -123,8 +96,8 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
 
         public string GetEnumPivotValue(Type enumPivot, IDataReader row)
         {
-            SqlFieldInfo field;
-            try { field = EntityInfoFactory.GetSqlField<T>().Single(_ => _.PropertyInfo.PropertyType == enumPivot); }
+            ISqlFieldInfo field;
+            try { field = EntityInfoFactory.GetEntityInfo<T>().FieldList.Single(_ => _.PropertyInfo.PropertyType == enumPivot); }
             catch (InvalidOperationException ex)
             {
                 throw new NotSupportedException(string.Format("Enum pivot not or several found. EnumPivot:{0}. CurrentType:{1}", enumPivot, typeof(T)), ex);

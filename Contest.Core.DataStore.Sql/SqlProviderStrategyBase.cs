@@ -43,6 +43,11 @@ namespace Contest.Core.DataStore.Sql
             return string.Concat("'", value.Replace("'", "''"), "'");
         }
 
+        public object FromSqlValue(Type propertyType, string sqlValue, object[] attr)
+        {
+            return Converter.Convert(propertyType, sqlValue, attr);
+        }
+
         /// <summary>
         /// Determine default Sql column type when .net is not managed
         /// </summary>

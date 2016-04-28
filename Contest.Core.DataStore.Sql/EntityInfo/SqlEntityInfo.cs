@@ -13,7 +13,9 @@ namespace Contest.Core.DataStore.Sql.EntityInfo
 
         public string TableName { get { return _entityAttribute.GetTableName(EntityInfoFactory, _classInfo); } }
 
-        public IList<ISqlPropertyInfo> FieldList { get; set; }
+        public IList<ISqlFieldInfo> FieldList { get; set; }
+
+        public IList<ISqlReferenceInfo> ReferenceList { get; set; }
 
         internal SqlEntityInfo(IEntityInfoFactory entityInfoFactory, Type classInfo, SqlEntityAttribute entityAttribute)
         {

@@ -12,6 +12,11 @@ namespace Contest.Core.DataStore.Sql.EntityInfo
         /// <summary>
         /// Get list of sql properies
         /// </summary>
-        IList<ISqlPropertyInfo> FieldList { get; }
+        IList<ISqlFieldInfo> FieldList { get; }
+
+        /// <summary>
+        /// Get list of sql reference properies
+        /// </summary>
+        IList<ISqlReferenceInfo> ReferenceList { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq.Expressions;
 using Contest.Core.Converters;
 using Contest.Core.DataStore.Sql.BusinessObjectFactory;
+using Contest.Core.DataStore.Sql.EntityInfo;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
 using Contest.Core.DataStore.Sql.UnitTest.Entities;
 using Contest.Core.Repository;
@@ -16,12 +17,14 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
     public class SqlSerializerTest
     {
         private Mock<IConverter> Converter { get; set; }
+        private Mock<ISqlProviderStrategy> SqlProviderStrategy { get; set; }
         private Mock<IDataReader> Data { get; set; }
 
         [SetUp]
         public void Init()
         {
             Converter = new Mock<IConverter>();
+            SqlProviderStrategy = new Mock<ISqlProviderStrategy>();
             Data = new Mock<IDataReader>();
         }
 
@@ -79,7 +82,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
             var expectedValue = Guid.NewGuid();
             var serializer = CreateSqlSerializer<BasicEntity>();
             Data.Setup(_ => _["Id"]).Returns(expectedValue.ToString());
-            Converter.Setup(_ => _.Convert(typeof(Guid), expectedValue.ToString(), It.IsAny<object[]>())).Returns(expectedValue);
+            SqlProviderStrategy.Setup(_ => _.FromSqlValue(typeof(Guid), expectedValue.ToString(), It.IsAny<object[]>())).Returns(expectedValue);
             
             var obj = serializer.Create(Data.Object);
 
@@ -92,7 +95,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
             const string expectedValue = "Xxxx";
             var serializer = CreateSqlSerializer<BasicEntity>();
             Data.Setup(_ => _["Name"]).Returns(expectedValue);
-            Converter.Setup(_ => _.Convert(typeof(string), expectedValue, It.IsAny<object[]>())).Returns(expectedValue);
+            SqlProviderStrategy.Setup(_ => _.FromSqlValue(typeof(string), expectedValue, It.IsAny<object[]>())).Returns(expectedValue);
 
             var obj = serializer.Create(Data.Object);
 
@@ -105,7 +108,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
             const string expectedValue = "Xxxx";
             var serializer = CreateSqlSerializer<BasicEntity>();
             Data.Setup(_ => _["NoSerializedField"]).Returns(expectedValue);
-            Converter.Setup(_ => _.Convert(typeof(string), expectedValue, It.IsAny<object[]>())).Returns(expectedValue);
+            SqlProviderStrategy.Setup(_ => _.FromSqlValue(typeof(string), expectedValue, It.IsAny<object[]>())).Returns(expectedValue);
 
             var obj = serializer.Create(Data.Object);
 
@@ -118,7 +121,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
             const string expectedValue = "Xxxx";
             var serializer = CreateSqlSerializer<BasicEntity>();
             Data.Setup(_ => _["ReadOnlyProperty"]).Returns(expectedValue);
-            Converter.Setup(_ => _.Convert(typeof(string), expectedValue, It.IsAny<object[]>())).Returns(expectedValue);
+            SqlProviderStrategy.Setup(_ => _.FromSqlValue(typeof(string), expectedValue, It.IsAny<object[]>())).Returns(expectedValue);
 
             Assert.Throws<NotSupportedException>(() => serializer.Create(Data.Object));
         }
@@ -208,7 +211,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
             var obj = new OneToManyEntity();
             var serializer = CreateSqlSerializer<OneToManyEntity>();
 
-            Assert.DoesNotThrow(() => serializer.FillOneToManyReference(null, obj));
+            Assert.DoesNotThrow(() => serializer.FillReferences(null, obj));
         }
         
         [TestCase]
@@ -216,7 +219,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
         {
             var serializer = CreateSqlSerializer<OneToManyEntity>();
 
-            Assert.DoesNotThrow(() => serializer.FillOneToManyReference(new Mock<IUnitOfWorks>().Object, null));
+            Assert.DoesNotThrow(() => serializer.FillReferences(new Mock<IUnitOfWorks>().Object, null));
         }
         
         [TestCase]
@@ -229,7 +232,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
                        .Returns(new List<ManyToOneEntity> { expectedReference });
             var serializer = CreateSqlSerializer<OneToManyEntity>();
 
-            serializer.FillOneToManyReference(unitOfWorks.Object, obj);
+            serializer.FillReferences(unitOfWorks.Object, obj);
 
             Assert.AreEqual(expectedReference, obj.EntityList[0]);
         }
@@ -240,7 +243,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
             var obj = new ManyToOneEntity();
             var serializer = CreateSqlSerializer<ManyToOneEntity>();
 
-            Assert.DoesNotThrow(() => serializer.FillManyToOneReference(null, obj));
+            Assert.DoesNotThrow(() => serializer.FillReferences(null, obj));
         }
 
         [TestCase]
@@ -248,7 +251,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
         {
             var serializer = CreateSqlSerializer<ManyToOneEntity>();
 
-            Assert.DoesNotThrow(() => serializer.FillManyToOneReference(new Mock<IUnitOfWorks>().Object, null));
+            Assert.DoesNotThrow(() => serializer.FillReferences(new Mock<IUnitOfWorks>().Object, null));
         }
 
         [TestCase]
@@ -261,7 +264,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
                        .Returns(new List<OneToManyEntity> { expectedReference });
             var serializer = CreateSqlSerializer<ManyToOneEntity>();
 
-            serializer.FillManyToOneReference(unitOfWorks.Object, obj);
+            serializer.FillReferences(unitOfWorks.Object, obj);
 
             Assert.AreEqual(expectedReference, obj.Entity);
         }
@@ -272,7 +275,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
             var obj = new ManyToManyFirstEntity();
             var serializer = CreateSqlSerializer<ManyToManyFirstEntity>();
 
-            Assert.DoesNotThrow(() => serializer.FillManyToManyReference(null, obj));
+            Assert.DoesNotThrow(() => serializer.FillReferences(null, obj));
         }
 
         [TestCase]
@@ -280,7 +283,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
         {
             var serializer = CreateSqlSerializer<ManyToManyFirstEntity>();
 
-            Assert.DoesNotThrow(() => serializer.FillManyToManyReference(new Mock<IUnitOfWorks>().Object, null));
+            Assert.DoesNotThrow(() => serializer.FillReferences(new Mock<IUnitOfWorks>().Object, null));
         }
 
         [TestCase]
@@ -294,7 +297,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
                        .Returns(new List<Relationship<ManyToManyFirstEntity, ManyToManySecondEntity>> { expectedReference });
             var serializer = CreateSqlSerializer<ManyToManyFirstEntity>();
 
-            serializer.FillManyToManyReference(unitOfWorks.Object, first);
+            serializer.FillReferences(unitOfWorks.Object, first);
 
             Assert.AreEqual(expectedReference, first.SecondEntityList[0]);
         }
@@ -309,7 +312,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest.BusinessObjectFactory
             where T : class, TI
             where TI : class
         {
-            return new SqlSerializer<T, TI>(Converter.Object);
+            return new SqlSerializer<T, TI>(Converter.Object, SqlProviderStrategy.Object, new EntityInfoFactory());
         }
 
         private void SetupConverterForPivotEnum()

@@ -9,11 +9,11 @@ namespace Contest.Core.DataStore.Sql.UnitTest
 {
     public class SqlReferenceInfoTester : SqlReferenceInfo
     {
-        private readonly IList<ISqlPropertyInfo> _key;
-        private readonly IList<ISqlPropertyInfo> _referenceKey;
+        private readonly IList<ISqlFieldInfo> _key;
+        private readonly IList<ISqlFieldInfo> _referenceKey;
         private readonly Type _referenceType;
 
-        public SqlReferenceInfoTester(PropertyInfo referenceProperty, Type type, IList<ISqlPropertyInfo> referenceKeyList, IList<ISqlPropertyInfo> keyList)
+        public SqlReferenceInfoTester(PropertyInfo referenceProperty, Type type, IList<ISqlFieldInfo> referenceKeyList, IList<ISqlFieldInfo> keyList)
             : base(referenceProperty)
         {
             _referenceType = type;
@@ -26,12 +26,12 @@ namespace Contest.Core.DataStore.Sql.UnitTest
             return GetPredicate(item);
         }
 
-        protected override IList<ISqlPropertyInfo> Key
+        protected override IList<ISqlFieldInfo> Key
         {
             get { return _key; }
         }
 
-        protected override IList<ISqlPropertyInfo> ReferenceKey
+        protected override IList<ISqlFieldInfo> ReferenceKey
         {
             get { return _referenceKey; }
         }

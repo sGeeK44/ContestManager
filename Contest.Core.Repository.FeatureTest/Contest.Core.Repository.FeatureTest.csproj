@@ -67,6 +67,10 @@
     <Compile Include="UnitOfWorksFeature.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Contest.Core.Converters\Contest.Core.Converters.csproj">
+      <Project>{AE46A224-2C96-4F3C-AF4D-960CAB831457}</Project>
+      <Name>Contest.Core.Converters</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Contest.Core.DataStore.Sqlite\Contest.Core.DataStore.Sqlite.csproj">
       <Project>{4B0ED7F4-49D9-4720-A4EA-4ABF92EE3549}</Project>
       <Name>Contest.Core.DataStore.Sqlite</Name>

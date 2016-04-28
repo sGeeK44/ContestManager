@@ -5,7 +5,7 @@ using System.Data.Common;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
-using Contest.Core.DataStore.Sql;
+using Contest.Core.Converters;
 using Contest.Core.DataStore.Sql.BusinessObjectFactory;
 using Contest.Core.DataStore.Sql.EntityInfo;
 using Contest.Core.DataStore.Sql.ReferenceManyToMany;
@@ -230,8 +230,9 @@ namespace Contest.Core.Repository.FeatureTest
             where TI : class, IQueryable
             where T : class, TI
         {
-            var sqlBuilder = new SqlQueryFactory<T, TI>(new SqliteStrategy(), EntityInfoFactory);
-            var boFactory = new SqlSerializer<T, TI>();
+            var sqliteStrategy = new SqliteStrategy();
+            var sqlBuilder = new SqlQueryFactory<T, TI>(sqliteStrategy, EntityInfoFactory);
+            var boFactory = new SqlSerializer<T, TI>(Converter.Instance, sqliteStrategy, EntityInfoFactory);
             var context = new DataContext<TI>();
 
             var repository = new SqlRepository<TI>(DataStore, sqlBuilder, boFactory, context);

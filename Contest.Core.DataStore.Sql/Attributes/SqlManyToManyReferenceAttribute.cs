@@ -1,4 +1,4 @@
 ﻿namespace Contest.Core.DataStore.Sql.Attributes
 {
-    public class SqlManyToManyReferenceAttribute : SqlPropertyAttribute { }
+    public class SqlManyToManyReferenceAttribute : SqlReferenceAttribute { }
 }

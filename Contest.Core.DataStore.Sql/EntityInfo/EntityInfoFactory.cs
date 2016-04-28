@@ -25,22 +25,14 @@ namespace Contest.Core.DataStore.Sql.EntityInfo
             if (entityAttribute == null) throw new NotSupportedException(string.Format("Class {0} has no SqlEntity attribute.", classInfo.Name));
 
             var entityInfo = Create(classInfo, entityAttribute);
-            entityInfo.FieldList = GetSqlField(classInfo).Cast<ISqlPropertyInfo>().ToList();
+            entityInfo.FieldList = GetSqlField(classInfo).ToList();
+            entityInfo.ReferenceList = GetSqlReference(classInfo).ToList();
             return entityInfo;
         }
-
-        #region Entity class
              
         private SqlEntityInfo Create(Type classInfo, SqlEntityAttribute attr)
         {
             return new SqlEntityInfo(this, classInfo, attr);
-        }
-
-        #endregion
-
-        public static List<PropertyInfo> GetPropertiesList<T>()
-        {
-            return GetPropertiesList(typeof(T));
         }
 
         private static List<PropertyInfo> GetPropertiesList(Type t)
@@ -51,49 +43,30 @@ namespace Contest.Core.DataStore.Sql.EntityInfo
                     .ToList();
         }
 
-        #region PrimaryKey field
-
-        internal static List<SqlFieldInfo> GetPrimaryKeys(IEnumerable<PropertyInfo> allSqlProp)
+        private static IEnumerable<SqlFieldInfo> GetPrimaryKeys(IEnumerable<PropertyInfo> allSqlProp)
         {
             return allSqlProp.Where(_ => _.IsDefined(typeof(SqlPrimaryKeyAttribute))).Select(CreatePrimaryKey).ToList();
         }
 
         private static SqlFieldInfo CreatePrimaryKey(PropertyInfo prop)
         {
-            var customAttr = prop.GetCustomAttributes(true);
-
-            return new SqlPrimaryKeyFieldInfo(prop, customAttr);
+            return new SqlPrimaryKeyFieldInfo(prop);
         }
 
-        #endregion
-
-        #region ForeignKey field
-
-        internal static List<SqlFieldInfo> GetForeignKeys(IEnumerable<PropertyInfo> allSqlProp)
+        private static IEnumerable<SqlFieldInfo> GetForeignKeys(IEnumerable<PropertyInfo> allSqlProp)
         {
             return allSqlProp.Where(_ => _.IsDefined(typeof(SqlForeignKeyAttribute))).Select(CreateForeignKey).ToList();
         }
 
         private static SqlFieldInfo CreateForeignKey(PropertyInfo prop)
         {
-            var customAttr = prop.GetCustomAttributes(true);
 
-            return new SqlForeignKeyFieldInfo(prop, customAttr);
+            return new SqlForeignKeyFieldInfo(prop);
         }
 
-        #endregion
-
-        #region Basic field
-
-
-        public static List<SqlFieldInfo> GetSqlField<T>(object item = null)
+        public static IEnumerable<ISqlFieldInfo> GetSqlField(Type type)
         {
-            return GetSqlField(typeof(T), item);
-        }
-
-        public static List<SqlFieldInfo> GetSqlField(Type type, object item = null)
-        {
-            var result = new List<SqlFieldInfo>();
+            var result = new List<ISqlFieldInfo>();
             foreach (var prop in GetPropertiesList(type).Where(_ => _.IsDefined(typeof(SqlFieldAttribute))))
             {
                 SqlFieldInfo field;
@@ -105,38 +78,40 @@ namespace Contest.Core.DataStore.Sql.EntityInfo
             return result;
         }
 
-        public static SqlFieldInfo Create(string name, object[] customAttr)
+        private static IEnumerable<ISqlReferenceInfo> GetSqlReference(Type type)
         {
-            return new SqlFieldInfo(null, customAttr);
+            var result = GetManyToOneSqlReference(type);
+            result.AddRange(GetOneToManySqlReference(type));
+            result.AddRange(GetManyToManySqlReference(type));
+            return result;
         }
 
         private static SqlFieldInfo Create(PropertyInfo prop)
         {
-            var customAttr = prop.GetCustomAttributes(true);
-
-            return new SqlFieldInfo(prop, customAttr);
+            return new SqlFieldInfo(prop);
         }
-
-        #endregion
-
-        #region ManyToMany
 
         /// <summary>
         /// Get ManyToMany reference of specified type
         /// </summary>
         /// <typeparam name="T">Type to analyse</typeparam>
         /// <returns>All SqlManyToManyReferenceInfo of specified type</returns>
-        public static List<SqlManyToManyReferenceInfo> GetManyToManySqlReference<T>()
+        public static List<ISqlReferenceInfo> GetManyToManySqlReference<T>()
         {
-            var sqlProperties = GetPropertiesList<T>();
-            var entityPrimaryKeys = GetPrimaryKeys(sqlProperties).Cast<ISqlPropertyInfo>().ToList();
+            return GetManyToManySqlReference(typeof (T));
+        }
+
+        private static List<ISqlReferenceInfo> GetManyToManySqlReference(Type type)
+        {
+            var sqlProperties = GetPropertiesList(type);
+            var entityPrimaryKeys = GetPrimaryKeys(sqlProperties).Cast<ISqlFieldInfo>().ToList();
 
             return sqlProperties.Where(_ => _.IsDefined(typeof(SqlManyToManyReferenceAttribute)))
-                                             .Select(_ => Create<T>(_, entityPrimaryKeys))
+                                             .Select(_ => Create(type, _, entityPrimaryKeys))
                                              .ToList();
         }
 
-        private static SqlManyToManyReferenceInfo Create<T>(PropertyInfo entityProperty, IList<ISqlPropertyInfo> entityPrimaryKeys)
+        private static ISqlReferenceInfo Create(Type type, PropertyInfo entityProperty, IList<ISqlFieldInfo> entityPrimaryKeys)
         {
             var propertyType = entityProperty.PropertyType;
             if (!IsList(propertyType)) throw new NotSupportedException(string.Format("Property type for ManyToMany reference have to be an IList<>. Property:{0}.", entityProperty.Name));
@@ -146,14 +121,76 @@ namespace Contest.Core.DataStore.Sql.EntityInfo
 
             var firstRelationType = referenceType.GenericTypeArguments[0];
 
-            var referenceSqlProperties = GetPropertiesList(referenceType).Where(_ => _.Name == (IsAnalyseEntity<T>(firstRelationType) ? "FirstItemInvolveId" : "SecondItemInvolveId"));
-            var referenceForeignKeys = GetPrimaryKeys(referenceSqlProperties).Cast<ISqlPropertyInfo>().ToList();
+            var referenceSqlProperties = GetPropertiesList(referenceType).Where(_ => _.Name == (IsAnalyseEntity(type, firstRelationType) ? "FirstItemInvolveId" : "SecondItemInvolveId"));
+            var referenceForeignKeys = GetPrimaryKeys(referenceSqlProperties).Cast<ISqlFieldInfo>().ToList();
             return new SqlManyToManyReferenceInfo(entityProperty, entityPrimaryKeys, referenceType, referenceForeignKeys);
         }
 
-        private static bool IsAnalyseEntity<T>(Type type)
+        /// <summary>
+        /// Get ManyToOne reference of specified type
+        /// </summary>
+        /// <typeparam name="T">Type to analyse</typeparam>
+        /// <returns>All SqlManyToOneReferenceInfo of specified type</returns>
+        public static List<ISqlReferenceInfo> GetManyToOneSqlReference<T>()
         {
-            return type == typeof(T);
+            return GetManyToOneSqlReference(typeof (T));
+        }
+
+        /// <summary>
+        /// Get ManyToOne reference of specified type
+        /// </summary>
+        /// <returns>All SqlManyToOneReferenceInfo of specified type</returns>
+        private static List<ISqlReferenceInfo> GetManyToOneSqlReference(Type type)
+        {
+            var manyToOneSqlProperties = GetPropertiesList(type);
+            var manyToOneForeignKeys = GetForeignKeys(manyToOneSqlProperties);
+            return manyToOneSqlProperties.Where(_ => _.IsDefined(typeof(SqlManyToOneReferenceAttribute)))
+                                         .Select(_ => Create(_, manyToOneForeignKeys))
+                                         .ToList();
+        }
+
+        private static ISqlReferenceInfo Create(PropertyInfo prop, IEnumerable<ISqlFieldInfo> manyToOneForeignKeys)
+        {
+            var oneToManyType = prop.PropertyType;
+            var oneToManySqlProperties = GetPropertiesList(oneToManyType);
+            var oneToManyPrimaryKeys = GetPrimaryKeys(oneToManySqlProperties).Cast<ISqlFieldInfo>().ToList();
+            var foreignKeyForCurrentProperty = manyToOneForeignKeys.Where(_ => _.IsForeignKeyOf(prop)).ToList();
+            return new SqlManyToOneReferenceInfo(prop, oneToManyType, oneToManyPrimaryKeys, foreignKeyForCurrentProperty);
+        }
+        
+        /// <summary>
+        /// Get OneToMany reference of specified type
+        /// </summary>
+        /// <typeparam name="T">Type to analyse</typeparam>
+        /// <returns>All SqlOneToManyReferenceInfo of specified type</returns>
+        public static List<ISqlReferenceInfo> GetOneToManySqlReference<T>()
+        {
+            return GetOneToManySqlReference(typeof (T));
+        }
+
+        private static List<ISqlReferenceInfo> GetOneToManySqlReference(Type type)
+        {
+            var oneToManySqlProperties = GetPropertiesList(type);
+            var oneToManyPrimaryKeys = GetPrimaryKeys(oneToManySqlProperties).Cast<ISqlFieldInfo>().ToList();
+
+            return oneToManySqlProperties.Where(_ => _.IsDefined(typeof(SqlOneToManyReferenceAttribute)))
+                                         .Select(_ => Create(_, oneToManyPrimaryKeys))
+                                         .ToList();
+        }
+
+        private static ISqlReferenceInfo Create(PropertyInfo oneToManyProperty, IList<ISqlFieldInfo> oneToManyPrimaryKeys)
+        {
+            if (!IsList(oneToManyProperty.PropertyType)) throw new NotSupportedException(string.Format("Property type for OneToMany reference have to be an IList<>. Property:{0}.", oneToManyProperty.Name));
+
+            var manyToOneType = oneToManyProperty.PropertyType.GetGenericArguments()[0];
+            var manyToOneSqlProperties = GetPropertiesList(manyToOneType);
+            var manyToOneForeignKeys = GetForeignKeys(manyToOneSqlProperties).Cast<ISqlFieldInfo>().ToList();
+            return new SqlOneToManyReferenceInfo(oneToManyProperty, manyToOneType, oneToManyPrimaryKeys, manyToOneForeignKeys);
+        }
+
+        private static bool IsAnalyseEntity(Type type, Type relationType)
+        {
+            return type == relationType;
         }
 
         private static bool IsList(Type t)
@@ -167,64 +204,5 @@ namespace Contest.Core.DataStore.Sql.EntityInfo
             if (t == null) throw new NullReferenceException();
             return t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Relationship<,>);
         }
-
-        #endregion
-
-        #region ManyToOne
-
-
-        /// <summary>
-        /// Get ManyToOne reference of specified type
-        /// </summary>
-        /// <typeparam name="T">Type to analyse</typeparam>
-        /// <returns>All SqlManyToOneReferenceInfo of specified type</returns>
-        public static List<SqlManyToOneReferenceInfo> GetManyToOneSqlReference<T>()
-        {
-            var manyToOneSqlProperties = GetPropertiesList<T>();
-            var manyToOneForeignKeys = GetForeignKeys(manyToOneSqlProperties);
-            return manyToOneSqlProperties.Where(_ => _.IsDefined(typeof(SqlManyToOneReferenceAttribute)))
-                                          .Select(_ => Create(_, manyToOneForeignKeys))
-                                          .ToList();
-        }
-
-        private static SqlManyToOneReferenceInfo Create(PropertyInfo prop, IEnumerable<ISqlPropertyInfo> manyToOneForeignKeys)
-        {
-            var oneToManyType = prop.PropertyType;
-            var oneToManySqlProperties = GetPropertiesList(oneToManyType);
-            var oneToManyPrimaryKeys = GetPrimaryKeys(oneToManySqlProperties).Cast<ISqlPropertyInfo>().ToList();
-            var foreignKeyForCurrentProperty = manyToOneForeignKeys.Where(_ => _.IsForeignKeyOf(prop)).ToList();
-            return new SqlManyToOneReferenceInfo(prop, oneToManyType, oneToManyPrimaryKeys, foreignKeyForCurrentProperty);
-        }
-
-        #endregion
-
-        #region OneToMany
-        
-        /// <summary>
-        /// Get OneToMany reference of specified type
-        /// </summary>
-        /// <typeparam name="T">Type to analyse</typeparam>
-        /// <returns>All SqlOneToManyReferenceInfo of specified type</returns>
-        public static List<SqlOneToManyReferenceInfo> GetOneToManySqlReference<T>()
-        {
-            var oneToManySqlProperties = GetPropertiesList<T>();
-            var oneToManyPrimaryKeys = GetPrimaryKeys(oneToManySqlProperties).Cast<ISqlPropertyInfo>().ToList();
-
-            return oneToManySqlProperties.Where(_ => _.IsDefined(typeof(SqlOneToManyReferenceAttribute)))
-                                         .Select(_ => Create(_, oneToManyPrimaryKeys))
-                                         .ToList();
-        }
-
-        private static SqlOneToManyReferenceInfo Create(PropertyInfo oneToManyProperty, IList<ISqlPropertyInfo> oneToManyPrimaryKeys)
-        {
-            if (!IsList(oneToManyProperty.PropertyType)) throw new NotSupportedException(string.Format("Property type for OneToMany reference have to be an IList<>. Property:{0}.", oneToManyProperty.Name));
-
-            var manyToOneType = oneToManyProperty.PropertyType.GetGenericArguments()[0];
-            var manyToOneSqlProperties = GetPropertiesList(manyToOneType);
-            var manyToOneForeignKeys = GetForeignKeys(manyToOneSqlProperties).Cast<ISqlPropertyInfo>().ToList();
-            return new SqlOneToManyReferenceInfo(oneToManyProperty, manyToOneType, oneToManyPrimaryKeys, manyToOneForeignKeys);
-        }
-
-        #endregion
     }
 }

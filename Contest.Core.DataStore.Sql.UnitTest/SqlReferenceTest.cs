@@ -11,19 +11,19 @@ namespace Contest.Core.DataStore.Sql.UnitTest
     [TestFixture]
     public class SqlReferenceInfoTest
     {
-        public Mock<ISqlPropertyInfo> FirstKey { get; set; }
-        public Mock<ISqlPropertyInfo> FirstReferenceKey { get; set; }
-        public Mock<IList<ISqlPropertyInfo>> KeyList { get; set; }
-        public Mock<IList<ISqlPropertyInfo>> ReferenceKeyList { get; set; }
+        public Mock<ISqlFieldInfo> FirstKey { get; set; }
+        public Mock<ISqlFieldInfo> FirstReferenceKey { get; set; }
+        public Mock<IList<ISqlFieldInfo>> KeyList { get; set; }
+        public Mock<IList<ISqlFieldInfo>> ReferenceKeyList { get; set; }
 
         [SetUp]
         public void Init()
         {
-            FirstKey = new Mock<ISqlPropertyInfo>();
-            KeyList = new Mock<IList<ISqlPropertyInfo>>();
+            FirstKey = new Mock<ISqlFieldInfo>();
+            KeyList = new Mock<IList<ISqlFieldInfo>>();
             KeyList.Setup(_ => _[0]).Returns(FirstKey.Object);
-            FirstReferenceKey = new Mock<ISqlPropertyInfo>(); 
-            ReferenceKeyList = new Mock<IList<ISqlPropertyInfo>>();
+            FirstReferenceKey = new Mock<ISqlFieldInfo>();
+            ReferenceKeyList = new Mock<IList<ISqlFieldInfo>>();
             ReferenceKeyList.Setup(_ => _[0]).Returns(FirstReferenceKey.Object);
         }
 

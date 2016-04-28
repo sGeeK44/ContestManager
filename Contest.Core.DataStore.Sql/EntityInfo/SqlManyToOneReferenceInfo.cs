@@ -8,25 +8,25 @@ namespace Contest.Core.DataStore.Sql.EntityInfo
     public class SqlManyToOneReferenceInfo : SqlReferenceInfo
     {
         private readonly Type _oneToManyType;
-        private readonly IList<ISqlPropertyInfo> _oneToManyPrimaryKeys;
-        private readonly IList<ISqlPropertyInfo> _manyToOneForeignKeys;
+        private readonly IList<ISqlFieldInfo> _oneToManyPrimaryKeys;
+        private readonly IList<ISqlFieldInfo> _manyToOneForeignKeys;
 
         /// <summary>
         /// Get SqlField use as key in predicate
         /// </summary>
-        protected override IList<ISqlPropertyInfo> Key { get { return _manyToOneForeignKeys; } }
+        protected override IList<ISqlFieldInfo> Key { get { return _manyToOneForeignKeys; } }
 
         /// <summary>
         /// Get SqlField to use as reference for predicate. 
         /// </summary>
-        protected override IList<ISqlPropertyInfo> ReferenceKey { get { return _oneToManyPrimaryKeys; } }
+        protected override IList<ISqlFieldInfo> ReferenceKey { get { return _oneToManyPrimaryKeys; } }
 
         /// <summary>
         /// Get type of reference to use in predicate parameter
         /// </summary>
         protected override Type ReferenceType {  get { return _oneToManyType; } }
 
-        internal SqlManyToOneReferenceInfo(PropertyInfo referenceProperty, Type oneToManyType, IList<ISqlPropertyInfo> oneToManyPrimaryKeys, IList<ISqlPropertyInfo> manyToOneForeignKeys)
+        internal SqlManyToOneReferenceInfo(PropertyInfo referenceProperty, Type oneToManyType, IList<ISqlFieldInfo> oneToManyPrimaryKeys, IList<ISqlFieldInfo> manyToOneForeignKeys)
             : base(referenceProperty)
         {
             if (oneToManyType == null) throw new ArgumentNullException("oneToManyType");

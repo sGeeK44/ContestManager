@@ -1,19 +1,18 @@
 ﻿using System.Linq;
 using System.Reflection;
-using Contest.Core.Converters;
 using Contest.Core.DataStore.Sql.Attributes;
 
 namespace Contest.Core.DataStore.Sql.EntityInfo
 {
-    public class SqlFieldInfo : SqlPropertyInfo
+    public class SqlFieldInfo : SqlPropertyInfo, ISqlFieldInfo
     {
         private readonly object[] _customAttr;
         private readonly string _columnName;
 
-        internal SqlFieldInfo(PropertyInfo referenceProperty, object[] customAttr)
+        internal SqlFieldInfo(PropertyInfo referenceProperty)
             : base (referenceProperty)
         {
-            _customAttr = customAttr;
+            _customAttr = referenceProperty.GetCustomAttributes(true);
             _columnName = GetColumnName();
         }
 
@@ -26,25 +25,27 @@ namespace Contest.Core.DataStore.Sql.EntityInfo
             return sqlFieldAttribute.GetColumnName(PropertyInfo);
         }
 
-        public override string ColumnName { get { return _columnName; } }
+        protected object[] CustomAttr { get { return _customAttr; } }
 
-        public override bool IsPrimaryKey { get { return false; } }
+        public virtual string ColumnName { get { return _columnName; } }
 
-        public override string ToSqlValue(ISqlProviderStrategy sqlProviderStrategy, object value)
+        public virtual bool IsPrimaryKey { get { return false; } }
+
+        public virtual bool IsForeignKeyOf(PropertyInfo prop)
+        {
+            return false;
+        }
+
+        public string ToSqlValue(ISqlProviderStrategy sqlProviderStrategy, object value)
         {
             var propValue = PropertyInfo.GetValue(value);
             return sqlProviderStrategy.ToSqlValue(propValue, _customAttr);
         }
 
-        public void SetValue(IConverter converter, object objectToSet, string sqlValue)
+        public void SetValue(ISqlProviderStrategy strategy, object objectToSet, string sqlValue)
         {
-            var innerValue = converter.Convert(PropertyInfo.PropertyType, sqlValue, _customAttr);
+            var innerValue = strategy.FromSqlValue(PropertyInfo.PropertyType, sqlValue, _customAttr);
             SetValue(objectToSet, innerValue);
-        }
-
-        public override bool IsForeignKeyOf(PropertyInfo prop)
-        {
-            return false;
         }
     }
 }

@@ -9,25 +9,25 @@ namespace Contest.Core.DataStore.Sql.EntityInfo
     public class SqlManyToManyReferenceInfo : SqlReferenceInfo
     {
         private readonly Type _relationType;
-        private readonly IList<ISqlPropertyInfo> _entityPrimaryKeys;
-        private readonly IList<ISqlPropertyInfo> _relationProperty;
+        private readonly IList<ISqlFieldInfo> _entityPrimaryKeys;
+        private readonly IList<ISqlFieldInfo> _relationProperty;
 
         /// <summary>
         /// Get SqlField use as key in predicate
         /// </summary>
-        protected override IList<ISqlPropertyInfo> Key { get { return _entityPrimaryKeys; } }
+        protected override IList<ISqlFieldInfo> Key { get { return _entityPrimaryKeys; } }
 
         /// <summary>
         /// Get SqlField to use as reference for predicate. 
         /// </summary>
-        protected override IList<ISqlPropertyInfo> ReferenceKey { get { return _relationProperty; } }
+        protected override IList<ISqlFieldInfo> ReferenceKey { get { return _relationProperty; } }
 
         /// <summary>
         /// Get type of reference to use in predicate parameter
         /// </summary>
         protected override Type ReferenceType { get { return _relationType; } }
 
-        internal SqlManyToManyReferenceInfo(PropertyInfo propertyInfo, IList<ISqlPropertyInfo> entityPrimaryKeys, Type relationType, IList<ISqlPropertyInfo> relationProperty)
+        internal SqlManyToManyReferenceInfo(PropertyInfo propertyInfo, IList<ISqlFieldInfo> entityPrimaryKeys, Type relationType, IList<ISqlFieldInfo> relationProperty)
             : base(propertyInfo)
         {
             _relationType = relationType;
