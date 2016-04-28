@@ -11,7 +11,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest
         [TestCase]
         public void GetSqlReference_ManyToManyFirstEntity_AllMarkedProperty()
         {
-            var fields = SqlManyToManyReferenceInfo.GetSqlReference<ManyToManyFirstEntity>();
+            var fields = EntityInfoFactory.GetManyToManySqlReference<ManyToManyFirstEntity>();
             Assert.AreEqual(1, fields.Count);
         }
 

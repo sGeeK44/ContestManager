@@ -13,10 +13,10 @@ namespace Contest.Core.DataStore.Sql.UnitTest
 
         protected SqlManyToManyReferenceInfoTester(SqlManyToManyReferenceInfo @base)
             : base(@base) { }
-
+        
         public static List<SqlManyToManyReferenceInfoTester> GetSqlReferenceTester<T>()
         {
-            return GetSqlReference<T>().Select(_ => new SqlManyToManyReferenceInfoTester(_)).ToList();
+            return EntityInfoFactory.GetManyToManySqlReference<T>().Select(_ => new SqlManyToManyReferenceInfoTester(_)).ToList();
         }
 
         public LambdaExpression GetLambdaExpression(object item)

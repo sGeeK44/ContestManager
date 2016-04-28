@@ -9,7 +9,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest
         [TestCase]
         public void GetSqlField_ManyToOneEntity_AllMarkedProperty()
         {
-            var fields = SqlManyToOneReferenceInfo.GetSqlReference<ManyToOneEntity>();
+            var fields = EntityInfoFactory.GetManyToOneSqlReference<ManyToOneEntity>();
             Assert.AreEqual(1, fields.Count);
         }
 

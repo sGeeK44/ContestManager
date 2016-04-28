@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Contest.Core.DataStore.Sql.Attributes;
 using Contest.Core.Repository;
 
 namespace Contest.Core.DataStore.Sql
@@ -29,7 +28,7 @@ namespace Contest.Core.DataStore.Sql
         /// </summary>
         protected override Type ReferenceType { get { return _manyToOneType; } }
 
-        private SqlOneToManyReferenceInfo(PropertyInfo referenceProperty, Type manyToOneType, IList<ISqlPropertyInfo> oneToManyPrimaryKeys, IList<ISqlPropertyInfo> manyToOneForeignKeys)
+        internal SqlOneToManyReferenceInfo(PropertyInfo referenceProperty, Type manyToOneType, IList<ISqlPropertyInfo> oneToManyPrimaryKeys, IList<ISqlPropertyInfo> manyToOneForeignKeys)
             : base(referenceProperty)
         {
             _manyToOneType = manyToOneType;
@@ -58,41 +57,10 @@ namespace Contest.Core.DataStore.Sql
                  : CreateEmptyListReference();
         }
 
-        /// <summary>
-        /// Get OneToMany reference of specified type
-        /// </summary>
-        /// <typeparam name="T">Type to analyse</typeparam>
-        /// <returns>All SqlOneToManyReferenceInfo of specified type</returns>
-        public static List<SqlOneToManyReferenceInfo> GetSqlReference<T>()
-        {
-            var oneToManySqlProperties = GetPropertiesList<T>();
-            var oneToManyPrimaryKeys = SqlFieldInfo.GetPrimaryKeys(oneToManySqlProperties).Cast<ISqlPropertyInfo>().ToList();
-
-            return oneToManySqlProperties.Where(_ => _.IsDefined(typeof(SqlOneToManyReferenceAttribute)))
-                                         .Select(_ => Create(_, oneToManyPrimaryKeys))
-                                         .ToList();
-        }
-
-        private static SqlOneToManyReferenceInfo Create(PropertyInfo oneToManyProperty, IList<ISqlPropertyInfo> oneToManyPrimaryKeys)
-        {
-            if (!IsList(oneToManyProperty.PropertyType)) throw new NotSupportedException(string.Format("Property type for OneToMany reference have to be an IList<>. Property:{0}.", oneToManyProperty.Name));
-
-            var manyToOneType = oneToManyProperty.PropertyType.GetGenericArguments()[0];
-            var manyToOneSqlProperties = GetPropertiesList(manyToOneType);
-            var manyToOneForeignKeys = SqlFieldInfo.GetForeignKeys(manyToOneSqlProperties).Cast<ISqlPropertyInfo>().ToList();
-            return new SqlOneToManyReferenceInfo(oneToManyProperty, manyToOneType, oneToManyPrimaryKeys, manyToOneForeignKeys);
-        }
-
         private IList CreateEmptyListReference()
         {
             var typeList = typeof(List<>).MakeGenericType(ReferenceType);
             return Activator.CreateInstance(typeList) as IList;
-        }
-
-        private static bool IsList(Type t)
-        {
-            if (t == null) throw new NullReferenceException();
-            return t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IList<>);
         }
     }
 }

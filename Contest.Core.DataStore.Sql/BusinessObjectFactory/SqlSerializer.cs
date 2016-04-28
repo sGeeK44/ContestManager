@@ -37,7 +37,7 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
             var constructor = GetDefaultConstructor(realObjectType);
             var result = (TI)constructor.Invoke(null);
 
-            foreach (var field in SqlFieldInfo.GetSqlField<T>())
+            foreach (var field in EntityInfoFactory.GetSqlField<T>())
             {
                 // Converter value
                 var sqlValue = row[field.ColumnName];
@@ -57,7 +57,7 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
 
         public void FillOneToManyReference(IUnitOfWorks unitOfWorks, TI item)
         {
-            var propertiesToFill = SqlOneToManyReferenceInfo.GetSqlReference<T>();
+            var propertiesToFill = EntityInfoFactory.GetOneToManySqlReference<T>();
             if (propertiesToFill.Count == 0) return;
 
             foreach (var property in propertiesToFill)
@@ -68,7 +68,7 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
 
         public void FillManyToOneReference(IUnitOfWorks unitOfWorks, TI item)
         {
-            var propertiesToFill = SqlManyToOneReferenceInfo.GetSqlReference<T>();
+            var propertiesToFill = EntityInfoFactory.GetManyToOneSqlReference<T>();
             if (propertiesToFill.Count == 0) return;
 
             foreach (var property in propertiesToFill)
@@ -79,7 +79,7 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
 
         public void FillManyToManyReference(IUnitOfWorks unitOfWorks, TI item)
         {;
-            var propertiesToFill = SqlManyToManyReferenceInfo.GetSqlReference<T>();
+            var propertiesToFill = EntityInfoFactory.GetManyToManySqlReference<T>();
             if (propertiesToFill.Count == 0) return;
 
             foreach (var property in propertiesToFill)
@@ -123,7 +123,7 @@ namespace Contest.Core.DataStore.Sql.BusinessObjectFactory
         public string GetEnumPivotValue(Type enumPivot, IDataReader row)
         {
             SqlFieldInfo field;
-            try { field = SqlFieldInfo.GetSqlField<T>().Single(_ => _.PropertyInfo.PropertyType == enumPivot); }
+            try { field = EntityInfoFactory.GetSqlField<T>().Single(_ => _.PropertyInfo.PropertyType == enumPivot); }
             catch (InvalidOperationException ex)
             {
                 throw new NotSupportedException(string.Format("Enum pivot not or several found. EnumPivot:{0}. CurrentType:{1}", enumPivot, typeof(T)), ex);

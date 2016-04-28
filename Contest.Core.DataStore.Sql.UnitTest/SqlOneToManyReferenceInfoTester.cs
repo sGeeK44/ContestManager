@@ -15,7 +15,7 @@ namespace Contest.Core.DataStore.Sql.UnitTest
 
         public static List<SqlOneToManyReferenceInfoTester> GetSqlReferenceTester<T>()
         {
-            return GetSqlReference<T>().Select(_ => new SqlOneToManyReferenceInfoTester(_)).ToList();
+            return EntityInfoFactory.GetOneToManySqlReference<T>().Select(_ => new SqlOneToManyReferenceInfoTester(_)).ToList();
         }
     }
 }

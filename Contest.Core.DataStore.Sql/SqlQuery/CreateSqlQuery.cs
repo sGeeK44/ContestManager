@@ -9,7 +9,7 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
 
         public override string ToStatement()
         {
-            var fieldList = (from propertyInfo in SqlFieldInfo.GetSqlField<T>()
+            var fieldList = (from propertyInfo in EntityInfoFactory.GetSqlField<T>()
                              select string.Format("{0} {1}{2}",
                                                  propertyInfo.ColumnName,
                                                  SqlProviderStrategy.ToSqlType(propertyInfo.PropertyInfo.PropertyType),

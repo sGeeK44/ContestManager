@@ -11,33 +11,33 @@ namespace Contest.Core.DataStore.Sql.UnitTest
         [TestCase]
         public void GetSqlEntity_ClassNotMarked_ShouldThrowException()
         {
-            Assert.Throws<NotSupportedException>(() => SqlEntityInfo.GetEntityInfo<object>());
+            Assert.Throws<NotSupportedException>(() => EntityInfoFactory.GetEntityInfo<object>());
         }
 
         [TestCase]
         public void GetSqlEntity_ClassMarked_ShouldReturnNotNullElement()
         {
-            Assert.IsNotNull(SqlEntityInfo.GetEntityInfo<BasicEntity>());
+            Assert.IsNotNull(EntityInfoFactory.GetEntityInfo<BasicEntity>());
         }
 
         [TestCase]
         public void TableName_NoOverrideNameEntity_ShouldReturnClassName()
         {
-            var entityInfo = SqlEntityInfo.GetEntityInfo<NoOverrideNameEntity>();
+            var entityInfo = EntityInfoFactory.GetEntityInfo<NoOverrideNameEntity>();
             Assert.AreEqual("NoOverrideNameEntity", entityInfo.TableName);
         }
 
         [TestCase]
         public void TableName_OverrideNameEntity_ShouldReturnSqlEntityAttributeName()
         {
-            var entityInfo = SqlEntityInfo.GetEntityInfo<OverrideNameEntity>();
+            var entityInfo = EntityInfoFactory.GetEntityInfo<OverrideNameEntity>();
             Assert.AreEqual("ENTITY_1", entityInfo.TableName);
         }
 
         [TestCase]
         public void TableName_RelationEntity_ShouldReturnConcatenedValue()
         {
-            var entityInfo = SqlEntityInfo.GetEntityInfo<Relationship<ManyToManyFirstEntity, ManyToManySecondEntity>>();
+            var entityInfo = EntityInfoFactory.GetEntityInfo<Relationship<ManyToManyFirstEntity, ManyToManySecondEntity>>();
             Assert.AreEqual("R_ManyToManyFirstEntity_ManyToManySecondEntity", entityInfo.TableName);
         }
     }

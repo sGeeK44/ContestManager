@@ -15,7 +15,7 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
 
         public override string ToStatement()
         {
-            var arg = SqlFieldInfo.GetSqlField<T>(_item).Where(_ => _.IsPrimaryKey).ToList();
+            var arg = EntityInfoFactory.GetSqlField<T>(_item).Where(_ => _.IsPrimaryKey).ToList();
             StringBuilder keys = null;
             //For each primary keys
             foreach (var sqlField in arg)

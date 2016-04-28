@@ -10,14 +10,14 @@ namespace Contest.Core.DataStore.Sql.UnitTest
         [TestCase]
         public void GetSqlField_OneToManyEntity_AllMarkedProperty()
         {
-            var fields = SqlOneToManyReferenceInfo.GetSqlReference<OneToManyEntity>();
+            var fields = EntityInfoFactory.GetOneToManySqlReference<OneToManyEntity>();
             Assert.AreEqual(1, fields.Count);
         }
 
         [TestCase]
         public void GetSqlField_ReferencePropertiesIsNotAIList_ShouldThrowException()
         {
-            Assert.Throws<NotSupportedException>(() => SqlOneToManyReferenceInfo.GetSqlReference<OneToManyWithoutIListEntity>());
+            Assert.Throws<NotSupportedException>(() => EntityInfoFactory.GetOneToManySqlReference<OneToManyWithoutIListEntity>());
         }
 
         [TestCase]

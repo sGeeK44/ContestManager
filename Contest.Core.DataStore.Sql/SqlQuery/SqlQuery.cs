@@ -28,7 +28,7 @@ namespace Contest.Core.DataStore.Sql.SqlQuery
 
         private static string GetTableName()
         {
-            return SqlEntityInfo.GetEntityInfo<T>().TableName;
+            return EntityInfoFactory.GetEntityInfo<T>().TableName;
         }
     }
 }

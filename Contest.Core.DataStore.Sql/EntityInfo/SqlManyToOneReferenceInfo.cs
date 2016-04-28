@@ -28,7 +28,7 @@ namespace Contest.Core.DataStore.Sql
         /// </summary>
         protected override Type ReferenceType {  get { return _oneToManyType; } }
 
-        private SqlManyToOneReferenceInfo(PropertyInfo referenceProperty, Type oneToManyType, IList<ISqlPropertyInfo> oneToManyPrimaryKeys, IList<ISqlPropertyInfo> manyToOneForeignKeys)
+        internal SqlManyToOneReferenceInfo(PropertyInfo referenceProperty, Type oneToManyType, IList<ISqlPropertyInfo> oneToManyPrimaryKeys, IList<ISqlPropertyInfo> manyToOneForeignKeys)
             : base(referenceProperty)
         {
             if (oneToManyType == null) throw new ArgumentNullException("oneToManyType");
@@ -67,29 +67,6 @@ namespace Contest.Core.DataStore.Sql
             if (list == null || list.Count != 1) return null;
 
             return list[0];
-        }
-
-        /// <summary>
-        /// Get ManyToOne reference of specified type
-        /// </summary>
-        /// <typeparam name="T">Type to analyse</typeparam>
-        /// <returns>All SqlManyToOneReferenceInfo of specified type</returns>
-        public static List<SqlManyToOneReferenceInfo> GetSqlReference<T>()
-        {
-            var manyToOneSqlProperties = GetPropertiesList<T>();
-            var manyToOneForeignKeys = SqlFieldInfo.GetForeignKeys(manyToOneSqlProperties);
-            return manyToOneSqlProperties.Where(_ => _.IsDefined(typeof(SqlManyToOneReferenceAttribute)))
-                                          .Select(_ => Create(_, manyToOneForeignKeys))
-                                          .ToList();
-        }
-
-        private static SqlManyToOneReferenceInfo Create(PropertyInfo prop, IEnumerable<ISqlPropertyInfo> manyToOneForeignKeys)
-        {
-            var oneToManyType = prop.PropertyType;
-            var oneToManySqlProperties = GetPropertiesList(oneToManyType);
-            var oneToManyPrimaryKeys = SqlFieldInfo.GetPrimaryKeys(oneToManySqlProperties).Cast<ISqlPropertyInfo>().ToList();
-            var foreignKeyForCurrentProperty = manyToOneForeignKeys.Where(_ => _.IsForeignKeyOf(prop)).ToList();
-            return new SqlManyToOneReferenceInfo(prop, oneToManyType, oneToManyPrimaryKeys, foreignKeyForCurrentProperty);
         }
     }
 }
