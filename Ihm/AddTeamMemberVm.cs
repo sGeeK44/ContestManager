@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Contest.Business;
 using Contest.Core.Windows.Commands;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain.Players;
 
 namespace Contest.Ihm
 {
@@ -13,8 +13,8 @@ namespace Contest.Ihm
         
         public AddTeamMemberVm(IList<ITeam> selectableTeam)
         {
-            if (selectableTeam == null) throw new ArgumentNullException("selectableTeam");
-            if (selectableTeam.Count == 0) throw new ArgumentException("Aucune équipe de disponible.", "selectableTeam");
+            if (selectableTeam == null) throw new ArgumentNullException(nameof(selectableTeam));
+            if (selectableTeam.Count == 0) throw new ArgumentException("Aucune équipe de disponible.", nameof(selectableTeam));
 
             AvailableTeamList = selectableTeam;
             SelectedTeam = AvailableTeamList.First();

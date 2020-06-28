@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Contest.Business;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain.Games;
+using Contest.Domain.Matchs;
+using Contest.Domain.Players;
 
 namespace Contest.Ihm
 {
     public class QualificationStepViewVm : ViewModel
     {
-        private IQualificationStep _step;
+        private readonly IQualificationStep _step;
 
         public QualificationStepViewVm(IQualificationStep step)
         {
@@ -20,16 +22,16 @@ namespace Contest.Ihm
 
         public string GroupName { get; set; }
 
-        public List<RowVM> RowList
+        public List<RowVm> RowList
         {
             get
             {
-                return _step.Rank.Select(team => new RowVM(team, _step.MatchList.Where(item => item.IsTeamInvolved(team)).ToList()))
+                return _step.Rank.Select(team => new RowVm(team, _step.MatchList.Where(item => item.IsTeamInvolved(team)).ToList()))
                                  .ToList();
             }
         }
 
-        public class RowVM : ViewModel
+        public class RowVm : ViewModel
         {
             private int _countMatchPlayed;
             private int _countMatchWin;
@@ -38,21 +40,20 @@ namespace Contest.Ihm
             private int _sumTakePoint;
             private int _difPointTakePoint;
 
-            public RowVM(ITeam team, IList<IMatch> matchPlayed)
+            public RowVm(ITeam team, IList<IMatch> matchPlayed)
             {
-                if (team == null) throw new ArgumentNullException("team");
-                if (matchPlayed == null) throw new ArgumentNullException("matchPlayed");
+                if (matchPlayed == null) throw new ArgumentNullException(nameof(matchPlayed));
 
-                CurrenTeam = team;
+                CurrenTeam = team ?? throw new ArgumentNullException(nameof(team));
                 Name = team.Name;
                 MatchList = new ObservableCollection<IMatch>(matchPlayed);
                 foreach (var match in matchPlayed)
                 {
-                    match.MatchEnded += RefreshVM;
-                    match.ScoreChanged += RefreshVM;
+                    match.MatchEnded += RefreshVm;
+                    match.ScoreChanged += RefreshVm;
                 }
 
-                RefreshVM(null);
+                RefreshVm(null);
             }
 
             public ITeam CurrenTeam { get; set; }
@@ -62,41 +63,41 @@ namespace Contest.Ihm
 
             public int CountMatchPlayed
             {
-                get { return _countMatchPlayed; }
-                set { Set(ref _countMatchPlayed, value); }
+                get => _countMatchPlayed;
+                set => Set(ref _countMatchPlayed, value);
             }
 
             public int CountMatchWin
             {
-                get { return _countMatchWin; }
-                set { Set(ref _countMatchWin, value); }
+                get => _countMatchWin;
+                set => Set(ref _countMatchWin, value);
             }
 
             public int CountMatchLoose
             {
-                get { return _countMatchLoose; }
-                set { Set(ref _countMatchLoose, value); }
+                get => _countMatchLoose;
+                set => Set(ref _countMatchLoose, value);
             }
 
             public int SumMarkedPoint
             {
-                get { return _sumMarkedPoint; }
-                set { Set(ref _sumMarkedPoint, value); }
+                get => _sumMarkedPoint;
+                set => Set(ref _sumMarkedPoint, value);
             }
 
             public int SumTakePoint
             {
-                get { return _sumTakePoint; }
-                set { Set(ref _sumTakePoint, value); }
+                get => _sumTakePoint;
+                set => Set(ref _sumTakePoint, value);
             }
 
             public int DifPointTakePoint
             {
-                get { return _difPointTakePoint; }
-                set { Set(ref _difPointTakePoint, value); }
+                get => _difPointTakePoint;
+                set => Set(ref _difPointTakePoint, value);
             }
 
-            public void RefreshVM(object sender)
+            public void RefreshVm(object sender)
             {
                 CountMatchPlayed = MatchList.Count(item => item.IsFinished);
                 CountMatchWin = MatchList.Count(item => item.IsFinished && item.Winner == CurrenTeam);

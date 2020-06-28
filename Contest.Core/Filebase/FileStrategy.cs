@@ -41,7 +41,7 @@ namespace Contest.Core.Filebase
 
         public IList<T> Find<T>(Expression<Func<T, bool>> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
             var formatter = new BinaryFormatter();
             if (!File.Exists(_filePath)) return new List<T>();

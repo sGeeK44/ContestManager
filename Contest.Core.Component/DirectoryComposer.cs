@@ -13,7 +13,7 @@ namespace Contest.Core.Component
             _container = new Lazy<CompositionContainer>(() => new CompositionContainer(new DirectoryCatalog(".")));
         }
 
-        public CompositionContainer Container { get { return _container.Value; } }
+        public CompositionContainer Container => _container.Value;
 
         public void ComposeParts(object obj)
         {

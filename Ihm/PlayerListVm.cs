@@ -2,9 +2,10 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Contest.Business;
 using Contest.Core.Windows.Commands;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain.Games;
+using Contest.Domain.Players;
 
 namespace Contest.Ihm
 {
@@ -22,8 +23,7 @@ namespace Contest.Ihm
 
         public PlayerListVm(IContest contest)
         {
-            if (contest == null) throw new ArgumentNullException("contest");
-            _currentContest = contest;
+            _currentContest = contest ?? throw new ArgumentNullException(nameof(contest));
             PlayerList = new ObservableCollection<IPerson>(_currentContest.TeamList.SelectMany(team => team.Members));
             SelectedPlayerList = new ObservableCollection<IPerson>();
 
@@ -58,13 +58,11 @@ namespace Contest.Ihm
                 {
                     var addTeamMemberWindows = new AddTeamMember(_currentContest.TeamList.Where(_ => _.Members.Count < _currentContest.MaximumPlayerByTeam).ToList());
                     addTeamMemberWindows.Show();
-                    var viewModel = addTeamMemberWindows.DataContext as AddTeamMemberVm;
-                    if (viewModel != null)
+                    if (addTeamMemberWindows.DataContext is AddTeamMemberVm viewModel)
                     {
                         viewModel.RequestClose += o =>
                         {
-                            var selectedTeam = o as Team;
-                            if (selectedTeam != null)
+                            if (o is Team selectedTeam)
                             {
                                 foreach (Person person in SelectedPlayerList)
                                 {
@@ -116,15 +114,13 @@ namespace Contest.Ihm
                 {
                     var registerTeamWindows = new RegisterTeam(_currentContest);
                     registerTeamWindows.Show();
-                    var viewModel = registerTeamWindows.DataContext as RegisterTeamVm;
-                    if (viewModel != null)
+                    if (registerTeamWindows.DataContext is RegisterTeamVm viewModel)
                     {
                         viewModel.RequestClose += o =>
                         {
                             if (o != null)
                             {
-                                var newTeam = o as Team;
-                                if (newTeam != null)
+                                if (o is Team newTeam)
                                 {
                                     foreach (var person in SelectedPlayerList.Cast<Person>())
                                     {
@@ -154,8 +150,8 @@ namespace Contest.Ihm
 
         public ObservableCollection<IPerson> PlayerList
         {
-            get { return _playerList; }
-            set { Set(ref _playerList, value); }
+            get => _playerList;
+            set => Set(ref _playerList, value);
         }
 
         public Person SelectedPlayer { get; set; }
@@ -184,13 +180,11 @@ namespace Contest.Ihm
         {
             _registerPlayerWindows = new RegisterPlayer(playerToUpdate);
             _registerPlayerWindows.Show();
-            var viewModel = _registerPlayerWindows.DataContext as RegisterPlayerVm;
-            if (viewModel != null)
+            if (_registerPlayerWindows.DataContext is RegisterPlayerVm viewModel)
             {
                 viewModel.RequestClose += o =>
                 {
-                    var newPlayer = o as Person;
-                    if (newPlayer != null)
+                    if (o is Person newPlayer)
                     {
                         if (PlayerList.Count(item => item.Id == newPlayer.Id) == 0)
                         {

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Threading;
-using Contest.Business;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain.Games;
+using Contest.Domain.Matchs;
 
 namespace Contest.Ihm
 {
@@ -16,7 +17,7 @@ namespace Contest.Ihm
 
         public PhaseViewerVm(IContest contest)
         {
-            if (contest == null) throw new ArgumentNullException("contest");
+            if (contest == null) throw new ArgumentNullException(nameof(contest));
 
             PhaseList = contest.PhaseList.Select(_ => new PhaseViewItem(_)).ToList();
             contest.NewPhaseLaunch += (sender, phase) => PhaseList.Add(new PhaseViewItem(phase));
@@ -59,8 +60,8 @@ namespace Contest.Ihm
 
         public string CurrentTime
         {
-            get { return _currentTime; }
-            set { Set(ref _currentTime, value); }
+            get => _currentTime;
+            set => Set(ref _currentTime, value);
         }
 
         private void RefreshClock(Object sender, EventArgs e)
@@ -70,23 +71,22 @@ namespace Contest.Ihm
 
         public PhaseViewItem Current
         {
-            get { return _current; }
-            set { Set(ref _current, value); }
+            get => _current;
+            set => Set(ref _current, value);
         }
 
         public List<PhaseViewItem> PhaseList { get; set; }
 
         public class PhaseViewItem : ViewModel
         {
-            private IPhase _phase;
+            private readonly IPhase _phase;
             private object _instance;
-            private const int MAX_NEXT_GAME_DISPLAY = 5;
-            private const int MAX_FINISHED_GAME_DISPLAY = 5;
+            private const int MaxNextGameDisplay = 5;
+            private const int MaxFinishedGameDisplay = 5;
 
             public PhaseViewItem(IPhase phase)
             {
-                if (phase == null) throw new ArgumentNullException("phase");
-                _phase = phase;
+                _phase = phase ?? throw new ArgumentNullException(nameof(phase));
                 switch (_phase.Type)
                 {
                     case PhaseType.Qualification:
@@ -102,7 +102,7 @@ namespace Contest.Ihm
                         Instance = new EliminationPhaseView(phase);
                         break;
                     default:
-                        throw new ArgumentException(string.Format("Ce type de phase n'est pas géré. Type:{0}.", phase.Type));
+                        throw new ArgumentException($"Ce type de phase n'est pas géré. Type:{phase.Type}.");
                 }
 
                 NextGameList = new ObservableCollection<MatchViewerVm>();
@@ -112,14 +112,14 @@ namespace Contest.Ihm
 
                 foreach (var match in ManagePhaseVm.SortedMatch(_phase))
                 {
-                    CreateMatchVM(match);
+                    CreateMatchVm(match);
                 }
 
                 _phase.NextStepStarted += (sender, gameStep) =>
                 {
                     foreach (var match in ManagePhaseVm.SortedMatch(_phase))
                     {
-                        CreateMatchVM(match);
+                        CreateMatchVm(match);
                     }
                 };
             }
@@ -134,55 +134,46 @@ namespace Contest.Ihm
 
             public ObservableCollection<MatchViewerVm> FinishedGameList { get; set; }
 
-            public bool HasMatchEnded
-            {
-                get { return FinishedGameList.Count != 0; }
-            }
+            public bool HasMatchEnded => FinishedGameList.Count != 0;
 
-            public bool HasMatchInProgress
-            {
-                get { return InProgressGameList.Count != 0; }
-            }
+            public bool HasMatchInProgress => InProgressGameList.Count != 0;
 
-            public bool HasMatchPlanned
-            {
-                get { return NextGameList.Count != 0; }
-            }
+            public bool HasMatchPlanned => NextGameList.Count != 0;
 
-            public bool IsFinished { get { return _phase.IsFinished; } }
+            public bool IsFinished => _phase.IsFinished;
 
             public object Instance
             {
-                get { return _instance; }
-                set { Set(ref _instance, value); }
+                get => _instance;
+                set => Set(ref _instance, value);
             }
 
-            private void CreateMatchVM(IMatch match)
+            private void CreateMatchVm(IMatch match)
             {
-                var matchVM = new MatchViewerVm(match);
-                if (!match.IsBeginning && NextGameList.Count < MAX_NEXT_GAME_DISPLAY) NextGameList.Add(matchVM);
-                else if (!match.IsBeginning) NextGameListWaiting.Add(matchVM);
-                else if (!match.IsFinished) InProgressGameList.Add(matchVM);
-                else if (match.IsFinished && FinishedGameList.Count < MAX_NEXT_GAME_DISPLAY) FinishedGameList.Add(matchVM);
+                var matchVm = new MatchViewerVm(match);
+                if (!match.IsBeginning && NextGameList.Count < MaxNextGameDisplay) NextGameList.Add(matchVm);
+                else if (!match.IsBeginning) NextGameListWaiting.Add(matchVm);
+                else if (!match.IsFinished) InProgressGameList.Add(matchVm);
+                else if (match.IsFinished && FinishedGameList.Count < MaxNextGameDisplay) FinishedGameList.Add(matchVm);
 
                 match.MatchEnded += sender =>
                 {
-                    InProgressGameList.Remove(matchVM);
-                    if (FinishedGameList.Count >= MAX_FINISHED_GAME_DISPLAY) FinishedGameList.RemoveAt(0);
-                    FinishedGameList.Add(matchVM);
+                    InProgressGameList.Remove(matchVm);
+                    if (FinishedGameList.Count >= MaxFinishedGameDisplay) FinishedGameList.RemoveAt(0);
+                    FinishedGameList.Add(matchVm);
                     OnPropertyChanged(() => HasMatchEnded);
                     OnPropertyChanged(() => HasMatchInProgress);
                 };
                 match.MatchStarted += sender =>
                 {
-                    NextGameList.Remove(matchVM);
+                    NextGameList.Remove(matchVm);
                     if (NextGameListWaiting.Count > 0)
                     {
                         var next = NextGameListWaiting.First();
                         NextGameList.Add(next);
                         NextGameListWaiting.Remove(next);
                     }
-                    InProgressGameList.Add(matchVM);
+                    InProgressGameList.Add(matchVm);
                     OnPropertyChanged(() => HasMatchPlanned);
                     OnPropertyChanged(() => HasMatchInProgress);
                 };

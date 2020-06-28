@@ -45,7 +45,7 @@ namespace Contest.Control
             Contract.Requires(ancestor != null);
             return element
               .GetAncestors()
-              .Where(e => ancestor.Equals(e))
+              .Where(e => ancestor.Equals(obj: e))
               .Any();
         }
 
@@ -82,9 +82,8 @@ namespace Contest.Control
             if (itemsControl.Items.Count > 0)
             {
                 // find the ItemsPanel
-                var panel = VisualTreeHelper.GetParent(itemsControl.ItemContainerGenerator.ContainerFromIndex(0)) as Panel;
 
-                if (panel != null)
+                if (VisualTreeHelper.GetParent(itemsControl.ItemContainerGenerator.ContainerFromIndex(0)) is Panel panel)
                 {
                     // Walk the tree until we get to the ItemsPanel, once we get there we know
                     // that the immediate child of the parent is going to be the ItemContainer

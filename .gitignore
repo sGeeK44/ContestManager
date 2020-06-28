@@ -7,3 +7,4 @@ Ihm/packages/
 *.cache
 *.ncrunchsolution
 /packages/*
+.vs

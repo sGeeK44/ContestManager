@@ -1,6 +1,6 @@
 using System;
-using Contest.Business;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain.Matchs;
 
 namespace Contest.Ihm
 {
@@ -18,56 +18,56 @@ namespace Contest.Ihm
 
         public bool ByPoint
         {
-            get { return _byPoint; }
-            set { Set(ref _byPoint, value); }
+            get => _byPoint;
+            set => Set(ref _byPoint, value);
         }
 
         public bool ByTime
         {
-            get { return _byTime; }
-            set { Set(ref _byTime, value); }
+            get => _byTime;
+            set => Set(ref _byTime, value);
         }
 
         public bool ByBoth
         {
-            get { return _byBoth; }
-            set { Set(ref _byBoth, value); }
+            get => _byBoth;
+            set => Set(ref _byBoth, value);
         }
 
         public ushort? MatchPoint
         {
-            get { return _matchPoint; }
-            set { Set(ref _matchPoint, value); }
+            get => _matchPoint;
+            set => Set(ref _matchPoint, value);
         }
 
         public TimeSpan? MatchElapse
         {
-            get { return _matchElapse; }
-            set { Set(ref _matchElapse, value); }
+            get => _matchElapse;
+            set => Set(ref _matchElapse, value);
         }
 
         public bool MatchNullIsPossible
         {
-            get { return _matchNullIsPossible; }
-            set { Set(ref _matchNullIsPossible, value); }
+            get => _matchNullIsPossible;
+            set => Set(ref _matchNullIsPossible, value);
         }
 
         public ushort MatchPointWin
         {
-            get { return _matchPointWin; }
-            set { Set(ref _matchPointWin, value); }
+            get => _matchPointWin;
+            set => Set(ref _matchPointWin, value);
         }
 
         public ushort MatchPointDuce
         {
-            get { return _matchPointDuce; }
-            set { Set(ref _matchPointDuce, value); }
+            get => _matchPointDuce;
+            set => Set(ref _matchPointDuce, value);
         }
 
         public ushort MatchPointLoose
         {
-            get { return _matchPointLoose; }
-            set { Set(ref _matchPointLoose, value); }
+            get => _matchPointLoose;
+            set => Set(ref _matchPointLoose, value);
         }
 
         public MatchSettingVm()
@@ -82,7 +82,7 @@ namespace Contest.Ihm
 
         public MatchSettingVm(IMatchSetting matchSetting)
         {
-            if (matchSetting == null) throw new ArgumentNullException("matchSetting");
+            if (matchSetting == null) throw new ArgumentNullException(nameof(matchSetting));
             ByPoint = matchSetting.EndBy == EndTypeConstaint.Point;
             if (ByPoint)
             {

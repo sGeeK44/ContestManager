@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Threading;
-using Contest.Business;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain.Matchs;
 
 namespace Contest.Ihm
 {
@@ -86,7 +86,7 @@ namespace Contest.Ihm
 
         public bool IsStarted
         {
-            get { return _isStarted; }
+            get => _isStarted;
             set
             {
                 Set(ref _isStarted, value);
@@ -98,7 +98,7 @@ namespace Contest.Ihm
 
         public bool IsInProgress
         {
-            get { return _isInProgess; }
+            get => _isInProgess;
             set
             {
                 Set(ref _isInProgess, value);
@@ -110,7 +110,7 @@ namespace Contest.Ihm
 
         public bool IsEnded
         {
-            get { return _isEnded; }
+            get => _isEnded;
             set
             {
                 Set(ref _isEnded, value);
@@ -120,38 +120,32 @@ namespace Contest.Ihm
             }
         }
 
-        public string TeamName1
-        {
-            get { return CurrentMatch.Team1.Name; }
-        }
+        public string TeamName1 => CurrentMatch.Team1.Name;
 
         public ushort? TeamScore1
         {
-            get { return _teamScore1; }
-            set { Set(ref _teamScore1, value); }
+            get => _teamScore1;
+            set => Set(ref _teamScore1, value);
         }
 
-        public string TeamName2
-        {
-            get { return CurrentMatch.Team2.Name; }
-        }
+        public string TeamName2 => CurrentMatch.Team2.Name;
 
         public ushort? TeamScore2
         {
-            get { return _teamScore2; }
-            set { Set(ref _teamScore2, value); }
+            get => _teamScore2;
+            set => Set(ref _teamScore2, value);
         }
 
         public string PlayGroundNumber
         {
-            get { return _playGroundNumber; }
-            set { Set(ref _playGroundNumber, value); }
+            get => _playGroundNumber;
+            set => Set(ref _playGroundNumber, value);
         }
 
         public string ElapseTime
         {
-            get { return _elapseTime; }
-            set { Set(ref _elapseTime, value); }
+            get => _elapseTime;
+            set => Set(ref _elapseTime, value);
         }
 
         public abstract bool ShowScoreBlock { get; }

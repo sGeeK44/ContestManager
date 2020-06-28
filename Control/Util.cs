@@ -150,10 +150,10 @@ namespace Contest.Control
             get
             {
                 Contract.Ensures(Contract.Result<Random>() != null);
-                var r = (Random)sRandom.Target;
+                var r = (Random)SRandom.Target;
                 if (r == null)
                 {
-                    sRandom.Target = r = new Random();
+                    SRandom.Target = r = new Random();
                 }
                 return r;
             }
@@ -189,6 +189,6 @@ namespace Contest.Control
             return enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
         }
 
-        private static readonly WeakReference sRandom = new WeakReference(null);
+        private static readonly WeakReference SRandom = new WeakReference(null);
     }
 }

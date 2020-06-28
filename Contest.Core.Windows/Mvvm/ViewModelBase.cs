@@ -41,7 +41,7 @@ namespace Contest.Core.Windows.Mvvm
         {
             VerifyPropertyName(propertyName);
             var prop = PropertyChanged;
-            if (prop != null) prop(this, new PropertyChangedEventArgs(propertyName));
+            prop?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         [Conditional("DEBUG")]
@@ -52,7 +52,7 @@ namespace Contest.Core.Windows.Mvvm
             // public, instance property on this object.
             if (TypeDescriptor.GetProperties(this)[propertyName] != null) return;
 
-            var msg = string.Format("Invalid property name. propertyName:{0}.", propertyName);
+            var msg = $"Invalid property name. propertyName:{propertyName}.";
 
             if (ThrowOnInvalidPropertyName) throw new Exception(msg);
             Debug.Fail(msg);
@@ -62,17 +62,17 @@ namespace Contest.Core.Windows.Mvvm
         {
             if (propertyExpression == null)
             {
-                throw new ArgumentNullException("propertyExpression");
+                throw new ArgumentNullException(nameof(propertyExpression));
             }
-            var body = propertyExpression.Body as MemberExpression;
-            if (body == null)
+
+            if (!(propertyExpression.Body is MemberExpression body))
             {
-                throw new ArgumentException("Invalid argument", "propertyExpression");
+                throw new ArgumentException("Invalid argument", nameof(propertyExpression));
             }
             var property = body.Member as PropertyInfo;
             if (property == null)
             {
-                throw new ArgumentException("Argument is not a property", "propertyExpression");
+                throw new ArgumentException("Argument is not a property", nameof(propertyExpression));
             }
             return property.Name;
         }

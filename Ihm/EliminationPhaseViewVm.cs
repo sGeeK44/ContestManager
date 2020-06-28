@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Contest.Business;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain.Games;
 
 namespace Contest.Ihm
 {
@@ -10,8 +10,7 @@ namespace Contest.Ihm
     {
         public EliminationPhaseViewVm(IPhase phase)
         {
-            var firsStep = (phase.GameStepList.First() as IEliminationStep);
-            if (firsStep == null) throw  new NotSupportedException();
+            if (!(phase.GameStepList.First() is IEliminationStep firsStep)) throw  new NotSupportedException();
             EliminationStepList = new ObservableCollection<EliminationStepView>();
             var countGameStep = EliminationStep.CountStep(firsStep.Type);
             for (var i = 0; i < countGameStep; i++)

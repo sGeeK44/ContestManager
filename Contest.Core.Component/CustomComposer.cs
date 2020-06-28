@@ -15,7 +15,7 @@ namespace Contest.Core.Component
             _container = new Lazy<CompositionContainer>(() => new CompositionContainer(new TypeCatalog(_catalogType)));
         }
 
-        public CompositionContainer Container { get { return _container.Value; } }
+        public CompositionContainer Container => _container.Value;
 
         public void AddType(Type typeToAdd)
         {

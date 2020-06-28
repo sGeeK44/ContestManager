@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Contest.Business;
 using Contest.Core.Helper;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain;
+using Contest.Domain.Games;
 
 namespace Contest.Ihm
 {
     public class ContestViewVm : ViewModel
     {
-        public const string NOT_A_NUMBER = "N/A";
-        public const string INFINIT = "++";
+        public const string NotANumber = "N/A";
+        public const string Infinit = "++";
         private EliminationType _firstEliminationStep;
         private EliminationType? _firstConsolingEliminationStep;
         private bool _hasQualificationStep;
@@ -19,20 +20,20 @@ namespace Contest.Ihm
         private ushort? _countQualifiedTeam;
         private int? _countFishPlayer;
         private bool _withRevenge;
-        private MatchSettingVm _eliminationSettingVM;
-        private MatchSettingVm _consolingEliminationSettingVM;
-        private MatchSettingVm _qualificationSettingVM;
+        private MatchSettingVm _eliminationSettingVm;
+        private MatchSettingVm _consolingEliminationSettingVm;
+        private MatchSettingVm _qualificationSettingVm;
         private IContest _currentContest;
 
         #region Constructors
 
         public ContestViewVm(IContest contest)
         {
-            if (contest == null) throw new ArgumentNullException("contest");
+            if (contest == null) throw new ArgumentNullException(nameof(contest));
             if (contest.EliminationSetting == null) throw new InvalidProgramException("Elimination setting can not be null.");
             
             FirstEliminationStep = contest.EliminationSetting.FirstStep;
-            EliminationSettingVM = new MatchSettingVm(contest.EliminationSetting.MatchSetting);
+            EliminationSettingVm = new MatchSettingVm(contest.EliminationSetting.MatchSetting);
             HasQualificationStep = contest.WithQualificationPhase;
             HasConsolingStep = contest.WithConsolante;
 
@@ -41,24 +42,24 @@ namespace Contest.Ihm
                 CountQualificationGroup = contest.QualificationSetting.CountGroup;
                 WithRevenge = contest.QualificationSetting.MatchWithRevenche;
                 
-                QualificationSettingVM = new MatchSettingVm(contest.QualificationSetting.MatchSetting);
+                QualificationSettingVm = new MatchSettingVm(contest.QualificationSetting.MatchSetting);
             }
-            else QualificationSettingVM = new MatchSettingVm();
+            else QualificationSettingVm = new MatchSettingVm();
 
             if (contest.ConsolingEliminationSetting != null)
             {
                 FirstConsolingEliminationStep = contest.ConsolingEliminationSetting.FirstStep;
-                ConsolingEliminationSettingVM = new MatchSettingVm(contest.ConsolingEliminationSetting.MatchSetting);
+                ConsolingEliminationSettingVm = new MatchSettingVm(contest.ConsolingEliminationSetting.MatchSetting);
             }
-            else ConsolingEliminationSettingVM = new MatchSettingVm();
+            else ConsolingEliminationSettingVm = new MatchSettingVm();
 
             CurrentContest = contest;
         }
 
         public IContest CurrentContest
         {
-            get { return _currentContest; }
-            set { Set( ref _currentContest, value); }
+            get => _currentContest;
+            set => Set( ref _currentContest, value);
         }
 
         #endregion
@@ -69,9 +70,9 @@ namespace Contest.Ihm
         {
             get
             {
-                var minTeam = Business.Contest.MinTeamRegister(CountTeamFirstEliminationStep, HasQualificationStep,
+                var minTeam = Domain.Games.Contest.MinTeamRegister(CountTeamFirstEliminationStep, HasQualificationStep,
                                                                 CountQualificationGroup, HasConsolingStep, CountTeamFirstConsolingEliminationStep);
-                return minTeam != null ? minTeam.ToString() : NOT_A_NUMBER;
+                return minTeam != null ? minTeam.ToString() : NotANumber;
             }
         }
 
@@ -79,15 +80,15 @@ namespace Contest.Ihm
         {
             get
             {
-                var maxTeam = Business.Contest.MaxTeamRegister(CountTeamFirstEliminationStep, HasQualificationStep, CountQualificationGroup, HasConsolingStep, CountTeamFirstConsolingEliminationStep);
-                if (maxTeam == null) return NOT_A_NUMBER;
-                return maxTeam == int.MaxValue ? INFINIT : maxTeam.ToString();
+                var maxTeam = Domain.Games.Contest.MaxTeamRegister(CountTeamFirstEliminationStep, HasQualificationStep, CountQualificationGroup, HasConsolingStep, CountTeamFirstConsolingEliminationStep);
+                if (maxTeam == null) return NotANumber;
+                return maxTeam == int.MaxValue ? Infinit : maxTeam.ToString();
             }
         }
 
         public uint CountMaxPlayerByTeam
         {
-            get { return CurrentContest.MaximumPlayerByTeam; }
+            get => CurrentContest.MaximumPlayerByTeam;
             set
             {
                 CurrentContest.MaximumPlayerByTeam = value;
@@ -97,7 +98,7 @@ namespace Contest.Ihm
 
         public uint CountMinPlayerByTeam
         {
-            get { return CurrentContest.MinimumPlayerByTeam; }
+            get => CurrentContest.MinimumPlayerByTeam;
             set
             {
                 CurrentContest.MinimumPlayerByTeam = value;
@@ -107,7 +108,7 @@ namespace Contest.Ihm
 
         public ushort CountField
         {
-            get { return CurrentContest.CountField; }
+            get => CurrentContest.CountField;
             set
             {
                 CurrentContest.CountField = value;
@@ -115,17 +116,11 @@ namespace Contest.Ihm
             }
         }
 
-        public ObservableCollection<EliminationType> AvailableEliminationStep
-        {
-            get
-            {
-                return new ObservableCollection<EliminationType>(EnumHelper.GetValueList<EliminationType>());
-            }
-        }
+        public ObservableCollection<EliminationType> AvailableEliminationStep => new ObservableCollection<EliminationType>(EnumHelper.GetValueList<EliminationType>());
 
         public EliminationType FirstEliminationStep
         {
-            get { return _firstEliminationStep; }
+            get => _firstEliminationStep;
             set
             {
                 Set(ref _firstEliminationStep, value);
@@ -139,14 +134,11 @@ namespace Contest.Ihm
             }
         }
 
-        public ushort CountTeamFirstEliminationStep
-        {
-            get { return (ushort)((ushort)FirstEliminationStep * 2); }
-        }
+        public ushort CountTeamFirstEliminationStep => (ushort)((ushort)FirstEliminationStep * 2);
 
         public bool HasQualificationStep
         {
-            get { return _hasQualificationStep; }
+            get => _hasQualificationStep;
             set
             {
                 Set(ref _hasQualificationStep, value);
@@ -203,7 +195,7 @@ namespace Contest.Ihm
 
         public bool HasConsolingStep
         {
-            get { return _hasConsolingStep; }
+            get => _hasConsolingStep;
             set
             {
                 Set(ref _hasConsolingStep, value);
@@ -217,7 +209,7 @@ namespace Contest.Ihm
 
         public EliminationType? FirstConsolingEliminationStep
         {
-            get { return _firstConsolingEliminationStep; }
+            get => _firstConsolingEliminationStep;
             set
             {
                 Set(ref _firstConsolingEliminationStep, value);
@@ -230,24 +222,16 @@ namespace Contest.Ihm
             }
         }
 
-        public ObservableCollection<EliminationType> AvailableConsolingEliminationStep
-        {
-            get
-            {
-                return new ObservableCollection<EliminationType>(EnumHelper.GetValueList<EliminationType>());
-            }
-        }
+        public ObservableCollection<EliminationType> AvailableConsolingEliminationStep => new ObservableCollection<EliminationType>(EnumHelper.GetValueList<EliminationType>());
 
-        public ushort? CountTeamFirstConsolingEliminationStep
-        {
-            get { return FirstConsolingEliminationStep != null
-                       ? (ushort?)((ushort)FirstConsolingEliminationStep.Value * 2)
-                       : null; }
-        }
+        public ushort? CountTeamFirstConsolingEliminationStep =>
+            FirstConsolingEliminationStep != null
+                ? (ushort?)((ushort)FirstConsolingEliminationStep.Value * 2)
+                : null;
 
         public int? CountFishPlayer
         {
-            get { return _countFishPlayer; }
+            get => _countFishPlayer;
             set
             {
                 Set(ref _countFishPlayer, value);
@@ -255,21 +239,18 @@ namespace Contest.Ihm
             }
         }
 
-        public bool HasFishPlayer { get { return CountFishPlayer != null && CountFishPlayer != 0; } }
+        public bool HasFishPlayer => CountFishPlayer != null && CountFishPlayer != 0;
 
         public ushort? CountQualifiedTeam
         {
-            get { return _countQualifiedTeam; }
-            set
-            {
-                SetQualificationCount(null, value);
-            }
+            get => _countQualifiedTeam;
+            set => SetQualificationCount(null, value);
         }
 
         public ushort? CountQualificationGroup
         {
-            get { return _countQualificationGroup; }
-            set { SetQualificationCount(value, null); }
+            get => _countQualificationGroup;
+            set => SetQualificationCount(value, null);
         }
 
         private void SetQualificationCount(ushort? countQualificationGroup, ushort? countQualifiedTeam)
@@ -311,28 +292,28 @@ namespace Contest.Ihm
             OnPropertyChanged(() => CountMaxTeamRegister);
         }
 
-        public MatchSettingVm EliminationSettingVM
+        public MatchSettingVm EliminationSettingVm
         {
-            get { return _eliminationSettingVM; }
-            set { Set(ref _eliminationSettingVM, value); }
+            get => _eliminationSettingVm;
+            set => Set(ref _eliminationSettingVm, value);
         }
 
-        public MatchSettingVm ConsolingEliminationSettingVM
+        public MatchSettingVm ConsolingEliminationSettingVm
         {
-            get { return _consolingEliminationSettingVM; }
-            set { Set(ref _consolingEliminationSettingVM, value); }
+            get => _consolingEliminationSettingVm;
+            set => Set(ref _consolingEliminationSettingVm, value);
         }
 
-        public MatchSettingVm QualificationSettingVM
+        public MatchSettingVm QualificationSettingVm
         {
-            get { return _qualificationSettingVM; }
-            set { Set(ref _qualificationSettingVM, value); }
+            get => _qualificationSettingVm;
+            set => Set(ref _qualificationSettingVm, value);
         }
 
         public bool WithRevenge
         {
-            get { return _withRevenge; }
-            set { Set(ref _withRevenge, value); }
+            get => _withRevenge;
+            set => Set(ref _withRevenge, value);
         }
 
         #endregion
@@ -340,7 +321,7 @@ namespace Contest.Ihm
         internal void UpdateContest()
         {
             CurrentContest.EliminationSetting.FirstStep = FirstEliminationStep;
-            EliminationSettingVM.UpdateFromModel(CurrentContest.EliminationSetting.MatchSetting);
+            EliminationSettingVm.UpdateFromModel(CurrentContest.EliminationSetting.MatchSetting);
 
             if (HasQualificationStep)
             {
@@ -352,14 +333,14 @@ namespace Contest.Ihm
                 if (CurrentContest.QualificationSetting == null)
                 {
                     CurrentContest.QualificationSetting =
-                        new QualificationStepSetting(QualificationSettingVM.ToMatchSetting(),
+                        new QualificationStepSetting(QualificationSettingVm.ToMatchSetting(),
                             CountQualificationGroup.Value,
                             FirstEliminationStep,
                             WithRevenge);
                 }
                 else
                 {
-                    QualificationSettingVM.UpdateFromModel(CurrentContest.QualificationSetting.MatchSetting);
+                    QualificationSettingVm.UpdateFromModel(CurrentContest.QualificationSetting.MatchSetting);
                     CurrentContest.QualificationSetting.MatchWithRevenche = WithRevenge;
                     CurrentContest.QualificationSetting.SetCountGroup(CountQualificationGroup.Value,
                         FirstEliminationStep);
@@ -372,13 +353,13 @@ namespace Contest.Ihm
                     if (CurrentContest.ConsolingEliminationSetting == null)
                     {
                         CurrentContest.ConsolingEliminationSetting =
-                            new EliminationStepSetting(ConsolingEliminationSettingVM.ToMatchSetting(),
+                            new EliminationStepSetting(ConsolingEliminationSettingVm.ToMatchSetting(),
                                 FirstConsolingEliminationStep.Value);
                     }
                     else
                     {
                         CurrentContest.ConsolingEliminationSetting.FirstStep = FirstConsolingEliminationStep.Value;
-                        ConsolingEliminationSettingVM.UpdateFromModel(
+                        ConsolingEliminationSettingVm.UpdateFromModel(
                             CurrentContest.ConsolingEliminationSetting.MatchSetting);
                     }
                 }

@@ -1,10 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using Contest.Business;
 using Contest.Core.Component;
-using Contest.Core.Repository;
 using Contest.Core.Windows.Commands;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain;
+using Contest.Domain.Games;
 
 namespace Contest.Ihm
 {
@@ -22,7 +22,7 @@ namespace Contest.Ihm
         public ContestSelectVm()
         {
             FlippingContainer.Instance.ComposeParts(this);
-            ContestList = new ObservableCollection<IContest>(ContestRepository.Find(_ => true));
+            ContestList = new ObservableCollection<IContest>(ContestRepository.GetAll());
             Load = new RelayCommand(
                 delegate
                 {

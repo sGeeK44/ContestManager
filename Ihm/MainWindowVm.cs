@@ -1,15 +1,12 @@
 ﻿using System.ComponentModel.Composition;
-using System.Configuration;
-using System.IO;
 using System.Linq;
 using System.Windows;
-using Contest.Business;
 using Contest.Core.Component;
-using Contest.Core.DataStore.Sql.ReferenceManyToMany;
-using Contest.Core.DataStore.Sqlite;
-using Contest.Core.Repository.Sql;
 using Contest.Core.Windows.Commands;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain.Games;
+using SmartWay.Orm;
+using SmartWay.Orm.Interfaces;
 
 namespace Contest.Ihm
 {
@@ -30,103 +27,15 @@ namespace Contest.Ihm
 
         #region MEF Import
 
-        private ISqlUnitOfWorks UnitOfWorks { get; set; }
-
         [Import]
-        private ISqlRepository<IContest> ContestRepository { get; set; }
-
-        [Import]
-        private ISqlRepository<IGameSetting> GameSettingRepository { get; set; }
-
-        [Import]
-        private ISqlRepository<IAddress> AddressRepository { get; set; }
-
-        [Import]
-        private ISqlRepository<IPhysicalSetting> PhysicalSettingRepository { get; set; }
-
-        [Import]
-        private ISqlRepository<IEliminationStepSetting> EliminationStepSettingRepository { get; set; }
-
-        [Import]
-        private ISqlRepository<IQualificationStepSetting> QualificationStepSettingRepository { get; set; }
-
-        [Import]
-        private ISqlRepository<IMatchSetting> MatchSettingRepository { get; set; }
-
-        [Import]
-        private ISqlRepository<ITeam> TeamRepository { get; set; }
-
-        [Import]
-        private ISqlRepository<IMatch> MatchRepository { get; set; }
-
-        [Import]
-        private ISqlRepository<IPerson> PersonRepository { get; set; }
-
-        [Import]
-        private ISqlRepository<IPhase> PhaseRepository { get; set; }
-
-        [Import]
-        private ISqlRepository<IEliminationStep> EliminationStepRepository { get; set; }
-
-        [Import]
-        private ISqlRepository<IQualificationStep> QualificationStepRepository { get; set; }
-
-        [Import]
-        private ISqlRepository<IField> FieldRepository { get; set; }
-
-        [Import]
-        private ISqlRepository<IRelationship<ITeam, IGameStep>> TeamGameStepRelationshipRepository { get; set; }
-
-        [Import]
-        private ISqlRepository<IRelationship<ITeam, IPhase>>  TeamPhaseRelationship { get; set; }
+        private IDataStore DataStore { get; set; }
 
         #endregion
 
         public MainWindowVm()
         {
             FlippingContainer.Instance.ComposeParts(this);
-
-            var dataStore = new SqliteDataStore(ConfigurationManager.AppSettings["DatabasePath"]);
-            dataStore.OpenDatabase();
-
-            UnitOfWorks = new SqlUnitOfWorks(dataStore);
-            UnitOfWorks.AddRepository(ContestRepository);
-            UnitOfWorks.AddRepository(GameSettingRepository);
-            UnitOfWorks.AddRepository(AddressRepository);
-            UnitOfWorks.AddRepository(PhysicalSettingRepository);
-            UnitOfWorks.AddRepository(EliminationStepSettingRepository);
-            UnitOfWorks.AddRepository(QualificationStepSettingRepository);
-            UnitOfWorks.AddRepository(MatchSettingRepository);
-            UnitOfWorks.AddRepository(TeamRepository);
-            UnitOfWorks.AddRepository(MatchRepository);
-            UnitOfWorks.AddRepository(PersonRepository);
-            UnitOfWorks.AddRepository(PhaseRepository);
-            UnitOfWorks.AddRepository(EliminationStepRepository);
-            UnitOfWorks.AddRepository(QualificationStepRepository);
-            UnitOfWorks.AddRepository(FieldRepository);
-            UnitOfWorks.AddRepository(TeamGameStepRelationshipRepository);
-            UnitOfWorks.AddRepository(TeamPhaseRelationship);
-
-            if (!File.Exists(ConfigurationManager.AppSettings["DatabasePath"]))
-            {
-                ContestRepository.CreateTable();
-                GameSettingRepository.CreateTable();
-                AddressRepository.CreateTable();
-                PhysicalSettingRepository.CreateTable();
-                EliminationStepSettingRepository.CreateTable();
-                QualificationStepSettingRepository.CreateTable();
-                MatchSettingRepository.CreateTable();
-                TeamRepository.CreateTable();
-                MatchRepository.CreateTable();
-                PersonRepository.CreateTable();
-                PhaseRepository.CreateTable();
-                EliminationStepRepository.CreateTable();
-                QualificationStepRepository.CreateTable();
-                FieldRepository.CreateTable();
-                TeamGameStepRelationshipRepository.CreateTable();
-                TeamPhaseRelationship.CreateTable();
-                UnitOfWorks.Commit();
-            }
+            DataStore.CreateOrUpdateStore();
 
             Exit = new RelayCommand(
                 delegate
@@ -146,8 +55,7 @@ namespace Contest.Ihm
                 {
                     var contestCreateWindows = new ContestCreate();
                     contestCreateWindows.Show();
-                    var viewModel = contestCreateWindows.DataContext as ContestCreateVm;
-                    if (viewModel != null)
+                    if (contestCreateWindows.DataContext is ContestCreateVm viewModel)
                     {
                         viewModel.RequestClose += o =>
                         {
@@ -167,13 +75,11 @@ namespace Contest.Ihm
                 {
                     var contestSelectWindows = new ContestSelect();
                     contestSelectWindows.Show();
-                    var viewModel = contestSelectWindows.DataContext as ContestSelectVm;
-                    if (viewModel != null)
+                    if (contestSelectWindows.DataContext is ContestSelectVm viewModel)
                     {
                         viewModel.RequestClose += o =>
                         {
-                            var selected = o as IContest;
-                            if (selected != null)
+                            if (o is IContest selected)
                             {
                                 CurrentContest = selected;
                                 DisplayContest();
@@ -184,17 +90,10 @@ namespace Contest.Ihm
                 },
                 delegate { return CurrentContest == null; });
 
-            SaveContest = new RelayCommand(
-                delegate { Save(); },
-                delegate { return CurrentContest != null && UnitOfWorks.IsBinded; });
-
             CloseContest = new RelayCommand(
                 delegate
                 {
-                    var result = MessageBox.Show("Voulez-vous sauvegarder la progression du tournoi ?", "Contest", MessageBoxButton.YesNo);
-                    if (result == MessageBoxResult.Yes) Save();
-
-                    if (_phaseViewerWindows != null) _phaseViewerWindows.Close();
+                    _phaseViewerWindows?.Close();
                     CurrentContest = null;
                     PlayerListVm = null;
                     ContestVm = null;
@@ -219,12 +118,12 @@ namespace Contest.Ihm
                     if (CurrentContest.CountField == 0) return false;
 
                     //Ensure min team
-                    if (string.Equals(ContestVm.CountMinTeamRegister, ContestViewVm.NOT_A_NUMBER)) return false;
+                    if (string.Equals(ContestVm.CountMinTeamRegister, ContestViewVm.NotANumber)) return false;
                     if (CurrentContest.TeamList.Count < int.Parse(ContestVm.CountMinTeamRegister)) return false;
 
                     //Ensure max team
-                    if (string.Equals(ContestVm.CountMaxTeamRegister, ContestViewVm.NOT_A_NUMBER)) return false;
-                    if (!string.Equals(ContestVm.CountMaxTeamRegister, ContestViewVm.INFINIT)
+                    if (string.Equals(ContestVm.CountMaxTeamRegister, ContestViewVm.NotANumber)) return false;
+                    if (!string.Equals(ContestVm.CountMaxTeamRegister, ContestViewVm.Infinit)
                      && CurrentContest.TeamList.Count > int.Parse(ContestVm.CountMaxTeamRegister)) return false;
 
                     //Ensure min and max player by team
@@ -276,14 +175,6 @@ namespace Contest.Ihm
                 });
 
             #endregion
-        }
-
-        internal void Save()
-        {
-            if (CurrentContest == null) return;
-            if (!CurrentContest.IsStarted) ContestVm.UpdateContest();
-            CurrentContest.PrepareCommit(UnitOfWorks);
-            UnitOfWorks.Commit();
         }
 
         private void DisplayContest()
@@ -346,44 +237,28 @@ namespace Contest.Ihm
 
         public IContest CurrentContest
         {
-            get { return _currentContest; }
-            set { Set(ref _currentContest, value); }
+            get => _currentContest;
+            set => Set(ref _currentContest, value);
         }
 
-        public bool HasQualification
-        {
-            get
-            {
-                return _currentContest != null && _currentContest.WithQualificationPhase;
-            }
-        }
+        public bool HasQualification => _currentContest != null && _currentContest.WithQualificationPhase;
 
-        public bool IsContestStarted
-        {
-            get { return CurrentContest != null && _currentContest.IsStarted; }
-        }
+        public bool IsContestStarted => CurrentContest != null && _currentContest.IsStarted;
 
         public ContestViewVm ContestVm
         {
-            get { return _contestVm; }
-            set
-            {
-                Set(ref _contestVm, value);
-            }
+            get => _contestVm;
+            set => Set(ref _contestVm, value);
         }
 
         public PlayerListVm PlayerListVm
         {
-            get { return _playerListVm; }
-            set
-            {
-                Set(ref _playerListVm, value);
-            }
+            get => _playerListVm;
+            set => Set(ref _playerListVm, value);
         }
 
         public RelayCommand CreateContest { get; set; }
         public RelayCommand OpenContest { get; set; }
-        public RelayCommand SaveContest { get; set; }
         public RelayCommand SaveAsContest { get; set; }
         public RelayCommand CloseContest { get; set; }
         public RelayCommand Exit { get; set; }
@@ -396,96 +271,63 @@ namespace Contest.Ihm
 
         public ManagePhaseVm ManageQualificationPhaseVm
         {
-            get { return _manageQualificationPhaseVm; }
-            set { Set(ref _manageQualificationPhaseVm, value); }
+            get => _manageQualificationPhaseVm;
+            set => Set(ref _manageQualificationPhaseVm, value);
         }
 
         public ManagePhaseVm ManageMainPhaseVm
         {
-            get { return _manageMainPhaseVm; }
-            set { Set(ref _manageMainPhaseVm, value); }
+            get => _manageMainPhaseVm;
+            set => Set(ref _manageMainPhaseVm, value);
         }
 
         public ManagePhaseVm ManageConsolingPhaseVm
         {
-            get { return _manageConsolingPhaseVm; }
-            set { Set(ref _manageConsolingPhaseVm, value); }
+            get => _manageConsolingPhaseVm;
+            set => Set(ref _manageConsolingPhaseVm, value);
         }
 
-        public bool ShowMain
-        {
-            get
-            {
-                return CurrentContest != null
-                    && CurrentContest.IsStarted
-                    && CurrentContest.PrincipalPhase != null
-                    && CurrentContest.PrincipalPhase.IsStarted;
-            }
-        }
+        public bool ShowMain =>
+            CurrentContest != null
+            && CurrentContest.IsStarted
+            && CurrentContest.PrincipalPhase != null
+            && CurrentContest.PrincipalPhase.IsStarted;
 
-        public bool EnableMain
-        {
-            get
-            {
-                return CurrentContest != null
-                    && CurrentContest.IsStarted
-                    && CurrentContest.PrincipalPhase != null
-                    && CurrentContest.PrincipalPhase.IsStarted;
-            }
-        }
+        public bool EnableMain =>
+            CurrentContest != null
+            && CurrentContest.IsStarted
+            && CurrentContest.PrincipalPhase != null
+            && CurrentContest.PrincipalPhase.IsStarted;
 
-        public bool ShowQualification
-        {
-            get
-            {
-                return CurrentContest != null
-                    && CurrentContest.IsStarted
-                    && CurrentContest.WithQualificationPhase;
-            }
-        }
+        public bool ShowQualification =>
+            CurrentContest != null
+            && CurrentContest.IsStarted
+            && CurrentContest.WithQualificationPhase;
 
-        public bool EnableQualification
-        {
-            get
-            {
-                return CurrentContest != null
-                    && CurrentContest.IsStarted
-                    && CurrentContest.WithQualificationPhase
-                    && CurrentContest.QualificationPhase.IsStarted;
-            }
-        }
+        public bool EnableQualification =>
+            CurrentContest != null
+            && CurrentContest.IsStarted
+            && CurrentContest.WithQualificationPhase
+            && CurrentContest.QualificationPhase.IsStarted;
 
-        public bool ShowConsoling
-        {
-            get
-            {
-                return CurrentContest != null
-                    && CurrentContest.IsStarted
-                    && CurrentContest.WithConsolante;
-            }
-        }
+        public bool ShowConsoling =>
+            CurrentContest != null
+            && CurrentContest.IsStarted
+            && CurrentContest.WithConsolante;
 
-        public bool EnableConsoling
-        {
-            get
-            {
-                return CurrentContest != null
-                    && CurrentContest.IsStarted
-                    && CurrentContest.WithConsolante
-                    && CurrentContest.ConsolingPhase != null
-                    && CurrentContest.ConsolingPhase.IsStarted;
-            }
-        }
+        public bool EnableConsoling =>
+            CurrentContest != null
+            && CurrentContest.IsStarted
+            && CurrentContest.WithConsolante
+            && CurrentContest.ConsolingPhase != null
+            && CurrentContest.ConsolingPhase.IsStarted;
 
-        public bool ShowContest
-        {
-            get { return CurrentContest != null; }
-        }
+        public bool ShowContest => CurrentContest != null;
 
         public int IndexTabSelected
         {
-            get { return _indexTabSelected; }
-            set { Set( ref _indexTabSelected, value); }
+            get => _indexTabSelected;
+            set => Set( ref _indexTabSelected, value);
         }
     }
 }

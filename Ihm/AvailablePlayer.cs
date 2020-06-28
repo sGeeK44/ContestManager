@@ -1,6 +1,6 @@
 using System;
-using Contest.Business;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain.Players;
 
 namespace Contest.Ihm
 {
@@ -19,37 +19,37 @@ namespace Contest.Ihm
 
         public bool IsSelected
         {
-            get { return _isSelected; }
-            set { Set(ref _isSelected, value); }
+            get => _isSelected;
+            set => Set(ref _isSelected, value);
         }
 
         public Guid Guid
         {
-            get { return _guid; }
-            set { Set(ref _guid, value); }
+            get => _guid;
+            set => Set(ref _guid, value);
         }
 
         public string LastName
         {
-            get { return _lastName; }
-            set { Set(ref _lastName, value); }
+            get => _lastName;
+            set => Set(ref _lastName, value);
         }
 
         public string FirstName
         {
-            get { return _firstName; }
-            set { Set(ref _firstName, value); }
+            get => _firstName;
+            set => Set(ref _firstName, value);
         }
 
         public string Alias
         {
-            get { return _alias; }
-            set { Set(ref _alias, value); }
+            get => _alias;
+            set => Set(ref _alias, value);
         }
 
         public void FromT(Person obj)
         {
-            if (obj == null) throw new ArgumentNullException("obj");
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
             Guid = obj.Id;
             LastName = obj.LastName;
             FirstName = obj.FirstName;
@@ -64,8 +64,7 @@ namespace Contest.Ihm
 
         public void UpdateT(Person obj)
         {
-            if (obj == null) return;
-            obj.SetIndentity(LastName, FirstName, Alias);
+            obj?.SetIndentity(LastName, FirstName, Alias);
         }
     }
 }

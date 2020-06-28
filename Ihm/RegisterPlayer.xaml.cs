@@ -1,4 +1,4 @@
-﻿using Contest.Business;
+﻿using Contest.Domain.Players;
 
 namespace Contest.Ihm
 {

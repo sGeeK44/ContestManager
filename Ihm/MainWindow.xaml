@@ -34,7 +34,6 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Tournoi">
                 <MenuItem Header="_Créer" Command="{Binding CreateContest}" />
-                <MenuItem Header="_Enregistrer" Command="{Binding SaveContest}" />
                 <MenuItem Header="_Ouvrir" Command="{Binding OpenContest}" />
                 <MenuItem Header="_Fermer" Command="{Binding CloseContest}"/>
                 <MenuItem Header="_Quitter" Command="{Binding Exit}" />

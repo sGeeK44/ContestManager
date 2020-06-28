@@ -79,18 +79,6 @@
       <Project>{22fe8cf8-7973-4a27-8300-1ea82dfc133d}</Project>
       <Name>Contest.Business.Field</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Contest.Core.DataStore.Sql\Contest.Core.DataStore.Sql.csproj">
-      <Project>{90473DBF-5134-4C4F-A900-8CE2BD53BB49}</Project>
-      <Name>Contest.Core.DataStore.Sql</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Contest.Core.Repository.Sql\Contest.Core.Repository.Sql.csproj">
-      <Project>{1ff5796b-18d0-4bf3-919d-14166813b7b2}</Project>
-      <Name>Contest.Core.Repository.Sql</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Contest.Core.Repository\Contest.Core.Repository.csproj">
-      <Project>{4194f8f9-57e1-4d31-b4e3-a989f0d786f0}</Project>
-      <Name>Contest.Core.Repository</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -23,9 +23,9 @@ namespace Contest.Control
 
         public void StartListening()
         {
-            requireAccessAndNotDisposed();
+            RequireAccessAndNotDisposed();
 
-            if (!m_isListening)
+            if (!_mIsListening)
             {
                 IsListening = true;
                 CompositionTarget.Rendering += compositionTarget_Rendering;
@@ -38,9 +38,9 @@ namespace Contest.Control
 
         public void StopListening()
         {
-            requireAccessAndNotDisposed();
+            RequireAccessAndNotDisposed();
 
-            if (m_isListening)
+            if (_mIsListening)
             {
                 IsListening = false;
                 CompositionTarget.Rendering -= compositionTarget_Rendering;
@@ -56,7 +56,7 @@ namespace Contest.Control
         public void WireParentLoadedUnloaded(FrameworkElement parent)
         {
             Contract.Requires(parent != null);
-            requireAccessAndNotDisposed();
+            RequireAccessAndNotDisposed();
 
             parent.Loaded += delegate(object sender, RoutedEventArgs e)
             {
@@ -72,12 +72,12 @@ namespace Contest.Control
 
         public bool IsListening
         {
-            get { return m_isListening; }
+            get => _mIsListening;
             private set
             {
-                if (value != m_isListening)
+                if (value != _mIsListening)
                 {
-                    m_isListening = value;
+                    _mIsListening = value;
                     OnIsListeneningChanged(EventArgs.Empty);
                 }
             }
@@ -90,7 +90,7 @@ namespace Contest.Control
 #if !SILVERLIGHT
                 VerifyAccess();
 #endif
-                return m_disposed;
+                return _mDisposed;
             }
         }
 
@@ -98,13 +98,10 @@ namespace Contest.Control
 
         protected virtual void OnRendering(EventArgs args)
         {
-            requireAccessAndNotDisposed();
+            RequireAccessAndNotDisposed();
 
             var handler = Rendering;
-            if (handler != null)
-            {
-                handler(this, args);
-            }
+            handler?.Invoke(this, args);
         }
 
         public event EventHandler IsListeningChanged;
@@ -112,15 +109,12 @@ namespace Contest.Control
         protected virtual void OnIsListeneningChanged(EventArgs args)
         {
             var handler = IsListeningChanged;
-            if (handler != null)
-            {
-                handler(this, args);
-            }
+            handler?.Invoke(this, args);
         }
 
         public void Dispose()
         {
-            requireAccessAndNotDisposed();
+            RequireAccessAndNotDisposed();
             StopListening();
 
             foreach (var item in Rendering
@@ -130,15 +124,15 @@ namespace Contest.Control
             }
             
 
-            m_disposed = true;
+            _mDisposed = true;
         }
 
         #region Implementation
 
         [DebuggerStepThrough]
-        private void requireAccessAndNotDisposed()
+        private void RequireAccessAndNotDisposed()
         {
-            Util.ThrowUnless<ObjectDisposedException>(!m_disposed, "This object has been disposed");
+            Util.ThrowUnless<ObjectDisposedException>(!_mDisposed, "This object has been disposed");
         }
 
         private void compositionTarget_Rendering(object sender, EventArgs e)
@@ -149,8 +143,8 @@ namespace Contest.Control
             OnRendering(e);
         }
 
-        private bool m_isListening;
-        private bool m_disposed;
+        private bool _mIsListening;
+        private bool _mDisposed;
 
 #if FRAME_RATE
     private int m_count = 0;

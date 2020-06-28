@@ -1,9 +1,10 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using Contest.Business;
 using Contest.Core.Component;
 using Contest.Core.Windows.Commands;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain.Games;
+using Contest.Domain.Settings;
 
 namespace Contest.Ihm
 {
@@ -43,7 +44,7 @@ namespace Contest.Ihm
             Create = new RelayCommand(
                 delegate
                     {
-                        var newContest = Business.Contest.Create(Date, PhysicalSetting.Create(AddressFactory.Create(0, Street, ZipCode, City),
+                        var newContest = Domain.Games.Contest.Create(Date, PhysicalSetting.Create(AddressFactory.Create(0, Street, ZipCode, City),
                                                                                               Indoor ? AreaType.Indoor : AreaType.Outdoor,
                                                                                               CountField),
                                                                  GameSettingFactory.Create(CountMinPlayerByTeam, CountMaxPlayerByTeam));
@@ -61,14 +62,14 @@ namespace Contest.Ihm
 
         public uint CountMaxPlayerByTeam
         {
-            get { return _countMaxPlayerByTeam; }
-            set { Set(ref _countMaxPlayerByTeam, value); }
+            get => _countMaxPlayerByTeam;
+            set => Set(ref _countMaxPlayerByTeam, value);
         }
 
         public uint CountMinPlayerByTeam
         {
-            get { return _countMinPlayerByTeam; }
-            set { Set(ref _countMinPlayerByTeam, value); }
+            get => _countMinPlayerByTeam;
+            set => Set(ref _countMinPlayerByTeam, value);
         }
 
         public string Street { get; set; }
@@ -77,7 +78,7 @@ namespace Contest.Ihm
 
         public bool Indoor
         {
-            get { return _indoor; }
+            get => _indoor;
             set
             {
                 Set(ref _indoor, value);
@@ -85,10 +86,7 @@ namespace Contest.Ihm
             }
         }
 
-        public object Outdoor
-        {
-            get { return !Indoor; }
-        }
+        public object Outdoor => !Indoor;
 
         public ushort CountField { get; set; }
         public DateTime Date { get; set; }

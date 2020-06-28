@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Contest.Business;
 using Contest.Core.Windows.Commands;
+using Contest.Domain.Matchs;
+using Contest.Domain.Settings;
 
 namespace Contest.Ihm
 {
@@ -28,19 +29,10 @@ namespace Contest.Ihm
         public RelayCommand Update { get; set; }
         public RelayCommand SetScore { get; set; }
 
-        public override bool ShowScoreBlock
-        {
-            get { return false; }
-        }
+        public override bool ShowScoreBlock => false;
 
-        public override bool ShowUpdateScoreBox
-        {
-            get { return IsInProgress || IsEnded; }
-        }
+        public override bool ShowUpdateScoreBox => IsInProgress || IsEnded;
 
-        public override bool ShowVs
-        {
-            get { return !IsStarted; }
-        }
+        public override bool ShowVs => !IsStarted;
     }
 }

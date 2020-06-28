@@ -90,12 +90,12 @@
                             <ComboBox Margin="5"  SelectedItem="{Binding FirstEliminationStep}" ItemsSource="{Binding AvailableEliminationStep}" HorizontalAlignment="Left">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding ., Converter={StaticResource DisplayEnumConverter}}"></TextBlock>
+                                        <TextBlock Text="{Binding .}"></TextBlock>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
                         </StackPanel>
-                        <Control Template="{StaticResource MatchSetting}" DataContext="{Binding EliminationSettingVM}"/>
+                        <Control Template="{StaticResource MatchSetting}" DataContext="{Binding EliminationSettingVm}"/>
                     </StackPanel>
                 </GroupBox>
             </StackPanel>
@@ -127,7 +127,7 @@
                             <Label Margin="5" Content="Nb équipe repêché pour la phase finale:"/>
                             <TextBox Margin="5" IsEnabled="False" Text="{Binding CountFishPlayer}" Width="30px"/>
                         </StackPanel>
-                        <StackPanel Margin="5" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Orientation="Horizontal" DataContext="{Binding QualificationSettingVM}">
+                        <StackPanel Margin="5" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Orientation="Horizontal" DataContext="{Binding QualificationSettingVm}">
                             <Label Margin="0,5" Content="Point par victoire:" VerticalAlignment="Center"/>
                             <TextBox Margin="5" Text="{Binding MatchPointWin}" Width="30"/>
                             <Label Margin="5" Content="Point par nulle:" VerticalAlignment="Center"/>
@@ -138,10 +138,10 @@
                         <StackPanel Margin="5" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal">
                             <Label Margin="0,5" Content="Match avec revanche:" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                             <CheckBox Margin="5" Name="WithRevenge" IsChecked="{Binding WithRevenge}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                            <Label Margin="5" Content="Match nulle possible:" Target="{Binding ElementName=HasConsolante}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                            <CheckBox Margin="5" Name="MatchNullIsPossible" DataContext="{Binding QualificationSettingVM}" IsChecked="{Binding MatchNullIsPossible}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <Label Margin="5" Content="Match nulle possible:" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <CheckBox Margin="5" Name="MatchNullIsPossible" DataContext="{Binding QualificationSettingVm}" IsChecked="{Binding MatchNullIsPossible}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                         </StackPanel>
-                        <Control Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Template="{StaticResource MatchSetting}" DataContext="{Binding QualificationSettingVM}"></Control>
+                        <Control Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Template="{StaticResource MatchSetting}" DataContext="{Binding QualificationSettingVm}"></Control>
                     </Grid>
                 </GroupBox>
                 <GroupBox  Margin="5" IsEnabled="{Binding HasConsolingStep}">
@@ -154,12 +154,12 @@
                             <ComboBox Margin="5"  SelectedItem="{Binding FirstConsolingEliminationStep}" ItemsSource="{Binding AvailableConsolingEliminationStep}" HorizontalAlignment="Left">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding ., Converter={StaticResource DisplayEnumConverter}}"></TextBlock>
+                                        <TextBlock Text="{Binding .}"></TextBlock>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
                         </StackPanel>
-                        <Control Template="{StaticResource MatchSetting}" DataContext="{Binding ConsolingEliminationSettingVM}"/>
+                        <Control Template="{StaticResource MatchSetting}" DataContext="{Binding ConsolingEliminationSettingVm}"/>
                     </StackPanel>
                 </GroupBox>
             </StackPanel>

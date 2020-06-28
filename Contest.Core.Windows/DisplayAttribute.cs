@@ -21,8 +21,7 @@ namespace Contest.Core.Windows
         /// <param name="label">Set the associated label</param>
         public DisplayAttribute(string label)
         {
-            if (label == null) throw new ArgumentNullException("label");
-            Value = label;
+            Value = label ?? throw new ArgumentNullException(nameof(label));
         }
         
         /// <summary>
@@ -39,8 +38,8 @@ namespace Contest.Core.Windows
             Contract.Requires(s != null);
             Contract.Requires(t.IsEnum);
 
-            if (s == null) throw new ArgumentNullException("s");
-            if (t == null) throw new ArgumentNullException("t");
+            if (s == null) throw new ArgumentNullException(nameof(s));
+            if (t == null) throw new ArgumentNullException(nameof(t));
             if (!t.IsEnum) throw new ArgumentException("DisplayAttribute is only design for Enum Field");
 
             Enum result = null;
@@ -56,8 +55,10 @@ namespace Contest.Core.Windows
                 }
                 catch { }
             }
-            if (correspondingValue == 0) throw new ArgumentException(string.Format("None Enum field correspond to that {0}'s StringValue value: {1}", t, s), "s");
-            if (correspondingValue > 1) throw new NotSupportedException(string.Format("Several Enum field correspond to that {0}'s StringValue value: {1}", t, s));
+            if (correspondingValue == 0) throw new ArgumentException(
+                $"None Enum field correspond to that {t}'s StringValue value: {s}", nameof(s));
+            if (correspondingValue > 1) throw new NotSupportedException(
+                $"Several Enum field correspond to that {t}'s StringValue value: {s}");
             return result;
         }
     }
@@ -78,17 +79,17 @@ namespace Contest.Core.Windows
             // Get the type
             var type = value.GetType();
 
-            if (!Enum.IsDefined(type, value)) throw new NotSupportedException(string.Format("Enum value is not defined. Type:{0}. Value:{1}", type, value));
+            if (!Enum.IsDefined(type, value)) throw new NotSupportedException(
+                $"Enum value is not defined. Type:{type}. Value:{value}");
 
             // Get fieldinfo for this type
             var field = type.GetField(value.ToString());
             if (field == null) throw new NotSupportedException("Unable to get FieldInfo for this enum.");
 
             // Get the display attributes
-            var attribs = field.GetCustomAttributes(typeof(DisplayAttribute), false) as DisplayAttribute[];
 
             // Return the first if there was a match.
-            if (attribs == null || attribs.Length == 0) throw new AttributeNotFoundException(typeof(DisplayAttribute), type);
+            if (!(field.GetCustomAttributes(typeof(DisplayAttribute), false) is DisplayAttribute[] attribs) || attribs.Length == 0) throw new AttributeNotFoundException(typeof(DisplayAttribute), type);
             if (attribs.Length > 1) throw new AttributeSeveralFoundException(typeof(DisplayAttribute), type);
             return attribs[0].Value;
         }

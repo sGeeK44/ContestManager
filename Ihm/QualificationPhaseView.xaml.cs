@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Threading;
-using Contest.Business;
+using Contest.Domain.Games;
 
 namespace Contest.Ihm
 {
@@ -14,7 +14,7 @@ namespace Contest.Ihm
         private bool _goDown = true;
         public QualificationPhaseView(IList<IGameStep> gameStepList)
         {
-            if (gameStepList == null) throw new ArgumentNullException("gameStepList");
+            if (gameStepList == null) throw new ArgumentNullException(nameof(gameStepList));
 
             InitializeComponent();
             DataContext = new QualificationPhaseViewVm(gameStepList);

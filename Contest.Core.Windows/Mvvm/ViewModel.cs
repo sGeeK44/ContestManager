@@ -18,7 +18,7 @@ namespace Contest.Core.Windows.Mvvm
         protected virtual void OnRequestClose(object obj)
         {
             var handler = RequestClose;
-            if (handler != null) handler(obj);
+            handler?.Invoke(obj);
         }
     }
 }

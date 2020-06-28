@@ -1,5 +1,5 @@
 ﻿using System;
-using Contest.Business;
+using Contest.Domain.Games;
 
 namespace Contest.Ihm
 {
@@ -10,7 +10,7 @@ namespace Contest.Ihm
     {
         public EliminationPhaseView(IPhase phase)
         {
-            if (phase == null) throw new ArgumentNullException("phase");
+            if (phase == null) throw new ArgumentNullException(nameof(phase));
 
             InitializeComponent();
             DataContext = new EliminationPhaseViewVm(phase);

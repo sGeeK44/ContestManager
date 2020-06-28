@@ -14,8 +14,7 @@ namespace Contest.Ihm
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var vm = DataContext as EliminationMatchViewerVm;
-            if (vm != null) vm.OnSizeChanged();
+            if (DataContext is EliminationMatchViewerVm vm) vm.OnSizeChanged();
         }
     }
 }

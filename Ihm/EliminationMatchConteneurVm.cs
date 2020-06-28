@@ -1,6 +1,6 @@
 ﻿using System.Windows;
-using Contest.Business;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain.Matchs;
 
 namespace Contest.Ihm
 {
@@ -24,14 +24,14 @@ namespace Contest.Ihm
 
         public double X1
         {
-            get { return _x1; }
-            set { Set(ref _x1, value); }
+            get => _x1;
+            set => Set(ref _x1, value);
         }
 
         public double X2
         {
-            get { return _x2; }
-            set { Set(ref _x2, value); }
+            get => _x2;
+            set => Set(ref _x2, value);
         }
 
         internal void OnSizeChanged(SizeChangedEventArgs e)

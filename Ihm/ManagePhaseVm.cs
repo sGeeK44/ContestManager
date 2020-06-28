@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using Contest.Business;
 using Contest.Core.Windows.Commands;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain.Games;
+using Contest.Domain.Matchs;
+using Contest.Domain.Players;
+using Contest.Domain.Settings;
 
 namespace Contest.Ihm
 {
@@ -15,7 +18,7 @@ namespace Contest.Ihm
 
         public ManagePhaseVm(IPhase current, IList<IField> fieldList)
         {
-            if (current == null) throw new ArgumentNullException("current");
+            if (current == null) throw new ArgumentNullException(nameof(current));
             GameStepList = new ObservableCollection<GameStepVm>();
             NextGameList = new ObservableCollection<MatchUpdateVm>();
             FinishedGameList = new ObservableCollection<MatchUpdateVm>();
@@ -134,20 +137,14 @@ namespace Contest.Ihm
 
         public ObservableCollection<MatchUpdateVm> FinishedGameList { get; set; }
 
-        public bool HasMatchEnded
-        {
-            get { return FinishedGameList.Count != 0; }
-        }
+        public bool HasMatchEnded => FinishedGameList.Count != 0;
 
-        public bool HasMatchPlanned
-        {
-            get { return NextGameList.Count != 0; }
-        }
+        public bool HasMatchPlanned => NextGameList.Count != 0;
 
         public int CountTotalMatch
         {
-            get { return _countTotalMatch; }
-            set { Set(ref _countTotalMatch, value); }
+            get => _countTotalMatch;
+            set => Set(ref _countTotalMatch, value);
         }
     }
 
@@ -193,19 +190,19 @@ namespace Contest.Ihm
 
         public bool ShowNextStepButton
         {
-            get { return _hasNext; }
-            set { Set(ref _hasNext, value); }
+            get => _hasNext;
+            set => Set(ref _hasNext, value);
         }
 
         public string Name
         {
-            get { return _name; }
-            set { Set(ref _name, value); }
+            get => _name;
+            set => Set(ref _name, value);
         }
 
         public ObservableCollection<MatchUpdateVm> MatchList
         {
-            get { return _matchList; }
+            get => _matchList;
             set
             {
                 Set( ref _matchList, value);
@@ -213,10 +210,7 @@ namespace Contest.Ihm
             }
         }
 
-        public bool HasMatchInProgress
-        {
-            get { return _matchList.Count != 0; }
-        }
+        public bool HasMatchInProgress => _matchList.Count != 0;
         public RelayCommand LaunchNextStep { get; set; }
     }
 }

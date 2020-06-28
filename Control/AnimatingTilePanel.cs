@@ -19,8 +19,8 @@ namespace Contest.Control
 
         public double ItemWidth
         {
-            get { return (double)GetValue(ItemWidthProperty); }
-            set { SetValue(ItemWidthProperty, value); }
+            get => (double)GetValue(ItemWidthProperty);
+            set => SetValue(ItemWidthProperty, value);
         }
 
         public static double GetItemWidth(DependencyObject element)
@@ -36,12 +36,12 @@ namespace Contest.Control
         }
 
         public static readonly DependencyProperty ItemWidthProperty =
-            CreateDoubleDP("ItemWidth", 50, FrameworkPropertyMetadataOptions.AffectsMeasure, 0, double.PositiveInfinity, true);
+            CreateDoubleDp("ItemWidth", 50, FrameworkPropertyMetadataOptions.AffectsMeasure, 0, double.PositiveInfinity, true);
 
         public double ItemHeight
         {
-            get { return (double)GetValue(ItemHeightProperty); }
-            set { SetValue(ItemHeightProperty, value); }
+            get => (double)GetValue(ItemHeightProperty);
+            set => SetValue(ItemHeightProperty, value);
         }
 
         public static double GetItemHeight(DependencyObject element)
@@ -57,7 +57,7 @@ namespace Contest.Control
         }
 
         public static readonly DependencyProperty ItemHeightProperty =
-            CreateDoubleDP("ItemHeight", 50, FrameworkPropertyMetadataOptions.AffectsMeasure, 0, double.PositiveInfinity, true);
+            CreateDoubleDp("ItemHeight", 50, FrameworkPropertyMetadataOptions.AffectsMeasure, 0, double.PositiveInfinity, true);
 
         #endregion
 
@@ -65,9 +65,9 @@ namespace Contest.Control
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            onPreApplyTemplate();
+            OnPreApplyTemplate();
 
-            var theChildSize = getItemSize();
+            var theChildSize = GetItemSize();
 
             foreach (UIElement child in Children)
             {
@@ -97,38 +97,38 @@ namespace Contest.Control
         {
             // Calculate how many children fit on each row
             var childrenPerRow = Math.Max(1, (int)Math.Floor(finalSize.Width / ItemWidth));
-            var theChildSize = getItemSize();
+            var theChildSize = GetItemSize();
 
             for (var i = 0; i < Children.Count; i++)
             {
                 // Figure out where the child goes
-                var newOffset = calculateChildOffset(i, childrenPerRow,
+                var newOffset = CalculateChildOffset(i, childrenPerRow,
                     ItemWidth, ItemHeight,
                     finalSize.Width, Children.Count);
 
                 ArrangeChild(Children[i], new Rect(newOffset, theChildSize));
             }
 
-            m_arrangedOnce = true;
+            _mArrangedOnce = true;
             return finalSize;
         }
 
         protected override Point ProcessNewChild(UIElement child, Rect providedBounds)
         {
             var startLocation = providedBounds.Location;
-            if (m_arrangedOnce)
+            if (_mArrangedOnce)
             {
-                if (m_itemOpacityAnimation == null)
+                if (_mItemOpacityAnimation == null)
                 {
-                    m_itemOpacityAnimation = new DoubleAnimation()
+                    _mItemOpacityAnimation = new DoubleAnimation()
                     {
                         From = 0,
                         Duration = new Duration(TimeSpan.FromSeconds(.5))
                     };
-                    m_itemOpacityAnimation.Freeze();
+                    _mItemOpacityAnimation.Freeze();
                 }
 
-                child.BeginAnimation(OpacityProperty, m_itemOpacityAnimation);
+                child.BeginAnimation(OpacityProperty, _mItemOpacityAnimation);
                 startLocation -= new Vector(providedBounds.Width, 0);
             }
             return startLocation;
@@ -140,9 +140,9 @@ namespace Contest.Control
 
         #region private methods
 
-        private Size getItemSize() { return new Size(ItemWidth, ItemHeight); }
+        private Size GetItemSize() { return new Size(ItemWidth, ItemHeight); }
 
-        private void bindToParentItemsControl(DependencyProperty property, DependencyObject source)
+        private void BindToParentItemsControl(DependencyProperty property, DependencyObject source)
         {
             if (DependencyPropertyHelper.GetValueSource(this, property).BaseValueSource == BaseValueSource.Default)
             {
@@ -153,11 +153,11 @@ namespace Contest.Control
             }
         }
 
-        private void onPreApplyTemplate()
+        private void OnPreApplyTemplate()
         {
-            if (!m_appliedTemplate)
+            if (!_mAppliedTemplate)
             {
-                m_appliedTemplate = true;
+                _mAppliedTemplate = true;
 
                 var source = base.TemplatedParent;
                 if (source is ItemsPresenter)
@@ -167,14 +167,14 @@ namespace Contest.Control
 
                 if (source != null)
                 {
-                    bindToParentItemsControl(ItemHeightProperty, source);
-                    bindToParentItemsControl(ItemWidthProperty, source);
+                    BindToParentItemsControl(ItemHeightProperty, source);
+                    BindToParentItemsControl(ItemWidthProperty, source);
                 }
             }
         }
 
         // Given a child index, child size and children per row, figure out where the child goes
-        private static Point calculateChildOffset(
+        private static Point CalculateChildOffset(
             int index,
             int childrenPerRow,
             double itemWidth,
@@ -196,9 +196,9 @@ namespace Contest.Control
 
         #endregion
 
-        private bool m_appliedTemplate;
-        private bool m_arrangedOnce;
-        private DoubleAnimation m_itemOpacityAnimation;
+        private bool _mAppliedTemplate;
+        private bool _mArrangedOnce;
+        private DoubleAnimation _mItemOpacityAnimation;
 
         #endregion
     } //*** class AnimatingTilePanel

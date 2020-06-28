@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.Composition;
-using Contest.Business;
 using Contest.Core.Component;
 using Contest.Core.Windows.Commands;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain.Games;
+using Contest.Domain.Players;
 
 namespace Contest.Ihm
 {
@@ -43,8 +44,8 @@ namespace Contest.Ihm
 
         public string Name
         {
-            get { return _name; }
-            set { Set(ref _name, value); }
+            get => _name;
+            set => Set(ref _name, value);
         }
 
         #endregion

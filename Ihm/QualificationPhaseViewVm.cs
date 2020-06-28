@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Contest.Business;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain.Games;
 
 namespace Contest.Ihm
 {

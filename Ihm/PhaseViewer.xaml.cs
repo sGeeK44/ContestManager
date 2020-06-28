@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Threading;
-using Contest.Business;
+using Contest.Domain.Games;
 
 namespace Contest.Ihm
 {

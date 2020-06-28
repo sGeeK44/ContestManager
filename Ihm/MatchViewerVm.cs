@@ -1,4 +1,4 @@
-﻿using Contest.Business;
+﻿using Contest.Domain.Matchs;
 
 namespace Contest.Ihm
 {
@@ -9,19 +9,10 @@ namespace Contest.Ihm
         {
         }
 
-        public override bool ShowScoreBlock
-        {
-            get { return IsEnded; }
-        }
+        public override bool ShowScoreBlock => IsEnded;
 
-        public override bool ShowUpdateScoreBox
-        {
-            get { return false; }
-        }
+        public override bool ShowUpdateScoreBox => false;
 
-        public override bool ShowVs
-        {
-            get { return !IsEnded; }
-        }
+        public override bool ShowVs => !IsEnded;
     }
 }

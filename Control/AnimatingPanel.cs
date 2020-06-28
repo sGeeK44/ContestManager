@@ -11,38 +11,38 @@ namespace Contest.Control
     {
         protected AnimatingPanel()
         {
-            m_listener.Rendering += compositionTarget_Rendering;
-            m_listener.WireParentLoadedUnloaded(this);
+            _mListener.Rendering += CompositionTarget_Rendering;
+            _mListener.WireParentLoadedUnloaded(this);
         }
 
         #region DPs
 
         public double Dampening
         {
-            get { return (double)GetValue(DampeningProperty); }
-            set { SetValue(DampeningProperty, value); }
+            get => (double)GetValue(DampeningProperty);
+            set => SetValue(DampeningProperty, value);
         }
 
         public static readonly DependencyProperty DampeningProperty =
-            CreateDoubleDP("Dampening", 0.2, FrameworkPropertyMetadataOptions.None, 0, 1, false);
+            CreateDoubleDp("Dampening", 0.2, FrameworkPropertyMetadataOptions.None, 0, 1, false);
 
         public double Attraction
         {
-            get { return (double)GetValue(AttractionProperty); }
-            set { SetValue(AttractionProperty, value); }
+            get => (double)GetValue(AttractionProperty);
+            set => SetValue(AttractionProperty, value);
         }
 
         public static readonly DependencyProperty AttractionProperty =
-            CreateDoubleDP("Attraction", 2, FrameworkPropertyMetadataOptions.None, 0, double.PositiveInfinity, false);
+            CreateDoubleDp("Attraction", 2, FrameworkPropertyMetadataOptions.None, 0, double.PositiveInfinity, false);
 
         public double Variation
         {
-            get { return (double)GetValue(VariationProperty); }
-            set { SetValue(VariationProperty, value); }
+            get => (double)GetValue(VariationProperty);
+            set => SetValue(VariationProperty, value);
         }
 
         public static readonly DependencyProperty VariationProperty =
-            CreateDoubleDP("Variation", 1, FrameworkPropertyMetadataOptions.None, 0, true, 1, true, false);
+            CreateDoubleDp("Variation", 1, FrameworkPropertyMetadataOptions.None, 0, true, 1, true, false);
 
         #endregion
 
@@ -53,7 +53,7 @@ namespace Contest.Control
 
         protected void ArrangeChild(UIElement child, Rect bounds)
         {
-            m_listener.StartListening();
+            _mListener.StartListening();
 
             var data = (AnimatingPanelItemData)child.GetValue(DataProperty);
             if (data == null)
@@ -73,7 +73,7 @@ namespace Contest.Control
             child.Arrange(bounds);
         }
 
-        private void compositionTarget_Rendering(object sender, EventArgs e)
+        private void CompositionTarget_Rendering(object sender, EventArgs e)
         {
             var dampening = Dampening;
             var attractionFactor = Attraction * .01;
@@ -82,7 +82,7 @@ namespace Contest.Control
             var shouldChange = false;
             for (var i = 0; i < Children.Count; i++)
             {
-                shouldChange = updateChildData(
+                shouldChange = UpdateChildData(
                     (AnimatingPanelItemData)Children[i].GetValue(DataProperty),
                     dampening,
                     attractionFactor,
@@ -91,11 +91,11 @@ namespace Contest.Control
 
             if (!shouldChange)
             {
-                m_listener.StopListening();
+                _mListener.StopListening();
             }
         }
 
-        private static bool updateChildData(AnimatingPanelItemData data, double dampening, double attractionFactor, double variation)
+        private static bool UpdateChildData(AnimatingPanelItemData data, double dampening, double attractionFactor, double variation)
         {
             if (data == null)
             {
@@ -108,13 +108,10 @@ namespace Contest.Control
 
                 attractionFactor *= 1 + (variation * data.RandomSeed - .5);
 
-                Point newLocation;
-                Vector newVelocity;
-
                 var anythingChanged =
                     GeoHelper.Animate(data.Current, data.LocationVelocity, data.Target,
-                        attractionFactor, dampening, c_terminalVelocity, c_diff, c_diff,
-                        out newLocation, out newVelocity);
+                        attractionFactor, dampening, CTerminalVelocity, CDiff, CDiff,
+                        out var newLocation, out var newVelocity);
 
                 data.Current = newLocation;
                 data.LocationVelocity = newVelocity;
@@ -126,9 +123,9 @@ namespace Contest.Control
             }
         }
 
-        private readonly CompositionTargetRenderingListener m_listener = new CompositionTargetRenderingListener();
+        private readonly CompositionTargetRenderingListener _mListener = new CompositionTargetRenderingListener();
 
-        protected static DependencyProperty CreateDoubleDP(
+        protected static DependencyProperty CreateDoubleDp(
           string name,
           double defaultValue,
           FrameworkPropertyMetadataOptions metadataOptions,
@@ -136,10 +133,10 @@ namespace Contest.Control
           double maxValue,
           bool attached)
         {
-            return CreateDoubleDP(name, defaultValue, metadataOptions, minValue, false, maxValue, false, attached);
+            return CreateDoubleDp(name, defaultValue, metadataOptions, minValue, false, maxValue, false, attached);
         }
 
-        protected static DependencyProperty CreateDoubleDP(
+        protected static DependencyProperty CreateDoubleDp(
             string name,
             double defaultValue,
             FrameworkPropertyMetadataOptions metadataOptions,
@@ -153,9 +150,9 @@ namespace Contest.Control
             Contract.Requires(!double.IsNaN(maxValue));
             Contract.Requires(maxValue >= minValue);
 
-            ValidateValueCallback validateValueCallback = delegate(object objValue)
+            bool ValidateValueCallback(object objValue)
             {
-                var value = (double)objValue;
+                var value = (double) objValue;
 
                 if (includeMin)
                 {
@@ -171,6 +168,7 @@ namespace Contest.Control
                         return false;
                     }
                 }
+
                 if (includeMax)
                 {
                     if (value > maxValue)
@@ -187,7 +185,7 @@ namespace Contest.Control
                 }
 
                 return true;
-            };
+            }
 
             if (attached)
             {
@@ -195,7 +193,7 @@ namespace Contest.Control
                     name,
                     typeof(double),
                     typeof(AnimatingTilePanel),
-                    new FrameworkPropertyMetadata(defaultValue, metadataOptions), validateValueCallback);
+                    new FrameworkPropertyMetadata(defaultValue, metadataOptions), ValidateValueCallback);
             }
             else
             {
@@ -203,15 +201,15 @@ namespace Contest.Control
                     name,
                     typeof(double),
                     typeof(AnimatingTilePanel),
-                    new FrameworkPropertyMetadata(defaultValue, metadataOptions), validateValueCallback);
+                    new FrameworkPropertyMetadata(defaultValue, metadataOptions), ValidateValueCallback);
             }
         }
 
         private static readonly DependencyProperty DataProperty =
             DependencyProperty.RegisterAttached("Data", typeof(AnimatingPanelItemData), typeof(AnimatingTilePanel));
 
-        private const double c_diff = 0.1;
-        private const double c_terminalVelocity = 10000;
+        private const double CDiff = 0.1;
+        private const double CTerminalVelocity = 10000;
 
         private class AnimatingPanelItemData
         {

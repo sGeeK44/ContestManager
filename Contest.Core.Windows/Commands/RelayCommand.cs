@@ -21,9 +21,7 @@ namespace Contest.Core.Windows.Commands
 
         public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
-            if (execute == null) throw new ArgumentNullException("execute");
-
-            _execute = execute;
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;           
         }
 
@@ -39,8 +37,8 @@ namespace Contest.Core.Windows.Commands
 
         public event EventHandler CanExecuteChanged
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
         }
 
         public void Execute(object parameter)

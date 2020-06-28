@@ -1,6 +1,6 @@
-﻿using Contest.Business;
-using Contest.Core.Windows.Commands;
+﻿using Contest.Core.Windows.Commands;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain.Players;
 
 namespace Contest.Ihm
 {
