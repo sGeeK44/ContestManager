@@ -4,6 +4,6 @@ using Contest.Domain.Players;
 
 namespace Contest.Repository
 {
-    [Export(typeof(IRepository<IPerson>))]
+    [Export(typeof(IRepository<Person, IPerson>))]
     public class PersonRepository : SqlRepositoryBase<Person, IPerson> { }
 }

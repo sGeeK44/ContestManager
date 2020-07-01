@@ -30,7 +30,7 @@ namespace Contest.Domain.Settings
 
         #region MEF Import
 
-        [Import] private IRepository<IAddress> AddressRepository { get; set; }
+        [Import] private IRepository<Address, IAddress> AddressRepository { get; set; }
 
         #endregion
 

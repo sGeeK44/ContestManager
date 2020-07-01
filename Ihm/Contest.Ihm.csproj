@@ -12,6 +12,7 @@
     <ProjectReference Include="..\Contest.Core.Component\Contest.Core.Component.csproj" />
     <ProjectReference Include="..\Contest.Domain\Contest.Domain.csproj" />
     <ProjectReference Include="..\Contest.Repository\Contest.Repository.csproj" />
+    <ProjectReference Include="..\Contest.Service\Contest.Service.csproj" />
     <ProjectReference Include="..\Control\Contest.Control.csproj" />
     <ProjectReference Include="..\Contest.Core\Contest.Core.csproj" />
     <ProjectReference Include="..\Contest.Core.Windows\Contest.Core.Windows.csproj" />

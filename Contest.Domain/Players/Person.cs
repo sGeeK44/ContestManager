@@ -20,7 +20,7 @@ namespace Contest.Domain.Players
 
         #region MEF Import
 
-        [Import] private IRepository<ITeam> TeamRepository { get; set; }
+        [Import] private IRepository<Team, ITeam> TeamRepository { get; set; }
 
         #endregion
 

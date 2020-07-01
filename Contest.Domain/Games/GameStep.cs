@@ -29,13 +29,13 @@ namespace Contest.Domain.Games
 
         #region MEF Import
 
-        [Import] private IRepository<IPhase> PhaseRepository { get; set; }
+        [Import] private IRepository<Phase, IPhase> PhaseRepository { get; set; }
 
-        [Import] private IRepository<IMatchSetting> MatchSettingRepository { get; set; }
+        [Import] private IRepository<MatchSetting, IMatchSetting> MatchSettingRepository { get; set; }
 
-        [Import] private IRepository<IRelationship<ITeam, IGameStep>> TeamGameStepRelationshipRepository { get; set; }
+        [Import] private IRepository<Relationship<Team, GameStep>, IRelationship<ITeam, IGameStep>> TeamGameStepRelationshipRepository { get; set; }
 
-        [Import] private IRepository<IMatch> MatchRepository { get; set; }
+        [Import] private IRepository<Match, IMatch> MatchRepository { get; set; }
 
         [Import] private IRelationshipFactory<ITeam, IGameStep> RelationshipFactory { get; set; }
 

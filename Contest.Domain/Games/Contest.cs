@@ -82,21 +82,21 @@ namespace Contest.Domain.Games
 
         #region MEF Import
 
-        [Import] private IRepository<ITeam> TeamRepository { get; set; }
+        [Import] private IRepository<Team, ITeam> TeamRepository { get; set; }
 
         [Import] private IFieldFactory FieldFactory { get; set; }
 
-        [Import] private IRepository<IField> FieldRepository { get; set; }
+        [Import] private IRepository<Field, IField> FieldRepository { get; set; }
 
-        [Import] private IRepository<IPhysicalSetting> PhysicalSettingRepository { get; set; }
+        [Import] private IRepository<PhysicalSetting, IPhysicalSetting> PhysicalSettingRepository { get; set; }
 
-        [Import] private IRepository<IGameSetting> GameSettingRepository { get; set; }
+        [Import] private IRepository<GameSetting, IGameSetting> GameSettingRepository { get; set; }
 
-        [Import] private IRepository<IEliminationStepSetting> EliminationStepSettingRepository { get; set; }
+        [Import] private IRepository<EliminationStepSetting, IEliminationStepSetting> EliminationStepSettingRepository { get; set; }
 
-        [Import] private IRepository<IQualificationStepSetting> QualificationStepSettingRepository { get; set; }
+        [Import] private IRepository<QualificationStepSetting, IQualificationStepSetting> QualificationStepSettingRepository { get; set; }
 
-        [Import] private IRepository<IPhase> PhaseRepository { get; set; }
+        [Import] private IRepository<Phase, IPhase> PhaseRepository { get; set; }
 
         #endregion
 
@@ -471,7 +471,7 @@ namespace Contest.Domain.Games
             return !hasQualificationStep ? countTeamFirstEliminationStep : int.MaxValue;
         }
 
-        public static IContest Load(IRepository<IContest> repo, Guid id)
+        public static IContest Load(IRepository<Contest, IContest> repo, Guid id)
         {
             return repo.GetAll().FirstOrDefault(_ => _.Id == id);
         }

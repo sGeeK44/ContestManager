@@ -15,7 +15,7 @@ namespace Contest.Domain
         /// <summary>
         ///     Get unique object identifier
         /// </summary>
-        [PrimaryKey(KeyScheme.Identity, FieldName = IdColumnName, DefaultValue = DefaultValue.RandomGuid)]
+        [PrimaryKey(KeyScheme.GUID, FieldName = IdColumnName, DefaultValue = DefaultValue.RandomGuid)]
         public Guid Id { get; set; }
     }
 }

@@ -10,7 +10,7 @@ using IEntity = Contest.Domain.IEntity;
 
 namespace Contest.Repository
 {
-    public class SqlRepositoryBase<TEntity, TIEntity> : IRepository<TIEntity> where TIEntity : class, IEntity where TEntity : class, TIEntity
+    public class SqlRepositoryBase<TEntity, TIEntity> : IRepository<TEntity, TIEntity> where TIEntity : class, IEntity where TEntity : class, TIEntity
 
     {
         [Import]
@@ -69,14 +69,14 @@ namespace Contest.Repository
             return DataStore.Select<TEntity, TIEntity>().GetValues().ToList();
         }
 
-        public TIEntity FirstOrDefault(Expression<Func<TIEntity, bool>> filter)
+        public TIEntity FirstOrDefault(Expression<Func<TEntity, bool>> filter)
         {
-            return DataStore.Select<TEntity, TIEntity>().Where(filter).GetValues().FirstOrDefault();
+            return DataStore.Select<TEntity>().Where(filter).GetValues().FirstOrDefault();
         }
 
-        public IEnumerable<TIEntity> Find(Expression<Func<TIEntity, bool>> filter)
+        public IEnumerable<TIEntity> Find(Expression<Func<TEntity, bool>> filter)
         {
-            return DataStore.Select<TEntity, TIEntity>().Where(filter).GetValues();
+            return DataStore.Select<TEntity>().Where(filter).GetValues();
         }
     }
 }

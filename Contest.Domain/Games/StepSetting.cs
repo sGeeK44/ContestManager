@@ -20,7 +20,7 @@ namespace Contest.Domain.Games
 
         #region MEF Import
 
-        [Import] private IRepository<IMatchSetting> MatchSettingRepository { get; set; }
+        [Import] private IRepository<MatchSetting, IMatchSetting> MatchSettingRepository { get; set; }
 
         #endregion
 

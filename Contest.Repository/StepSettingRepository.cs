@@ -4,6 +4,6 @@ using Contest.Domain.Games;
 
 namespace Contest.Repository
 {
-    [Export(typeof(IRepository<IStepSetting>))]
+    [Export(typeof(IRepository<StepSetting, IStepSetting>))]
     public class StepSettingRepository : SqlRepositoryBase<StepSetting, IStepSetting> { }
 }

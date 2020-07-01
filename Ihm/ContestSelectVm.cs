@@ -13,7 +13,7 @@ namespace Contest.Ihm
         #region MEF Import
         
         [Import]
-        private IRepository<IContest> ContestRepository { get; set; } 
+        private IRepository<Domain.Games.Contest, IContest> ContestRepository { get; set; } 
 
         #endregion
 

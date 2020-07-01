@@ -41,11 +41,11 @@ namespace Contest.Domain.Games
 
         #region MEF Import
 
-        [Import] private IRepository<IQualificationStep> QualificationStepRepository { get; set; }
+        [Import] private IRepository<QualificationStep, IQualificationStep> QualificationStepRepository { get; set; }
 
-        [Import] private IRepository<IEliminationStep> EliminationStepRepository { get; set; }
+        [Import] private IRepository<EliminationStep, IEliminationStep> EliminationStepRepository { get; set; }
 
-        [Import] private IRepository<IRelationship<ITeam, IPhase>> TeamPhaseRelationshipRepository { get; set; }
+        [Import] private IRepository<Relationship<Team, Phase>, IRelationship<ITeam, IPhase>> TeamPhaseRelationshipRepository { get; set; }
 
         [Import] private IRelationshipFactory<ITeam, IPhase> TeamPhaseRelationshipFactory { get; set; }
 

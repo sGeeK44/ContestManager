@@ -23,9 +23,9 @@ namespace Contest.Domain.Settings
 
         #region MEF Import
 
-        [Import] private IRepository<IContest> ContestRepository { get; set; }
+        [Import] private IRepository<Games.Contest, IContest> ContestRepository { get; set; }
 
-        [Import] private IRepository<IMatch> MatchRepository { get; set; }
+        [Import] private IRepository<Match, IMatch> MatchRepository { get; set; }
 
         #endregion
 

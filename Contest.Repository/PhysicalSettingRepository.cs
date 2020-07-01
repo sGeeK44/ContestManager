@@ -4,6 +4,6 @@ using Contest.Domain.Settings;
 
 namespace Contest.Repository
 {
-    [Export(typeof(IRepository<IPhysicalSetting>))]
+    [Export(typeof(IRepository<PhysicalSetting, IPhysicalSetting>))]
     public class PhysicalSettingRepository : SqlRepositoryBase<PhysicalSetting, IPhysicalSetting> { }
 }

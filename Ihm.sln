@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contest.Repository", "Conte
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contest.Domain.UnitTest", "Contest.Domain.UnitTest\Contest.Domain.UnitTest.csproj", "{32D7EA0C-468E-44DA-AD1A-5953AFEE40EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contest.Service", "Contest.Service\Contest.Service.csproj", "{BE05B2D2-27F2-4458-8579-41C74EFA3A2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{32D7EA0C-468E-44DA-AD1A-5953AFEE40EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32D7EA0C-468E-44DA-AD1A-5953AFEE40EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32D7EA0C-468E-44DA-AD1A-5953AFEE40EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE05B2D2-27F2-4458-8579-41C74EFA3A2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE05B2D2-27F2-4458-8579-41C74EFA3A2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE05B2D2-27F2-4458-8579-41C74EFA3A2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE05B2D2-27F2-4458-8579-41C74EFA3A2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

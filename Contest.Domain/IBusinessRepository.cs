@@ -7,13 +7,13 @@ namespace Contest.Domain
     /// <summary>
     ///     Expose command feature expose by a standard repository
     /// </summary>
-    /// <typeparam name="TEntity">Type of entity managed by repository</typeparam>
-    public interface IRepository<TEntity>
+    /// <typeparam name="TIEntity">Type of entity managed by repository</typeparam>
+    public interface IRepository<TEntity, TIEntity>
     {
-        List<TEntity> GetAll();
+        List<TIEntity> GetAll();
 
-        TEntity FirstOrDefault(Expression<Func<TEntity, bool>> filter);
+        TIEntity FirstOrDefault(Expression<Func<TEntity, bool>> filter);
 
-        IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> filter);
+        IEnumerable<TIEntity> Find(Expression<Func<TEntity, bool>> filter);
     }
 }

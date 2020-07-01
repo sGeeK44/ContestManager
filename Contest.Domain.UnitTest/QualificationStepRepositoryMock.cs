@@ -4,8 +4,8 @@ using Contest.Domain.Games;
 
 namespace Contest.Business.UnitTest
 {
-    [Export(typeof(IRepository<IQualificationStep>))]
-    public class QualificationStepRepositoryMock : RepositoryBaseMock<IQualificationStep>
+    [Export(typeof(IRepository<QualificationStep, IQualificationStep>))]
+    public class QualificationStepRepositoryMock : RepositoryBaseMock<QualificationStep, IQualificationStep>
     {
     }
 }

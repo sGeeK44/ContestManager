@@ -5,8 +5,8 @@ using Contest.Domain.Players;
 
 namespace Contest.Business.UnitTest
 {
-    [Export(typeof(IRepository<IRelationship<ITeam, IGameStep>>))]
-    public class TeamGameStepRelationshipRepository : RepositoryBaseMock<IRelationship<ITeam, IGameStep>>
+    [Export(typeof(IRepository<Relationship<Team, GameStep>, IRelationship<ITeam, IGameStep>>))]
+    public class TeamGameStepRelationshipRepository : RepositoryBaseMock<TeamGameStepRelationship, IRelationship<ITeam, IGameStep>>
     {
     }
 }

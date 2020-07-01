@@ -8,7 +8,7 @@ namespace Contest.Domain.Players
     [Export(typeof(ITeamFactory))]
     public class TeamFactory : ITeamFactory
     {
-        [Import] private IRepository<ITeam> TeamRepository { get; set; }
+        [Import] private IRepository<Team, ITeam> TeamRepository { get; set; }
 
         /// <summary>
         ///     Create a new instance (in memory and database) of <see cref="T:Business.Team" /> with specified param

@@ -4,8 +4,8 @@ using Contest.Domain.Games;
 
 namespace Contest.Business.UnitTest
 {
-    [Export(typeof(IRepository<IPhase>))]
-    public class PhaseRepositoryMock : RepositoryBaseMock<IPhase>
+    [Export(typeof(IRepository<Phase, IPhase>))]
+    public class PhaseRepositoryMock : RepositoryBaseMock<Phase, IPhase>
     {
     }
 }

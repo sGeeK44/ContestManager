@@ -12,7 +12,8 @@ using SmartWay.Orm.Sqlite;
 namespace Contest.Ihm
 {
     [Export(typeof(IDataStore))]
-    public class  ContestDatastore : SqlDataStore
+    [Export(typeof(ISqlDataStore))]
+    public class ContestDatastore : SqlDataStore
     {
         public ContestDatastore()
             : base(new SqliteDbEngine(ConfigurationManager.AppSettings["DatabasePath"], ""), new SqliteFactory())

@@ -1,25 +1,13 @@
 ﻿using System;
-using System.ComponentModel.Composition;
 using Contest.Core.Component;
 using Contest.Core.Windows.Commands;
 using Contest.Core.Windows.Mvvm;
-using Contest.Domain.Games;
-using Contest.Domain.Settings;
+using Contest.Service;
 
 namespace Contest.Ihm
 {
     public class ContestCreateVm : ViewModel
     {
-        #region Dependencies
-
-        [Import]
-        private IAddressFactory AddressFactory { get; set; }
-
-        [Import]
-        private IGameSettingFactory GameSettingFactory { get; set; }
-
-        #endregion
-
         #region private field
         
         private uint _countMaxPlayerByTeam;
@@ -43,17 +31,28 @@ namespace Contest.Ihm
 
             Create = new RelayCommand(
                 delegate
+                {
+                    var command = new CreateContestCmd
                     {
-                        var newContest = Domain.Games.Contest.Create(Date, PhysicalSetting.Create(AddressFactory.Create(0, Street, ZipCode, City),
-                                                                                              Indoor ? AreaType.Indoor : AreaType.Outdoor,
-                                                                                              CountField),
-                                                                 GameSettingFactory.Create(CountMinPlayerByTeam, CountMaxPlayerByTeam));
-                        CloseCommand.Execute(newContest);
-                    },
+                        Date = Date,
+                        StreetNumber = 0,
+                        Street = Street,
+                        ZipCode = ZipCode,
+                        City = City,
+                        Indoor = Indoor,
+                        CountField = CountField,
+                        CountMinPlayerByTeam = CountMinPlayerByTeam,
+                        CountMaxPlayerByTeam = CountMaxPlayerByTeam
+                    };
+
+                    var service = new ContestService();
+                    var newContest = service.Create(command);
+                    CloseCommand.Execute(newContest);
+                },
                 delegate
-                    {
-                        return true;
-                    });
+                {
+                    return true;
+                });
         }
 
         #endregion

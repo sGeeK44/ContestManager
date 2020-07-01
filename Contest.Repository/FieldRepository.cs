@@ -4,6 +4,6 @@ using Contest.Domain.Settings;
 
 namespace Contest.Repository
 {
-    [Export(typeof(IRepository<IField>))]
+    [Export(typeof(IRepository<Field, IField>))]
     public class FieldRepository : SqlRepositoryBase<Field, IField> { }
 }

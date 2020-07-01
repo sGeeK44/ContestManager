@@ -1,4 +1,6 @@
-﻿namespace Contest.Ihm
+﻿using System.Collections.Generic;
+
+namespace Contest.Ihm
 {
     /// <summary>
     /// Interaction logic for ContestCreate.xaml

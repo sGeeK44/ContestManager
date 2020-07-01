@@ -8,28 +8,28 @@ using Contest.Domain.Settings;
 
 namespace Contest.Business.UnitTest
 {
-    [Export(typeof(IRepository<IField>))]
-    public class FieldRepositoryMock : RepositoryBaseMock<IField>, IRepository<IField>
+    [Export(typeof(IRepository<Field, IField>))]
+    public class FieldRepositoryMock : RepositoryBaseMock<Field, IField>
     {
     }
 
-    public class RepositoryBaseMock<T> : IRepository<T> where T : IEntity
+    public class RepositoryBaseMock<T, TI> : IRepository<T, TI> where T : IEntity, TI
     {
         private readonly List<T> _items = new List<T>();
 
-        public List<T> GetAll()
+        public List<TI> GetAll()
         {
-            return _items;
+            return _items.Cast<TI>().ToList();
         }
 
-        public T FirstOrDefault(Expression<Func<T, bool>> filter)
+        public TI FirstOrDefault(Expression<Func<T, bool>> filter)
         {
-            return _items.FirstOrDefault(filter.Compile());
+            return (TI)_items.FirstOrDefault(filter.Compile());
         }
 
-        public IEnumerable<T> Find(Expression<Func<T, bool>> filter)
+        public IEnumerable<TI> Find(Expression<Func<T, bool>> filter)
         {
-            return _items.Where(filter.Compile());
+            return _items.Where(filter.Compile()).Cast<TI>();
         }
     }
 }
