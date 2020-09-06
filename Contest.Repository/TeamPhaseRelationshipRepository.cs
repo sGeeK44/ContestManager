@@ -5,6 +5,6 @@ using Contest.Domain.Players;
 
 namespace Contest.Repository
 {
-    [Export(typeof(SmartWay.Orm.Repositories.IRepository<Domain.IRelationship<ITeam, IPhase>>))]
+    [Export(typeof(IRepository<TeamPhaseRelationship, IRelationship<ITeam, IPhase>>))]
     public class TeamPhaseRelationshipRepository : SqlRepositoryBase<TeamPhaseRelationship, IRelationship<ITeam, IPhase>> { }
 }

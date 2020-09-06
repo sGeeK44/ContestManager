@@ -33,7 +33,7 @@ namespace Contest.Domain.Games
 
         [Import] private IRepository<MatchSetting, IMatchSetting> MatchSettingRepository { get; set; }
 
-        [Import] private IRepository<Relationship<Team, GameStep>, IRelationship<ITeam, IGameStep>> TeamGameStepRelationshipRepository { get; set; }
+        [Import] private IRepository<TeamGameStepRelationship, IRelationship<ITeam, IGameStep>> TeamGameStepRelationshipRepository { get; set; }
 
         [Import] private IRepository<Match, IMatch> MatchRepository { get; set; }
 

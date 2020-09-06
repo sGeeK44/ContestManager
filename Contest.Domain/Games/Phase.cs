@@ -45,7 +45,7 @@ namespace Contest.Domain.Games
 
         [Import] private IRepository<EliminationStep, IEliminationStep> EliminationStepRepository { get; set; }
 
-        [Import] private IRepository<Relationship<Team, Phase>, IRelationship<ITeam, IPhase>> TeamPhaseRelationshipRepository { get; set; }
+        [Import] private IRepository<TeamPhaseRelationship, IRelationship<ITeam, IPhase>> TeamPhaseRelationshipRepository { get; set; }
 
         [Import] private IRelationshipFactory<ITeam, IPhase> TeamPhaseRelationshipFactory { get; set; }
 

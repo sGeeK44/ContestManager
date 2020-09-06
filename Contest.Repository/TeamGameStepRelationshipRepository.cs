@@ -5,6 +5,6 @@ using Contest.Domain.Players;
 
 namespace Contest.Repository
 {
-    [Export(typeof(IRepository<Relationship<Team, GameStep>, IRelationship<ITeam, IGameStep>>))]
+    [Export(typeof(IRepository<TeamGameStepRelationship, IRelationship<ITeam, IGameStep>>))]
     public class TeamGameStepRelationshipRepository : SqlRepositoryBase<TeamGameStepRelationship, IRelationship<ITeam, IGameStep>> { }
 }
