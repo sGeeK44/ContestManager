@@ -17,7 +17,7 @@ namespace Contest.Domain.Games
     {
         #region Constructors
 
-        internal Contest()
+        public Contest()
         {
             FlippingContainer.Instance.ComposeParts(this);
             _gameSetting = new Lazy<IGameSetting>(() =>

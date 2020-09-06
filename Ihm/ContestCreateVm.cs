@@ -27,7 +27,7 @@ namespace Contest.Ihm
             CountMinPlayerByTeam = 1;
             CountMaxPlayerByTeam = 3;
             CountField = 2;
-            Date = DateTime.Today;
+            Date = DateTime.Now;
 
             Create = new RelayCommand(
                 delegate

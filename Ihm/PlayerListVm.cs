@@ -15,7 +15,6 @@ namespace Contest.Ihm
 
         private RegisterPlayer _registerPlayerWindows;
         private ObservableCollection<IPerson> _playerList;
-        private readonly IContest _currentContest;
 
         #endregion
 
@@ -23,8 +22,8 @@ namespace Contest.Ihm
 
         public PlayerListVm(IContest contest)
         {
-            _currentContest = contest ?? throw new ArgumentNullException(nameof(contest));
-            PlayerList = new ObservableCollection<IPerson>(_currentContest.TeamList.SelectMany(team => team.Members));
+            var currentContest = contest ?? throw new ArgumentNullException(nameof(contest));
+            PlayerList = new ObservableCollection<IPerson>(currentContest.TeamList.SelectMany(team => team.Members));
             SelectedPlayerList = new ObservableCollection<IPerson>();
 
             #region Init Commands
@@ -48,7 +47,7 @@ namespace Contest.Ihm
                     if (teamAffected != null)
                     {
                         teamAffected.RemovePlayer(personToRemove);
-                        if (teamAffected.Members.Count == 0) _currentContest.UnRegister(teamAffected);
+                        if (teamAffected.Members.Count == 0) currentContest.UnRegister(teamAffected);
                     }
                     PlayerList.Remove(personToRemove);
                 },
@@ -56,7 +55,7 @@ namespace Contest.Ihm
             AddTeam = new RelayCommand(
                 delegate
                 {
-                    var addTeamMemberWindows = new AddTeamMember(_currentContest.TeamList.Where(_ => _.Members.Count < _currentContest.MaximumPlayerByTeam).ToList());
+                    var addTeamMemberWindows = new AddTeamMember(currentContest.TeamList.Where(_ => _.Members.Count < currentContest.MaximumPlayerByTeam).ToList());
                     addTeamMemberWindows.Show();
                     if (addTeamMemberWindows.DataContext is AddTeamMemberVm viewModel)
                     {
@@ -76,7 +75,7 @@ namespace Contest.Ihm
                 },
                 delegate
                 {
-                    return !_currentContest.IsStarted
+                    return !currentContest.IsStarted
                         && SelectedPlayer != null
                         && SelectedPlayerList.Count != 0
                         && SelectedPlayerList.Cast<Person>()
@@ -93,7 +92,7 @@ namespace Contest.Ihm
                         if (team == null) team = person.AffectedTeam;
                         team.RemovePlayer(person);
                     }
-                    if (team != null && team.Members.Count == 0) _currentContest.UnRegister(team);
+                    if (team != null && team.Members.Count == 0) currentContest.UnRegister(team);
                     PlayerList = new ObservableCollection<IPerson>(PlayerList);
                 },
                 delegate
@@ -112,7 +111,7 @@ namespace Contest.Ihm
             CreateTeam = new RelayCommand(
                 delegate
                 {
-                    var registerTeamWindows = new RegisterTeam(_currentContest);
+                    var registerTeamWindows = new RegisterTeam(currentContest);
                     registerTeamWindows.Show();
                     if (registerTeamWindows.DataContext is RegisterTeamVm viewModel)
                     {
@@ -161,8 +160,6 @@ namespace Contest.Ihm
 
         #region Commands
 
-        public RelayCommand SaveRegisterPlayer { get; set; }
-        public RelayCommand LoadRegisterPlayer { get; set; }
         public RelayCommand AddPlayer { get; set; }
         public RelayCommand UpdatePlayer { get; set; }
         public RelayCommand RemovePlayer { get; set; }
