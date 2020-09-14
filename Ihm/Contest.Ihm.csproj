@@ -30,7 +30,7 @@
     <PackageReference Include="NUnit.Extension.NUnitV2ResultWriter" Version="3.6.0" />
     <PackageReference Include="NUnit.Extension.VSProjectLoader" Version="3.8.0" />
     <PackageReference Include="NUnit.Runners" Version="3.11.1" />
-    <PackageReference Include="SmartWay.Orm.Sqlite" Version="1.0.1" />
+    <PackageReference Include="SmartWay.Orm.Sqlite" Version="1.0.4" />
     <PackageReference Include="System.ComponentModel.Composition" Version="4.7.0" />
   </ItemGroup>
 </Project>

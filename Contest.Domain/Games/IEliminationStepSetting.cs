@@ -1,6 +1,8 @@
-﻿namespace Contest.Domain.Games
+﻿using SmartWay.Orm.Entity;
+
+namespace Contest.Domain.Games
 {
-    public interface IEliminationStepSetting : IStepSetting
+    public interface IEliminationStepSetting : IStepSetting, IDistinctableEntity
     {
         /// <summary>
         ///     Get first elimination step

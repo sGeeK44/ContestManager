@@ -5,8 +5,8 @@ using System.Linq;
 using Contest.Core.Component;
 using Contest.Domain.Matchs;
 using Contest.Domain.Players;
-using JetBrains.Annotations;
 using SmartWay.Orm.Attributes;
+using SmartWay.Orm.Entity.References;
 
 namespace Contest.Domain.Games
 {
@@ -20,8 +20,8 @@ namespace Contest.Domain.Games
 
         #region Fields
 
-        private Lazy<IPhase> _phase;
-        private Lazy<IMatchSetting> _currentMatchSetting;
+        private ReferenceHolder<IPhase, Guid> _phase;
+        private ReferenceHolder<IMatchSetting, Guid> _currentMatchSetting;
         private Lazy<IList<IMatch>> _matchList;
         private Lazy<IList<IRelationship<ITeam, IGameStep>>> _gameStepTeamRelationshipList;
 
@@ -43,13 +43,11 @@ namespace Contest.Domain.Games
 
         #region Constructor
 
-        [UsedImplicitly]
         protected GameStep()
         {
             FlippingContainer.Instance.ComposeParts(this);
-            _phase = new Lazy<IPhase>(() => PhaseRepository.FirstOrDefault(_ => _.Id == PhaseId));
-            _currentMatchSetting = new Lazy<IMatchSetting>(() =>
-                MatchSettingRepository.FirstOrDefault(_ => _.Id == CurrentMatchSettingId));
+            _phase = new ReferenceHolder<IPhase, Guid>(PhaseRepository);
+            _currentMatchSetting = new ReferenceHolder<IMatchSetting, Guid>(MatchSettingRepository);
             _gameStepTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IGameStep>>>(() =>
                 TeamGameStepRelationshipRepository
                     .Find(_ => _.SecondItemInvolveId == Id).ToList());
@@ -62,6 +60,7 @@ namespace Contest.Domain.Games
         }
 
         protected GameStep(IPhase phase, IList<ITeam> teamList, IMatchSetting currentMatchSetting)
+            : this()
         {
             if (teamList == null)
                 throw new ArgumentNullException(nameof(teamList));
@@ -90,19 +89,19 @@ namespace Contest.Domain.Games
         ///     Get phase Id linked.
         /// </summary>
         [Field(FieldName = "PHASE_ID")]
-        public Guid PhaseId { get; private set; }
+        public Guid PhaseId
+        {
+            get => _phase.Id;
+            private set => _phase.Id = value;
+        }
 
         /// <summary>
         ///     Get phase linked.
         /// </summary>
         public IPhase Phase
         {
-            get => _phase.Value;
-            private set
-            {
-                _phase = new Lazy<IPhase>(() => value);
-                PhaseId = value?.Id ?? Guid.Empty;
-            }
+            get => _phase.Object;
+            private set => _phase.Object = value;
         }
 
         /// <summary>
@@ -119,19 +118,19 @@ namespace Contest.Domain.Games
         ///     Get setting game Id for current step
         /// </summary>
         [Field(FieldName = "CURRENT_MATCH_SETTING_ID")]
-        public Guid CurrentMatchSettingId { get; protected set; }
+        public Guid CurrentMatchSettingId
+        {
+            get => _currentMatchSetting.Id;
+            private set => _currentMatchSetting.Id = value;
+        }
 
         /// <summary>
         ///     Get setting game for current step
         /// </summary>
         public IMatchSetting CurrentMatchSetting
         {
-            get => _currentMatchSetting.Value;
-            protected set
-            {
-                _currentMatchSetting = new Lazy<IMatchSetting>(() => value);
-                CurrentMatchSettingId = value?.Id ?? Guid.Empty;
-            }
+            get => _currentMatchSetting.Object;
+            private set => _currentMatchSetting.Object = value;
         }
 
         /// <summary>

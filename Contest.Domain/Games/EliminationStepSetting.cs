@@ -18,7 +18,7 @@ namespace Contest.Domain.Games
 
         #region Constructors
 
-        private EliminationStepSetting()
+        public EliminationStepSetting()
         {
         }
 

@@ -9,6 +9,7 @@ using Contest.Domain.Matchs;
 using Contest.Domain.Players;
 using Contest.Domain.Settings;
 using SmartWay.Orm.Attributes;
+using SmartWay.Orm.Entity.References;
 
 namespace Contest.Domain.Games
 {
@@ -20,23 +21,14 @@ namespace Contest.Domain.Games
         public Contest()
         {
             FlippingContainer.Instance.ComposeParts(this);
-            _gameSetting = new Lazy<IGameSetting>(() =>
-                GameSettingRepository.FirstOrDefault(_ => _.Id == GameSettingId));
-            _physicalSetting = new Lazy<IPhysicalSetting>(() =>
-                PhysicalSettingRepository.FirstOrDefault(_ => _.Id == PhysicalSettingId));
-            _fieldList =
-                new Lazy<IList<IField>>(() => FieldRepository.Find(_ => _.CurrentContestId == Id).ToList());
+            _gameSetting = new ReferenceHolder<IGameSetting, Guid>(GameSettingRepository);
+            _physicalSetting = new ReferenceHolder<IPhysicalSetting, Guid>(PhysicalSettingRepository);
+            _eliminationSetting = new ReferenceHolder<IEliminationStepSetting, Guid>(EliminationStepSettingRepository);
+            _consolingEliminationSetting = new ReferenceHolder<IEliminationStepSetting, Guid>(EliminationStepSettingRepository);
+            _qualificationSetting = new ReferenceHolder<IQualificationStepSetting, Guid>(QualificationStepSettingRepository);
+            _phaseList = new Lazy<IList<IPhase>>(() => PhaseRepository.Find(_ => _.ContestId == Id).ToList());
+            _fieldList = new Lazy<IList<IField>>(() => FieldRepository.Find(_ => _.CurrentContestId == Id).ToList());
             _teamList = new Lazy<IList<ITeam>>(() => TeamRepository.Find(_ => _.ContestId == Id).ToList());
-            _eliminationSetting = new Lazy<IEliminationStepSetting>(() =>
-                EliminationStepSettingRepository.FirstOrDefault(_ =>
-                    _.Id == EliminationSettingId));
-            _consolingEliminationSetting = new Lazy<IEliminationStepSetting>(() =>
-                EliminationStepSettingRepository.FirstOrDefault(_ =>
-                    _.Id == ConsolingEliminationSettingId));
-            _qualificationSetting = new Lazy<IQualificationStepSetting>(() =>
-                QualificationStepSettingRepository.FirstOrDefault(_ =>
-                    _.Id == QualificationSettingId));
-            _phaseList = new Lazy<IList<IPhase>>(() => PhaseRepository.Find(_ => _.ContestId == Id).Cast<IPhase>().ToList());
         }
 
         #endregion
@@ -69,14 +61,14 @@ namespace Contest.Domain.Games
 
         #region Fields
 
-        private Lazy<IGameSetting> _gameSetting;
-        private Lazy<IPhysicalSetting> _physicalSetting;
+        private readonly ReferenceHolder<IGameSetting, Guid> _gameSetting;
+        private readonly ReferenceHolder<IPhysicalSetting, Guid> _physicalSetting;
+        private readonly ReferenceHolder<IEliminationStepSetting, Guid> _eliminationSetting;
+        private readonly ReferenceHolder<IEliminationStepSetting, Guid> _consolingEliminationSetting;
+        private readonly ReferenceHolder<IQualificationStepSetting, Guid> _qualificationSetting;
+        private Lazy<IList<IPhase>> _phaseList;
         private Lazy<IList<IField>> _fieldList;
         private Lazy<IList<ITeam>> _teamList;
-        private Lazy<IEliminationStepSetting> _eliminationSetting;
-        private Lazy<IEliminationStepSetting> _consolingEliminationSetting;
-        private Lazy<IQualificationStepSetting> _qualificationSetting;
-        private Lazy<IList<IPhase>> _phaseList;
 
         #endregion
 
@@ -134,38 +126,38 @@ namespace Contest.Domain.Games
         ///     Get end date for contest.
         /// </summary>
         [Field(FieldName = "GAME_SETTING")]
-        public Guid GameSettingId { get; private set; }
+        public Guid GameSettingId
+        {
+            get => _gameSetting.Id;
+            set => _gameSetting.Id = value;
+        }
 
         /// <summary>
         ///     Get game setting for current contest.
         /// </summary>
         public IGameSetting GameSetting
         {
-            get => _gameSetting.Value;
-            set
-            {
-                _gameSetting = new Lazy<IGameSetting>(() => value);
-                GameSettingId = value?.Id ?? Guid.Empty;
-            }
+            get => _gameSetting.Object;
+            set => _gameSetting.Object = value;
         }
 
         /// <summary>
         ///     Get end date for contest.
         /// </summary>
         [Field(FieldName = "PHYSICAL_SETTING")]
-        public Guid PhysicalSettingId { get; private set; }
+        public Guid PhysicalSettingId
+        {
+            get => _physicalSetting.Id;
+            set => _physicalSetting.Id = value;
+        }
 
         /// <summary>
         ///     Get physical setting for current contest.
         /// </summary>
         public IPhysicalSetting PhysicalSetting
         {
-            get => _physicalSetting.Value;
-            set
-            {
-                _physicalSetting = new Lazy<IPhysicalSetting>(() => value);
-                PhysicalSettingId = value?.Id ?? Guid.Empty;
-            }
+            get => _physicalSetting.Object;
+            set => _physicalSetting.Object = value;
         }
 
         public ushort CountField
@@ -228,21 +220,19 @@ namespace Contest.Domain.Games
         ///     Get end date for contest.
         /// </summary>
         [Field(FieldName = "ELIMINATION_SETTING_ID")]
-        public Guid EliminationSettingId { get; private set; }
+        public Guid EliminationSettingId
+        {
+            get => _eliminationSetting.Id;
+            set => _eliminationSetting.Id = value;
+        }
 
         /// <summary>
         ///     Get setting for elimination step
         /// </summary>
         public IEliminationStepSetting EliminationSetting
         {
-            get => _eliminationSetting.Value;
-            set
-            {
-                if (IsStarted)
-                    throw new InvalidOperationException("Can not add setup constest when it is already started.");
-                _eliminationSetting = new Lazy<IEliminationStepSetting>(() => value);
-                EliminationSettingId = value?.Id ?? Guid.Empty;
-            }
+            get => _eliminationSetting.Object;
+            set => _eliminationSetting.Object = value;
         }
 
         /// <summary>
@@ -257,14 +247,18 @@ namespace Contest.Domain.Games
         ///     Get end date for contest.
         /// </summary>
         [Field(FieldName = "CONSOLING_ELIMINATION_SETTING_ID")]
-        public Guid ConsolingEliminationSettingId { get; private set; }
+        public Guid ConsolingEliminationSettingId
+        {
+            get => _consolingEliminationSetting.Id;
+            set => _consolingEliminationSetting.Id = value;
+        }
 
         /// <summary>
         ///     Get setting for consoling elimination step
         /// </summary>
         public IEliminationStepSetting ConsolingEliminationSetting
         {
-            get => _consolingEliminationSetting.Value;
+            get => _consolingEliminationSetting.Object;
             set
             {
                 if (IsStarted)
@@ -272,8 +266,8 @@ namespace Contest.Domain.Games
                 if (!WithQualificationPhase)
                     throw new InvalidOperationException(
                         "Can not add setup consoling if contest haven't qualification.");
-                _consolingEliminationSetting = new Lazy<IEliminationStepSetting>(() => value);
-                ConsolingEliminationSettingId = value?.Id ?? Guid.Empty;
+
+                _consolingEliminationSetting.Object = value;
             }
         }
 
@@ -289,21 +283,25 @@ namespace Contest.Domain.Games
         ///     Get end date for contest.
         /// </summary>
         [Field(FieldName = "QUALIFICATION_SETTING_ID")]
-        public Guid QualificationSettingId { get; private set; }
+        public Guid QualificationSettingId
+        {
+            get => _qualificationSetting.Id;
+            set => _qualificationSetting.Id = value;
+        }
 
         /// <summary>
         ///     Get setting for qualification step
         /// </summary>
         public IQualificationStepSetting QualificationSetting
         {
-            get => _qualificationSetting.Value;
+            get => _qualificationSetting.Object;
             set
             {
                 if (IsStarted)
                     throw new InvalidOperationException("Can not add setup constest when it is already started.");
                 if (value == null && ConsolingEliminationSetting != null) ConsolingEliminationSetting = null;
-                _qualificationSetting = new Lazy<IQualificationStepSetting>(() => value);
-                QualificationSettingId = value?.Id ?? Guid.Empty;
+
+                _qualificationSetting.Object = value;
             }
         }
 
@@ -469,11 +467,6 @@ namespace Contest.Domain.Games
             if (hasQualificationStep && countQualificationGroup == null) return null;
             if (hasConsolingStep && countTeamFirstConsolingEliminationStep == null) return null;
             return !hasQualificationStep ? countTeamFirstEliminationStep : int.MaxValue;
-        }
-
-        public static IContest Load(IRepository<Contest, IContest> repo, Guid id)
-        {
-            return repo.GetAll().FirstOrDefault(_ => _.Id == id);
         }
 
         #endregion

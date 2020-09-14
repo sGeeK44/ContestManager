@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using Contest.Core.Component;
 using Contest.Domain.Players;
 using SmartWay.Orm.Attributes;
+using SmartWay.Orm.Entity.References;
 
 namespace Contest.Domain.Settings
 {
@@ -14,16 +15,16 @@ namespace Contest.Domain.Settings
     {
         #region Fields
 
-        private Lazy<IAddress> _address;
+        private ReferenceHolder<IAddress, Guid> _address;
 
         #endregion
 
         #region Constructors
 
-        private PhysicalSetting()
+        public PhysicalSetting()
         {
             FlippingContainer.Instance.ComposeParts(this);
-            _address = new Lazy<IAddress>(() => AddressRepository.FirstOrDefault(_ => _.Id == AddressId));
+            _address = new ReferenceHolder<IAddress, Guid>(AddressRepository);
         }
 
         #endregion
@@ -64,7 +65,11 @@ namespace Contest.Domain.Settings
         /// <summary>
         ///     Get address id of physical setting
         /// </summary>
-        public Guid AddressId { get; private set; }
+        public Guid AddressId
+        {
+            get => _address.Id;
+            private set => _address.Id = value;
+        }
 
 
         /// <summary>
@@ -72,12 +77,8 @@ namespace Contest.Domain.Settings
         /// </summary>
         public IAddress Address
         {
-            get => _address.Value;
-            set
-            {
-                _address = new Lazy<IAddress>(() => value);
-                AddressId = value?.Id ?? Guid.Empty;
-            }
+            get => _address.Object;
+            set => _address.Object = value;
         }
 
         /// <summary>

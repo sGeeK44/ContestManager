@@ -26,7 +26,7 @@ namespace Contest.Domain
         /// <summary>
         ///     Get Id of first object involved
         /// </summary>
-        [PrimaryKey]
+        [Field]
         public Guid FirstItemInvolveId { get; protected set; }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Contest.Domain
         /// <summary>
         ///     Get Id of second object involved
         /// </summary>
-        [PrimaryKey]
+        [Field]
         public Guid SecondItemInvolveId { get; protected set; }
 
         /// <summary>

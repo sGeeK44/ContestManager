@@ -34,6 +34,8 @@ namespace Contest.Service
                 UnitOfWorks.Save(gameSetting);
 
                 var newContest = Domain.Games.Contest.Create(cmd.Date, physicalSettings, gameSetting);
+                UnitOfWorks.Save(newContest.EliminationSetting.MatchSetting);
+                UnitOfWorks.Save(newContest.EliminationSetting);
                 UnitOfWorks.Save(newContest);
 
                 UnitOfWorks.Commit();

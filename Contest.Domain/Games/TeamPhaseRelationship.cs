@@ -7,7 +7,7 @@ namespace Contest.Domain.Games
     ///     Represent a relation between a Team and a Phase
     /// </summary>
     [Entity(NameInStore = "TEAM_PHASE_RELATION")]
-    public class TeamPhaseRelationship : Relationship<ITeam, IPhase>, IRelationship<ITeam, IPhase>
+    public class TeamPhaseRelationship : Relationship<ITeam, IPhase>
     {
         public TeamPhaseRelationship()
         {

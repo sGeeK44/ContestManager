@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.Composition;
-using Contest.Domain;
+using Contest.Business.UnitTest;
 using Contest.Domain.Games;
 using Contest.Domain.Players;
 
-namespace Contest.Business.UnitTest
+namespace Contest.Domain.UnitTest
 {
-    [Export(typeof(IRepository<Relationship<Team, Phase>, IRelationship <ITeam, IPhase>>))]
+    [Export(typeof(IRepository<TeamPhaseRelationship, IRelationship <ITeam, IPhase>>))]
     public class TeamPhaseRelationshipRepository : RepositoryBaseMock<TeamPhaseRelationship, IRelationship<ITeam, IPhase>>
     {
     }

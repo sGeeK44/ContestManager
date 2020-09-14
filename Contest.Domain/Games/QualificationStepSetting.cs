@@ -11,7 +11,7 @@ namespace Contest.Domain.Games
     {
         #region Constructors
 
-        private QualificationStepSetting()
+        public QualificationStepSetting()
         {
         }
 

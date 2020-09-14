@@ -4,6 +4,7 @@ using Contest.Core.Component;
 using Contest.Domain.Matchs;
 using JetBrains.Annotations;
 using SmartWay.Orm.Attributes;
+using SmartWay.Orm.Entity.References;
 
 namespace Contest.Domain.Games
 {
@@ -14,7 +15,7 @@ namespace Contest.Domain.Games
     {
         #region Fields
 
-        private Lazy<IMatchSetting> _matchSetting;
+        private ReferenceHolder<IMatchSetting, Guid> _matchSetting;
 
         #endregion
 
@@ -27,11 +28,10 @@ namespace Contest.Domain.Games
         #region Constructors
 
         [UsedImplicitly]
-        protected StepSetting()
+        public StepSetting()
         {
             FlippingContainer.Instance.ComposeParts(this);
-            _matchSetting = new Lazy<IMatchSetting>(() =>
-                MatchSettingRepository.FirstOrDefault(_ => _.Id == MatchSettingId));
+            _matchSetting = new ReferenceHolder<IMatchSetting, Guid>(MatchSettingRepository);
         }
 
         /// <summary>
@@ -39,6 +39,7 @@ namespace Contest.Domain.Games
         /// </summary>
         /// <param name="matchSetting">Set match setting for  step</param>
         protected StepSetting(IMatchSetting matchSetting)
+            : this()
         {
             MatchSetting = matchSetting ?? throw new ArgumentNullException(nameof(matchSetting));
         }
@@ -51,19 +52,19 @@ namespace Contest.Domain.Games
         ///     Get match's setting for  step
         /// </summary>
         [Field(FieldName = "MATCH_SETTING_ID")]
-        public Guid MatchSettingId { get; private set; }
+        public Guid MatchSettingId
+        {
+            get => _matchSetting.Id;
+            private set => _matchSetting.Id= value;
+        }
 
         /// <summary>
         ///     Get match's setting for  step
         /// </summary>
         public IMatchSetting MatchSetting
         {
-            get => _matchSetting.Value;
-            private set
-            {
-                _matchSetting = new Lazy<IMatchSetting>(() => value);
-                MatchSettingId = value?.Id ?? Guid.Empty;
-            }
+            get => _matchSetting.Object;
+            private set => _matchSetting.Object = value;
         }
 
         #endregion

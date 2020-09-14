@@ -5,6 +5,7 @@ using Contest.Domain.Games;
 using Contest.Domain.Matchs;
 using JetBrains.Annotations;
 using SmartWay.Orm.Attributes;
+using SmartWay.Orm.Entity.References;
 
 namespace Contest.Domain.Settings
 {
@@ -16,8 +17,8 @@ namespace Contest.Domain.Settings
     {
         #region Fields
 
-        private Lazy<IMatch> _matchInProgess;
-        private Lazy<IContest> _currentContest;
+        private ReferenceHolder<IMatch, Guid> _matchInProgess;
+        private ReferenceHolder<IContest, Guid> _currentContest;
 
         #endregion
 
@@ -35,13 +36,12 @@ namespace Contest.Domain.Settings
         public Field()
         {
             FlippingContainer.Instance.ComposeParts(this);
-            _matchInProgess =
-                new Lazy<IMatch>(() => MatchRepository.FirstOrDefault(_ => _.Id == MatchInProgessId));
-            _currentContest = new Lazy<IContest>(() =>
-                ContestRepository.FirstOrDefault(_ => _.Id == CurrentContestId));
+            _matchInProgess = new ReferenceHolder<IMatch, Guid>(MatchRepository);
+            _currentContest = new ReferenceHolder<IContest, Guid>(ContestRepository);
         }
 
         public Field(IContest current, string name)
+            : this()
         {
             if (current == null) throw new ArgumentException("current");
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
@@ -72,38 +72,38 @@ namespace Contest.Domain.Settings
         ///     Get current match id in progress on current field if it is allocated, else null.
         /// </summary>
         [Field(FieldName = "MATCH_IN_PROGRESS_ID")]
-        public Guid MatchInProgessId { get; private set; }
+        public Guid MatchInProgessId
+        {
+            get => _matchInProgess.Id;
+            private set => _matchInProgess.Id = value;
+        }
 
         /// <summary>
         ///     Get current match in progress on current field if it is allocated, else null.
         /// </summary>
         public IMatch MatchInProgess
         {
-            get => _matchInProgess.Value;
-            private set
-            {
-                _matchInProgess = new Lazy<IMatch>(() => value);
-                MatchInProgessId = value?.Id ?? Guid.Empty;
-            }
+            get => _matchInProgess.Object;
+            private set => _matchInProgess.Object = value;
         }
 
         /// <summary>
         ///     Get current contest id
         /// </summary>
         [Field(FieldName = "CURRENT_CONTEST_ID")]
-        public Guid CurrentContestId { get; private set; }
+        public Guid CurrentContestId
+        {
+            get => _currentContest.Id;
+            private set => _currentContest.Id = value;
+        }
 
         /// <summary>
         ///     Get current match in progress on current field if it is allocated, else null.
         /// </summary>
         public IContest CurrentContest
         {
-            get => _currentContest.Value;
-            internal set
-            {
-                _currentContest = new Lazy<IContest>(() => value);
-                CurrentContestId = value?.Id ?? Guid.Empty;
-            }
+            get => _currentContest.Object;
+            private set => _currentContest.Object = value;
         }
 
         #endregion

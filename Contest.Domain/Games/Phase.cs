@@ -14,7 +14,7 @@ namespace Contest.Domain.Games
     {
         #region Constructors
 
-        protected Phase()
+        public Phase()
         {
             FlippingContainer.Instance.ComposeParts(this);
             _phaseTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IPhase>>>(() =>
@@ -190,12 +190,10 @@ namespace Contest.Domain.Games
         /// <param name="teamList">A dictionnary of involved team for this phase. The usigned integer is used to build group.</param>
         /// <param name="contest">Contest linked to this phase</param>
         /// <param name="type">Type of phase</param>
-        /// <param name="setting">Set setting for new phase</param>
         /// <returns>Match's instance</returns>
-        private static Phase Create(IContest contest, PhaseType type, IList<ITeam> teamList, IStepSetting setting)
+        private static Phase Create(IContest contest, PhaseType type, IList<ITeam> teamList)
         {
             if (contest == null) throw new ArgumentNullException(nameof(contest));
-            if (setting == null) throw new ArgumentNullException(nameof(setting));
 
             var result = new Phase
             {
@@ -246,7 +244,7 @@ namespace Contest.Domain.Games
         private static IPhase CreateEliminationPhase(IContest contest, PhaseType type, IList<ITeam> teamList,
             IEliminationStepSetting setting)
         {
-            var result = Create(contest, type, teamList, setting);
+            var result = Create(contest, type, teamList);
 
             //Create and add new game step
             var newEliminationStep =
@@ -269,7 +267,7 @@ namespace Contest.Domain.Games
         public static IPhase CreateQualificationPhase(IContest contest, IList<ITeam> teamList,
             IQualificationStepSetting setting)
         {
-            var result = Create(contest, PhaseType.Qualification, teamList, setting);
+            var result = Create(contest, PhaseType.Qualification, teamList);
 
             if (setting.CountGroup == 0)
                 throw new ArgumentException("La phase qualificative doit au moins contenir un groupe.");

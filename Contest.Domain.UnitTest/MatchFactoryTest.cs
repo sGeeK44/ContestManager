@@ -66,7 +66,6 @@ namespace Contest.Business.UnitTest
             
             Assert.AreEqual(null, match.Beginning);
             Assert.AreEqual(null, match.Endded);
-            Assert.AreEqual(gameStep.Object, match.GameStep);
             Assert.AreEqual(team1.Object, match.Team1);
             Assert.AreEqual(team2.Object, match.Team2);
             Assert.AreEqual(matchSetting.Object, match.Setting);

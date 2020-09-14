@@ -7,7 +7,7 @@ namespace Contest.Domain.Games
     {
         #region Constructors
 
-        internal GameSetting()
+        public GameSetting()
         {
         }
 

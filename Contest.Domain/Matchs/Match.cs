@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using Contest.Core.Component;
-using Contest.Domain.Games;
 using Contest.Domain.Players;
 using Contest.Domain.Settings;
 using SmartWay.Orm.Attributes;
+using SmartWay.Orm.Entity.References;
 
 namespace Contest.Domain.Matchs
 {
@@ -16,11 +16,10 @@ namespace Contest.Domain.Matchs
     {
         #region Fields
 
-        private Lazy<IGameStep> _gameStep;
-        private Lazy<ITeam> _team1;
-        private Lazy<ITeam> _team2;
-        private Lazy<IField> _matchField;
-        private Lazy<IMatchSetting> _setting;
+        private ReferenceHolder<ITeam, Guid> _team1;
+        private ReferenceHolder<ITeam, Guid> _team2;
+        private ReferenceHolder<IField, Guid> _matchField;
+        private ReferenceHolder<IMatchSetting, Guid> _setting;
 
         #endregion
 
@@ -31,8 +30,6 @@ namespace Contest.Domain.Matchs
         [Import] private IRepository<Field, IField> FieldRepository { get; set; }
 
         [Import] private IRepository<Team, ITeam> TeamRepository { get; set; }
-
-        [Import] private IRepository<GameStep, IGameStep> GameStepRepository { get; set; }
 
         #endregion
 
@@ -53,13 +50,10 @@ namespace Contest.Domain.Matchs
         private void InitializeLazyProperties()
         {
             FlippingContainer.Instance.ComposeParts(this);
-            _gameStep = new Lazy<IGameStep>(() =>
-                GameStepRepository.FirstOrDefault(_ => _.Id == GameStepId));
-            _team1 = new Lazy<ITeam>(() => TeamRepository.FirstOrDefault(_ => _.Id == Team1Id));
-            _team2 = new Lazy<ITeam>(() => TeamRepository.FirstOrDefault(_ => _.Id == Team2Id));
-            _matchField = new Lazy<IField>(() => FieldRepository.FirstOrDefault(_ => _.Id == MatchFieldId));
-            _setting = new Lazy<IMatchSetting>(() =>
-                MatchSettingRepository.FirstOrDefault(_ => _.Id == SettingId));
+            _team1 = new ReferenceHolder<ITeam, Guid>(TeamRepository);
+            _team2 = new ReferenceHolder<ITeam, Guid>(TeamRepository);
+            _matchField = new ReferenceHolder<IField, Guid>(FieldRepository);
+            _setting = new ReferenceHolder<IMatchSetting, Guid>(MatchSettingRepository);
         }
 
         #endregion
@@ -70,38 +64,25 @@ namespace Contest.Domain.Matchs
         ///     Get game step id linked
         /// </summary>
         [Field(FieldName = "GAME_STEP_ID")]
-        public Guid GameStepId { get; private set; }
-
-        /// <summary>
-        ///     Get game step linked
-        /// </summary>
-        public IGameStep GameStep
-        {
-            get => _gameStep.Value;
-            internal set
-            {
-                _gameStep = new Lazy<IGameStep>(() => value);
-                GameStepId = value?.Id ?? Guid.Empty;
-            }
-        }
+        public Guid GameStepId { get; set; }
 
         /// <summary>
         ///     Get first involved team Id in current match
         /// </summary>
         [Field(FieldName = "TEAM_1_ID")]
-        public Guid Team1Id { get; private set; }
+        public Guid Team1Id
+        {
+            get => _team1.Id;
+            private set => _team1.Id = value;
+        }
 
         /// <summary>
         ///     Get or Set first involved team in current match
         /// </summary>
         public ITeam Team1
         {
-            get => _team1.Value;
-            set
-            {
-                _team1 = new Lazy<ITeam>(() => value);
-                Team1Id = value?.Id ?? Guid.Empty;
-            }
+            get => _team1.Object;
+            set => _team1.Object = value;
         }
 
         /// <summary>
@@ -114,19 +95,19 @@ namespace Contest.Domain.Matchs
         ///     Get second involved team Id in current match
         /// </summary>
         [Field(FieldName = "TEAM_2_ID")]
-        public Guid Team2Id { get; private set; }
+        public Guid Team2Id
+        {
+            get => _team2.Id;
+            private set => _team2.Id = value;
+        }
 
         /// <summary>
         ///     Get or Set second involved team in current match
         /// </summary>
         public ITeam Team2
         {
-            get => _team2.Value;
-            set
-            {
-                _team2 = new Lazy<ITeam>(() => value);
-                Team2Id = value?.Id ?? Guid.Empty;
-            }
+            get => _team2.Object;
+            set => _team2.Object = value;
         }
 
         /// <summary>
@@ -139,19 +120,19 @@ namespace Contest.Domain.Matchs
         ///     Get place Id where match is played
         /// </summary>
         [Field(FieldName = "FIELD_ID")]
-        public Guid MatchFieldId { get; private set; }
+        public Guid MatchFieldId
+        {
+            get => _matchField.Id;
+            private set => _matchField.Id = value;
+        }
 
         /// <summary>
         ///     Get place where match is played
         /// </summary>
         public IField MatchField
         {
-            get => _matchField.Value;
-            internal set
-            {
-                _matchField = new Lazy<IField>(() => value);
-                MatchFieldId = value?.Id ?? Guid.Empty;
-            }
+            get => _matchField.Object;
+            set => _matchField.Object = value;
         }
 
         /// <summary>
@@ -238,19 +219,19 @@ namespace Contest.Domain.Matchs
         ///     Get current match setting Id
         /// </summary>
         [Field(FieldName = "SETTING_ID")]
-        public Guid SettingId { get; private set; }
+        public Guid SettingId
+        {
+            get => _setting.Id;
+            private set => _setting.Id = value;
+        }
 
         /// <summary>
         ///     Get current match setting
         /// </summary>
         public virtual IMatchSetting Setting
         {
-            get => _setting.Value;
-            internal set
-            {
-                _setting = new Lazy<IMatchSetting>(() => value);
-                SettingId = value?.Id ?? Guid.Empty;
-            }
+            get => _setting.Object;
+            set => _setting.Object = value;
         }
 
         #endregion

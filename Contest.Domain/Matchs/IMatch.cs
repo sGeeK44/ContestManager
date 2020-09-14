@@ -8,21 +8,6 @@ namespace Contest.Domain.Matchs
     public interface IMatch : IEntity
     {
         /// <summary>
-        ///     Get game step id linked
-        /// </summary>
-        Guid GameStepId { get; }
-
-        /// <summary>
-        ///     Get game step linked
-        /// </summary>
-        IGameStep GameStep { get; }
-
-        /// <summary>
-        ///     Get first involved team Id in current match
-        /// </summary>
-        Guid Team1Id { get; }
-
-        /// <summary>
         ///     Get or Set first involved team in current match
         /// </summary>
         ITeam Team1 { get; set; }
@@ -31,11 +16,6 @@ namespace Contest.Domain.Matchs
         ///     Get first team match score
         /// </summary>
         ushort TeamScore1 { get; }
-
-        /// <summary>
-        ///     Get second involved team Id in current match
-        /// </summary>
-        Guid Team2Id { get; }
 
         /// <summary>
         ///     Get or Set second involved team in current match

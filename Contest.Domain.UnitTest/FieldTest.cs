@@ -168,6 +168,7 @@ namespace Contest.Business.UnitTest
         {
             var match = new Mock<IMatch>();
             match.Setup(_ => _.Id).Returns(Guid.NewGuid());
+            match.Setup(_ => _.GetPkValue()).Returns(match.Object.Id);
             return match.Object;
         }
 
@@ -175,6 +176,7 @@ namespace Contest.Business.UnitTest
         {
             var stub = new Mock<IContest>();
             stub.Setup(_ => _.Id).Returns(Guid.NewGuid());
+            stub.Setup(_ => _.GetPkValue()).Returns(stub.Object.Id);
             return stub.Object;
         }
     }

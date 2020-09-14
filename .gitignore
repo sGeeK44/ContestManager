@@ -8,3 +8,4 @@ Ihm/packages/
 *.ncrunchsolution
 /packages/*
 .vs
+**/_ReSharper.Caches/

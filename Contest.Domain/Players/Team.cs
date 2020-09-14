@@ -6,6 +6,7 @@ using Contest.Core.Component;
 using Contest.Domain.Games;
 using Contest.Domain.Matchs;
 using SmartWay.Orm.Attributes;
+using SmartWay.Orm.Entity.References;
 
 namespace Contest.Domain.Players
 {
@@ -18,7 +19,7 @@ namespace Contest.Domain.Players
     {
         #region Fields
 
-        private Lazy<IContest> _contest;
+        private ReferenceHolder<IContest, Guid> _contest;
         private Lazy<IList<IPerson>> _members;
         private Lazy<IList<IMatch>> _matchList;
         private Lazy<IList<IRelationship<ITeam, IGameStep>>> _gameStepTeamRelationshipList;
@@ -48,7 +49,7 @@ namespace Contest.Domain.Players
 
         #region Constructors
 
-        private Team()
+        public Team()
         {
             FlippingContainer.Instance.ComposeParts(this);
             _members = new Lazy<IList<IPerson>>(() =>
@@ -56,8 +57,7 @@ namespace Contest.Domain.Players
             _matchList = new Lazy<IList<IMatch>>(() => MatchRepository.Find(_ => _.Team1Id == Id)
                 .Union(MatchRepository.Find(_ => _.Team2Id == Id))
                 .ToList());
-            _contest = new Lazy<IContest>(() =>
-                ContestRepository.Find(_ => _.Id == ContestId).FirstOrDefault());
+            _contest = new ReferenceHolder<IContest, Guid>(ContestRepository);
             _gameStepTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IGameStep>>>(() =>
                 TeamGameStepRelationshipRepository
                     .Find(_ => _.FirstItemInvolveId == Id).ToList());
@@ -116,19 +116,19 @@ namespace Contest.Domain.Players
         ///     Get contest id associated to this team
         /// </summary>
         [Field(FieldName = "CONTEST_ID")]
-        public Guid ContestId { get; private set; }
+        public Guid ContestId
+        {
+            get => _contest.Id;
+            private set => _contest.Id = value;
+        }
 
         /// <summary>
         ///     Get contest associated to this team
         /// </summary>
         public IContest Contest
         {
-            get => _contest.Value;
-            set
-            {
-                _contest = new Lazy<IContest>(() => value);
-                ContestId = value?.Id ?? Guid.Empty;
-            }
+            get => _contest.Object;
+            private set => _contest.Object = value;
         }
 
         /// <summary>

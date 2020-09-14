@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition;
 using Contest.Core.Component;
 using SmartWay.Orm.Attributes;
+using SmartWay.Orm.Entity.References;
 
 namespace Contest.Domain.Players
 {
@@ -9,13 +10,12 @@ namespace Contest.Domain.Players
     [Entity(NameInStore = "PERSON")]
     public class Person : Entity, IPerson
     {
-        [NonSerialized] private Lazy<ITeam> _affectedTeam;
+        private ReferenceHolder<ITeam, Guid> _affectedTeam;
 
-        [NonSerialized] private Guid _affectedTeamId;
-
-        private Person()
+        public Person()
         {
             FlippingContainer.Instance.ComposeParts(this);
+            _affectedTeam = new ReferenceHolder<ITeam, Guid>(TeamRepository);
         }
 
         #region MEF Import
@@ -39,24 +39,14 @@ namespace Contest.Domain.Players
         [Field(FieldName = "AFFECTED_TEAM")]
         public Guid AffectedTeamId
         {
-            get => _affectedTeamId;
-            set => _affectedTeamId = value;
+            get => _affectedTeam.Id;
+            set => _affectedTeam.Id = value;
         }
 
         public ITeam AffectedTeam
         {
-            get
-            {
-                if (_affectedTeam == null)
-                    _affectedTeam = new Lazy<ITeam>(() =>
-                        TeamRepository.FirstOrDefault(_ => _.Id == AffectedTeamId));
-                return _affectedTeam.Value;
-            }
-            set
-            {
-                _affectedTeam = new Lazy<ITeam>(() => value);
-                AffectedTeamId = value?.Id ?? Guid.Empty;
-            }
+            get => _affectedTeam.Object;
+            set => _affectedTeam.Object = value;
         }
 
         public void SetIndentity(string lastName, string firstName, string alias)

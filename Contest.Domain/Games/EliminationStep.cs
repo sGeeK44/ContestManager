@@ -49,7 +49,7 @@ namespace Contest.Domain.Games
         #region Constructors
 
         [UsedImplicitly]
-        protected EliminationStep()
+        public EliminationStep()
         {
         }
 

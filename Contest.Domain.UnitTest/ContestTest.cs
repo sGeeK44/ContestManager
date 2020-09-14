@@ -4,6 +4,7 @@ using Contest.Domain.Games;
 using Contest.Domain.Matchs;
 using Contest.Domain.Players;
 using Contest.Domain.Settings;
+using Contest.Domain.UnitTest;
 using Moq;
 using NUnit.Framework;
 

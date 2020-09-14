@@ -47,7 +47,7 @@ namespace Contest.Domain.Games
         #region Constructors
 
         [UsedImplicitly]
-        protected QualificationStep()
+        public QualificationStep()
         {
         }
 
