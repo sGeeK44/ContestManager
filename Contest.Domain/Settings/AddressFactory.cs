@@ -14,7 +14,6 @@ namespace Contest.Domain.Settings
         {
             var result = new Address
             {
-                Id = Guid.NewGuid(),
                 StreetNumber = streetNumber,
                 Street = street,
                 ZipCode = zipCode,

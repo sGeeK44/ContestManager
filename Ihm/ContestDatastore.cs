@@ -32,8 +32,9 @@ namespace Contest.Ihm
             AddType<EliminationStep>();
             AddType<QualificationStep>();
             AddType<Field>();
-            AddType<Relationship<ITeam, IGameStep>>();
-            AddType<Relationship<ITeam, IPhase>>();
+            AddType<TeamGameStepRelationship>();
+            AddType<TeamPhaseRelationship>();
+            AddType<TeamPersonRelationship>();
         }
     }
 }

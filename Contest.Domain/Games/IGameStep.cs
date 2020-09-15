@@ -8,11 +8,6 @@ namespace Contest.Domain.Games
     public interface IGameStep : IEntity
     {
         /// <summary>
-        ///     Get phase Id linked.
-        /// </summary>
-        Guid PhaseId { get; }
-
-        /// <summary>
         ///     Get phase linked.
         /// </summary>
         IPhase Phase { get; }
@@ -28,14 +23,14 @@ namespace Contest.Domain.Games
         EliminationType? NextStep { get; }
 
         /// <summary>
-        ///     Get setting game Id for current step
-        /// </summary>
-        Guid CurrentMatchSettingId { get; }
-
-        /// <summary>
         ///     Get setting game for current step
         /// </summary>
         IMatchSetting CurrentMatchSetting { get; }
+
+        /// <summary>
+        ///     Get team involved in current game step.
+        /// </summary>
+        IList<IRelationship<ITeam, IGameStep>> TeamGameStepList { get; }
 
         /// <summary>
         ///     Get team involved in current game step.

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Contest.Domain.Games;
 using Contest.Domain.Matchs;
@@ -13,24 +12,9 @@ namespace Contest.Domain.Players
         string Name { get; set; }
 
         /// <summary>
-        ///     Get all person who compose team
-        /// </summary>
-        IList<IPerson> Members { get; }
-
-        /// <summary>
-        ///     Get match list where current team is invovel
-        /// </summary>
-        IList<IMatch> MatchList { get; }
-
-        /// <summary>
         ///     Get current match where team in involve
         /// </summary>
         IMatch CurrentMatch { get; }
-
-        /// <summary>
-        ///     Get contest id associated to this team
-        /// </summary>
-        Guid ContestId { get; }
 
         /// <summary>
         ///     Get contest associated to this team
@@ -38,17 +22,26 @@ namespace Contest.Domain.Players
         IContest Contest { get; }
 
         /// <summary>
-        ///     Get GameStep involved in current team
+        ///     Get contest associated to this team
         /// </summary>
-        IList<IGameStep> GameStepList { get; set; }
+        IList<IRelationship<ITeam, IPerson>> Members { get; }
 
         /// <summary>
-        ///     Get Phase involved in current team
+        /// Add team in a new match
         /// </summary>
-        IList<IPhase> PhaseList { get; set; }
-
-        void AddPlayer(IPerson playerToAdd);
-        void RemovePlayer(IPerson playerToRemove);
+        /// <param name="match">New match for current tem</param>
         void AddMatch(IMatch match);
+
+        /// <summary>
+        /// Add new person in current team
+        /// </summary>
+        /// <param name="person">New person involve in team</param>
+        IRelationship<ITeam, IPerson> AddPlayer(IPerson person);
+
+        /// <summary>
+        /// Remove specified person from current team
+        /// </summary>
+        /// <param name="person">Person to remove</param>
+        IRelationship<ITeam, IPerson> RemovePlayer(IPerson person);
     }
 }

@@ -68,9 +68,17 @@ namespace Contest.Domain.Games
         /// <summary>
         ///     Get team involved in current game step.
         /// </summary>
+        public IList<IRelationship<ITeam, IPhase>> TeamPhaseList
+        {
+            get => _phaseTeamRelationshipList.Value;
+        }
+
+        /// <summary>
+        ///     Get team involved in current game step.
+        /// </summary>
         public IList<ITeam> TeamList
         {
-            get { return _phaseTeamRelationshipList.Value.Select(_ => _.FirstItemInvolve).ToList(); }
+            get { return TeamPhaseList.Select(_ => _.FirstItemInvolve).ToList(); }
             set
             {
                 _phaseTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IPhase>>>(() =>
@@ -197,7 +205,6 @@ namespace Contest.Domain.Games
 
             var result = new Phase
             {
-                Id = Guid.NewGuid(),
                 ContestId = contest.Id,
                 Type = type,
                 GameStepList = new List<IGameStep>(),

@@ -5,6 +5,7 @@ using Contest.Core.Helper;
 using Contest.Core.Windows.Mvvm;
 using Contest.Domain;
 using Contest.Domain.Games;
+using Contest.Service;
 
 namespace Contest.Ihm
 {
@@ -366,6 +367,10 @@ namespace Contest.Ihm
                 else CurrentContest.ConsolingEliminationSetting = null;
             }
             else CurrentContest.QualificationSetting = null;
+
+            var contestService = new ContestService();
+            contestService.UpdateContest(CurrentContest);
+
         }
     }
 }

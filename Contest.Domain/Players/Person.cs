@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using Contest.Core.Component;
+using Contest.Domain.Games;
 using SmartWay.Orm.Attributes;
-using SmartWay.Orm.Entity.References;
 
 namespace Contest.Domain.Players
 {
@@ -10,17 +12,17 @@ namespace Contest.Domain.Players
     [Entity(NameInStore = "PERSON")]
     public class Person : Entity, IPerson
     {
-        private ReferenceHolder<ITeam, Guid> _affectedTeam;
+        private Lazy<IList<IRelationship<ITeam, IPerson>>> _teamList;
 
         public Person()
         {
             FlippingContainer.Instance.ComposeParts(this);
-            _affectedTeam = new ReferenceHolder<ITeam, Guid>(TeamRepository);
+            _teamList = new Lazy<IList<IRelationship<ITeam, IPerson>>>(() => TeamPersonRelationshipRepository.Find(_ => _.SecondItemInvolveId == Id).ToList());
         }
 
         #region MEF Import
 
-        [Import] private IRepository<Team, ITeam> TeamRepository { get; set; }
+        [Import] private IRepository<TeamPersonRelationship, IRelationship<ITeam, IPerson>> TeamPersonRelationshipRepository { get; set; }
 
         #endregion
 
@@ -36,17 +38,10 @@ namespace Contest.Domain.Players
 
         [Field(FieldName = "IS_MEMBER")] public bool IsMember { get; set; }
 
-        [Field(FieldName = "AFFECTED_TEAM")]
-        public Guid AffectedTeamId
+        public IList<IRelationship<ITeam, IPerson>> TeamList
         {
-            get => _affectedTeam.Id;
-            set => _affectedTeam.Id = value;
-        }
-
-        public ITeam AffectedTeam
-        {
-            get => _affectedTeam.Object;
-            set => _affectedTeam.Object = value;
+            get => _teamList.Value;
+            set { _teamList = new Lazy<IList<IRelationship<ITeam, IPerson>>>(() => value); }
         }
 
         public void SetIndentity(string lastName, string firstName, string alias)
@@ -56,11 +51,16 @@ namespace Contest.Domain.Players
             Alias = alias;
         }
 
+        public ITeam GetTeam(IContest contest)
+        {
+            var association = TeamList.FirstOrDefault(_ => _.FirstItemInvolve.Contest.Id == contest.Id);
+            return association?.FirstItemInvolve;
+        }
+
         public static IPerson Create(string lastName, string firstName, string alias)
         {
             var result = new Person
             {
-                Id = Guid.NewGuid(),
                 LastName = lastName,
                 FirstName = firstName,
                 Alias = alias

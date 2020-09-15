@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using Contest.Core.Component;
+using Contest.Domain.Games;
 using Contest.Domain.Players;
 using Contest.Domain.Settings;
 using SmartWay.Orm.Attributes;
 using SmartWay.Orm.Entity.References;
+using SmartWay.Orm.Repositories;
 
 namespace Contest.Domain.Matchs
 {
@@ -20,6 +22,7 @@ namespace Contest.Domain.Matchs
         private ReferenceHolder<ITeam, Guid> _team2;
         private ReferenceHolder<IField, Guid> _matchField;
         private ReferenceHolder<IMatchSetting, Guid> _setting;
+        private ReferenceHolder<IGameStep, Guid> _gameStep;
 
         #endregion
 
@@ -31,29 +34,26 @@ namespace Contest.Domain.Matchs
 
         [Import] private IRepository<Team, ITeam> TeamRepository { get; set; }
 
+        [Import] private IRepository<IGameStep> GameStepRepository { get; set; }
+
         #endregion
 
         #region Constructors
 
         public Match()
         {
-            Id = Guid.NewGuid();
-            InitializeLazyProperties();
+            FlippingContainer.Instance.ComposeParts(this);
+            _gameStep = new ReferenceHolder<IGameStep, Guid>(GameStepRepository);
+            _team1 = new ReferenceHolder<ITeam, Guid>(TeamRepository);
+            _team2 = new ReferenceHolder<ITeam, Guid>(TeamRepository);
+            _matchField = new ReferenceHolder<IField, Guid>(FieldRepository);
+            _setting = new ReferenceHolder<IMatchSetting, Guid>(MatchSettingRepository);
         }
 
         internal Match(InternalMatchState state)
             : this()
         {
             CurrentState = state;
-        }
-
-        private void InitializeLazyProperties()
-        {
-            FlippingContainer.Instance.ComposeParts(this);
-            _team1 = new ReferenceHolder<ITeam, Guid>(TeamRepository);
-            _team2 = new ReferenceHolder<ITeam, Guid>(TeamRepository);
-            _matchField = new ReferenceHolder<IField, Guid>(FieldRepository);
-            _setting = new ReferenceHolder<IMatchSetting, Guid>(MatchSettingRepository);
         }
 
         #endregion
@@ -64,7 +64,16 @@ namespace Contest.Domain.Matchs
         ///     Get game step id linked
         /// </summary>
         [Field(FieldName = "GAME_STEP_ID")]
-        public Guid GameStepId { get; set; }
+        public Guid GameStepId
+        {
+            get => _gameStep.Id;
+            set => _gameStep.Id = value;
+        }
+        public IGameStep GameStep
+        {
+            get => _gameStep.Object;
+            set => _gameStep.Object = value;
+        }
 
         /// <summary>
         ///     Get first involved team Id in current match
@@ -282,7 +291,7 @@ namespace Contest.Domain.Matchs
 
         public bool IsTeamInvolved(ITeam team)
         {
-            return Team1 == team || Team2 == team;
+            return Team1.Equals(team) || Team2.Equals(team);
         }
 
         #endregion

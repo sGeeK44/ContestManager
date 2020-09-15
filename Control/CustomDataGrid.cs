@@ -10,13 +10,13 @@ namespace Contest.Control
         public CustomDataGrid()
         {
             SelectionChanged += CustomDataGrid_SelectionChanged;
-            
         }
 
         void CustomDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SelectedItemsList = SelectedItems;
         }
+
         #region SelectedItemsList
 
         public IList SelectedItemsList
@@ -26,7 +26,7 @@ namespace Contest.Control
         }
 
         public static readonly DependencyProperty SelectedItemsListProperty =
-                DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGrid), new PropertyMetadata(null));
+                DependencyProperty.Register("SelectedItemsList", typeof(IList), typeof(CustomDataGrid), new PropertyMetadata());
 
         #endregion
     }

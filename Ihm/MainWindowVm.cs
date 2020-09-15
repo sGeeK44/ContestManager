@@ -5,6 +5,7 @@ using Contest.Core.Component;
 using Contest.Core.Windows.Commands;
 using Contest.Core.Windows.Mvvm;
 using Contest.Domain.Games;
+using Contest.Service;
 using SmartWay.Orm;
 using SmartWay.Orm.Interfaces;
 
@@ -108,7 +109,8 @@ namespace Contest.Ihm
                 delegate
                 {
                     ContestVm.UpdateContest();
-                    CurrentContest.StartContest();
+                    var contestService = new ContestService();
+                    contestService.StartContest(CurrentContest);
                     DisplayContest();
                 },
                 delegate
@@ -259,12 +261,10 @@ namespace Contest.Ihm
 
         public RelayCommand CreateContest { get; set; }
         public RelayCommand OpenContest { get; set; }
-        public RelayCommand SaveAsContest { get; set; }
         public RelayCommand CloseContest { get; set; }
         public RelayCommand Exit { get; set; }
 
         public RelayCommand StartContest { get; set; }
-        public RelayCommand UpdateContest { get; set; }
         public RelayCommand ShowPhaseViewer { get; set; }
         public RelayCommand StartNextPhase { get; set; }
         public RelayCommand EndContest { get; set; }

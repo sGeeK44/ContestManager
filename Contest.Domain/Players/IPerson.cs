@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using Contest.Domain.Games;
 
 namespace Contest.Domain.Players
 {
@@ -16,10 +17,10 @@ namespace Contest.Domain.Players
 
         bool IsMember { get; set; }
 
-        Guid AffectedTeamId { get; set; }
-
-        ITeam AffectedTeam { get; set; }
+        IList<IRelationship<ITeam, IPerson>> TeamList { get; }
 
         void SetIndentity(string lastName, string firstName, string alias);
+
+        ITeam GetTeam(IContest contest);
     }
 }

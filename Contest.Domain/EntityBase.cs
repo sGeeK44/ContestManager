@@ -9,7 +9,7 @@ namespace Contest.Domain
     /// <summary>
     ///     Encaspulate common behavior for standard entity
     /// </summary>
-    public abstract class Entity : IDistinctableEntity
+    public abstract class Entity : IDistinctableEntity, IEquatable<Entity>
     {
         public const string IdColumnName = "id";
 
@@ -29,6 +29,24 @@ namespace Contest.Domain
         public object GetPkValue()
         {
             return Id;
+        }
+
+        public bool Equals(Entity other)
+        {
+            return Equals(Id, other?.Id);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Entity)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
         }
     }
 }

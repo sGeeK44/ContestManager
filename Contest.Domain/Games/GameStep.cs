@@ -136,9 +136,17 @@ namespace Contest.Domain.Games
         /// <summary>
         ///     Get team involved in current game step.
         /// </summary>
+        public IList<IRelationship<ITeam, IGameStep>> TeamGameStepList
+        {
+            get => _gameStepTeamRelationshipList.Value;
+        }
+
+        /// <summary>
+        ///     Get team involved in current game step.
+        /// </summary>
         public IList<ITeam> TeamList
         {
-            get { return _gameStepTeamRelationshipList.Value.Select(_ => _.FirstItemInvolve).ToList(); }
+            get { return TeamGameStepList.Select(_ => _.FirstItemInvolve).ToList(); }
             set
             {
                 _gameStepTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IGameStep>>>(

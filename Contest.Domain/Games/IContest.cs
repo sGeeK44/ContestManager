@@ -28,31 +28,6 @@ namespace Contest.Domain.Games
         bool IsFinished { get; }
 
         /// <summary>
-        ///     Get end date for contest.
-        /// </summary>
-        DateTime? EndedDate { get; set; }
-
-        /// <summary>
-        ///     Get end date for contest.
-        /// </summary>
-        Guid GameSettingId { get; }
-
-        /// <summary>
-        ///     Get game setting for current contest.
-        /// </summary>
-        IGameSetting GameSetting { get; set; }
-
-        /// <summary>
-        ///     Get end date for contest.
-        /// </summary>
-        Guid PhysicalSettingId { get; }
-
-        /// <summary>
-        ///     Get physical setting for current contest.
-        /// </summary>
-        IPhysicalSetting PhysicalSetting { get; set; }
-
-        /// <summary>
         ///     Get count available for current contest
         /// </summary>
         ushort CountField { get; set; }
@@ -78,11 +53,6 @@ namespace Contest.Domain.Games
         IList<ITeam> TeamList { get; }
 
         /// <summary>
-        ///     Get end date for contest.
-        /// </summary>
-        Guid EliminationSettingId { get; }
-
-        /// <summary>
         ///     Get setting for elimination step
         /// </summary>
         IEliminationStepSetting EliminationSetting { get; set; }
@@ -93,11 +63,6 @@ namespace Contest.Domain.Games
         IPhase PrincipalPhase { get; }
 
         /// <summary>
-        ///     Get end date for contest.
-        /// </summary>
-        Guid ConsolingEliminationSettingId { get; }
-
-        /// <summary>
         ///     Get setting for consoling elimination step
         /// </summary>
         IEliminationStepSetting ConsolingEliminationSetting { get; set; }
@@ -106,11 +71,6 @@ namespace Contest.Domain.Games
         ///     Get Consoling phase.
         /// </summary>
         IPhase ConsolingPhase { get; }
-
-        /// <summary>
-        ///     Get end date for contest.
-        /// </summary>
-        Guid QualificationSettingId { get; }
 
         /// <summary>
         ///     Get setting for qualification step
@@ -164,11 +124,6 @@ namespace Contest.Domain.Games
         ///     Launch next phase for current contest.
         /// </summary>
         void LaunchNextPhase();
-
-        /// <summary>
-        ///     End current contest.
-        /// </summary>
-        void EndContest();
 
         /// <summary>
         ///     Occurs when current contest is started

@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Contest.Core.Windows.Commands;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain.Games;
 using Contest.Domain.Players;
+using Contest.Service;
 
 namespace Contest.Ihm
 {
@@ -11,37 +12,38 @@ namespace Contest.Ihm
     {
         #region Constructor
         
-        public AddTeamMemberVm(IList<ITeam> selectableTeam)
+        public AddTeamMemberVm(IContest currentContest, IList<IPerson> selectedPlayers)
         {
-            if (selectableTeam == null) throw new ArgumentNullException(nameof(selectableTeam));
-            if (selectableTeam.Count == 0) throw new ArgumentException("Aucune équipe de disponible.", nameof(selectableTeam));
-
-            AvailableTeamList = selectableTeam;
-            SelectedTeam = AvailableTeamList.First();
-            Select = new RelayCommand(
-                delegate
-                {
-                    CloseCommand.Execute(SelectedTeam);
-                },
-                delegate
-                {
-                    return true;
-                });
+            SelectedPlayers = selectedPlayers;
+            AvailableTeamList = currentContest.TeamList.Where(_ => _.Members.Count < currentContest.MaximumPlayerByTeam).ToList();
+            SelectedTeam = AvailableTeamList.FirstOrDefault();
         }
 
         #endregion
 
-        #region Properties}
+        #region Properties
+
+        public IContest Contest { get; set; }
 
         public IList<ITeam> AvailableTeamList { get; set; }
 
         public ITeam SelectedTeam { get; set; }
+        public IList<IPerson> SelectedPlayers { get; }
 
         #endregion
 
         #region Commands
 
-        public RelayCommand Select { get; set; }
+        public RelayCommand Select => new RelayCommand(
+            delegate
+            {
+                var service = new ContestService();
+                service.AddPlayer(SelectedTeam, SelectedPlayers);
+            },
+            delegate
+            {
+                return true;
+            });
 
         #endregion
     }

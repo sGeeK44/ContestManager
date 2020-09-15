@@ -1,20 +1,51 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
 using System.Linq;
+using Contest.Core.Component;
 using Contest.Core.Windows.Commands;
 using Contest.Core.Windows.Mvvm;
+using Contest.Domain;
 using Contest.Domain.Games;
 using Contest.Domain.Players;
+using Contest.Service;
 
 namespace Contest.Ihm
 {
+    public class PersonVm : ViewModel
+    {
+        private readonly IContest _contest;
+
+        public PersonVm(IContest contest, IPerson person)
+        {
+            _contest = contest;
+            Person = person;
+        }
+
+        public IPerson Person { get; }
+
+        public ITeam AffectedTeam => Person.GetTeam(_contest);
+
+        public string Alias => Person.Alias;
+
+        public string LastName => Person.LastName;
+
+        public string FirstName => Person.FirstName;
+
+        public string Mail => Person.Mail;
+    }
     public class PlayerListVm : ViewModel
     {
+        #region MEF Import
+
+        [Import] private IRepository<Person, IPerson> PersonRepository { get; set; }
+
+        #endregion
+
         #region Fields
 
-        private RegisterPlayer _registerPlayerWindows;
-        private ObservableCollection<IPerson> _playerList;
+        private ObservableCollection<PersonVm> _playerList;
 
         #endregion
 
@@ -22,123 +53,9 @@ namespace Contest.Ihm
 
         public PlayerListVm(IContest contest)
         {
-            var currentContest = contest ?? throw new ArgumentNullException(nameof(contest));
-            PlayerList = new ObservableCollection<IPerson>(currentContest.TeamList.SelectMany(team => team.Members));
-            SelectedPlayerList = new ObservableCollection<IPerson>();
-
-            #region Init Commands
-
-            UpdatePlayer = new RelayCommand(
-                delegate
-                    {
-                        DoAddOrUpdatePlayer(SelectedPlayer);
-                    },
-                delegate { return SelectedPlayer != null; });
-
-            AddPlayer = new RelayCommand(
-                delegate { DoAddOrUpdatePlayer(); },
-                delegate { return true; });
-
-            RemovePlayer = new RelayCommand(
-                delegate
-                {
-                    IPerson personToRemove = SelectedPlayer;
-                    var teamAffected = personToRemove.AffectedTeam;
-                    if (teamAffected != null)
-                    {
-                        teamAffected.RemovePlayer(personToRemove);
-                        if (teamAffected.Members.Count == 0) currentContest.UnRegister(teamAffected);
-                    }
-                    PlayerList.Remove(personToRemove);
-                },
-                delegate { return SelectedPlayer != null; });
-            AddTeam = new RelayCommand(
-                delegate
-                {
-                    var addTeamMemberWindows = new AddTeamMember(currentContest.TeamList.Where(_ => _.Members.Count < currentContest.MaximumPlayerByTeam).ToList());
-                    addTeamMemberWindows.Show();
-                    if (addTeamMemberWindows.DataContext is AddTeamMemberVm viewModel)
-                    {
-                        viewModel.RequestClose += o =>
-                        {
-                            if (o is Team selectedTeam)
-                            {
-                                foreach (Person person in SelectedPlayerList)
-                                {
-                                    selectedTeam.AddPlayer(person);
-                                }
-                                PlayerList = new ObservableCollection<IPerson>(PlayerList);
-                            }
-                            addTeamMemberWindows = null;
-                        };
-                    }
-                },
-                delegate
-                {
-                    return !currentContest.IsStarted
-                        && SelectedPlayer != null
-                        && SelectedPlayerList.Count != 0
-                        && SelectedPlayerList.Cast<Person>()
-                                             .Count(item => item.AffectedTeam != null) == 0
-                        //One team at less has created
-                        && PlayerList.Select(item => item.AffectedTeam).Count(team => team != null) != 0;
-                });
-            RemoveTeam = new RelayCommand(
-                delegate
-                {
-                    ITeam team = null;
-                    foreach (IPerson person in SelectedPlayerList)
-                    {
-                        if (team == null) team = person.AffectedTeam;
-                        team.RemovePlayer(person);
-                    }
-                    if (team != null && team.Members.Count == 0) currentContest.UnRegister(team);
-                    PlayerList = new ObservableCollection<IPerson>(PlayerList);
-                },
-                delegate
-                {
-                    if (SelectedPlayerList.Count == 0) return false;
-
-                    IPerson first = null;
-                    foreach (IPerson person in SelectedPlayerList)
-                    {
-                        if (first == null && person.AffectedTeam == null) return false;
-                        if (first == null) first = person;
-                        else if (first.AffectedTeam != person.AffectedTeam) return false;
-                    }
-                    return true;
-                });
-            CreateTeam = new RelayCommand(
-                delegate
-                {
-                    var registerTeamWindows = new RegisterTeam(currentContest);
-                    registerTeamWindows.Show();
-                    if (registerTeamWindows.DataContext is RegisterTeamVm viewModel)
-                    {
-                        viewModel.RequestClose += o =>
-                        {
-                            if (o != null)
-                            {
-                                if (o is Team newTeam)
-                                {
-                                    foreach (var person in SelectedPlayerList.Cast<Person>())
-                                    {
-                                        newTeam.AddPlayer(person);
-                                    }
-                                    PlayerList = new ObservableCollection<IPerson>(PlayerList);
-                                }
-                            }
-                            registerTeamWindows = null;
-                        };
-                    }
-                },
-                delegate
-                {
-                    return SelectedPlayer != null
-                        && SelectedPlayerList.Cast<Person>().Count(item => item.AffectedTeam != null) == 0;
-                });
-
-            #endregion
+            FlippingContainer.Instance.ComposeParts(this);
+            Contest = contest ?? throw new ArgumentNullException(nameof(contest));
+            RefreshPlayerList(null, null);
         }
 
         #endregion
@@ -147,51 +64,102 @@ namespace Contest.Ihm
 
         #region Data
 
-        public ObservableCollection<IPerson> PlayerList
+        public IContest Contest { get; set; }
+
+        public ObservableCollection<PersonVm> PlayerList
         {
             get => _playerList;
             set => Set(ref _playerList, value);
         }
 
-        public Person SelectedPlayer { get; set; }
-        public IList SelectedPlayerList { get; set; }
+        public PersonVm SelectedPlayer { get; set; }
 
         #endregion
 
         #region Commands
 
-        public RelayCommand AddPlayer { get; set; }
-        public RelayCommand UpdatePlayer { get; set; }
-        public RelayCommand RemovePlayer { get; set; }
-        public RelayCommand AddTeam { get; set; }
-        public RelayCommand CreateTeam { get; set; }
-        public RelayCommand RemoveTeam { get; set; }
-
-        #endregion
-
-        #endregion
-
-        #region Methods
-
-        private void DoAddOrUpdatePlayer(Person playerToUpdate = null)
-        {
-            _registerPlayerWindows = new RegisterPlayer(playerToUpdate);
-            _registerPlayerWindows.Show();
-            if (_registerPlayerWindows.DataContext is RegisterPlayerVm viewModel)
+        public RelayCommand AddPlayer => new RelayCommand(_ =>
             {
-                viewModel.RequestClose += o =>
-                {
-                    if (o is Person newPlayer)
-                    {
-                        if (PlayerList.Count(item => item.Id == newPlayer.Id) == 0)
-                        {
-                            PlayerList.Add(newPlayer);
-                        }
-                    }
-                    _registerPlayerWindows = null;
-                };
-            }
+                DisplayRegisterPlayer();
+            },
+            delegate { return true; }
+        );
+
+        public RelayCommand UpdatePlayer => new RelayCommand(_ =>
+            {
+                DisplayRegisterPlayer(SelectedPlayer);
+            },
+            delegate { return SelectedPlayer != null; }
+        );
+
+        private void DisplayRegisterPlayer(PersonVm player = null)
+        {
+            var registerPlayervm = new RegisterPlayerVm(player?.Person);
+            var registerPlayerWindows = new RegisterPlayer { DataContext = registerPlayervm };
+            registerPlayerWindows.Show();
+            registerPlayerWindows.Closed += RefreshPlayerList;
         }
+
+        private void RefreshPlayerList(object sender, EventArgs e)
+        {
+            PlayerList = new ObservableCollection<PersonVm>(PersonRepository.GetAll().Select(person => new PersonVm(Contest, person)));
+        }
+
+        public RelayCommand RemovePlayer => new RelayCommand(_ =>
+            {
+                var selectedPerson = ((IList)_).Cast<PersonVm>().ToList();
+                var service = new ContestService();
+                service.RemovePerson(Contest, selectedPerson.Select(vm => vm.Person).ToList());
+                RefreshPlayerList(null, null);
+            },
+            delegate { return SelectedPlayer != null; }
+        );
+
+        public RelayCommand AddTeam => new RelayCommand(_ =>
+            {
+                var selectedPerson = ((IList)_).Cast<PersonVm>().ToList();
+                var addMemberMemberData = new AddTeamMemberVm(Contest, selectedPerson.Select(vm => vm.Person).ToList());
+                var addTeamMemberWindows = new AddTeamMember { DataContext = addMemberMemberData };
+                addTeamMemberWindows.Show();
+                addTeamMemberWindows.Closed += RefreshPlayerList;
+            },
+            _ =>
+            {
+                var selectedPerson = ((IList)_).Cast<PersonVm>().ToList();
+                return !Contest.IsStarted
+                       && selectedPerson.Count != 0
+                       && selectedPerson.Count(item => item.AffectedTeam != null) == 0;
+            });
+        public RelayCommand CreateTeam => new RelayCommand(_ =>
+            {
+                var selectedPerson = ((IList)_).Cast<PersonVm>().ToList();
+                var registerTeamVm = new RegisterTeamVm(Contest, selectedPerson.Select(vm => vm.Person).ToList());
+                var registerTeamWindows = new RegisterTeam { DataContext = registerTeamVm };
+                registerTeamWindows.Show();
+                registerTeamWindows.Closed += RefreshPlayerList;
+            },
+            _ =>
+            {
+                var selectedPerson = ((IList)_).Cast<PersonVm>().ToList();
+                return selectedPerson.All(item => item.AffectedTeam == null);
+            }
+        );
+
+        public RelayCommand RemoveTeam => new RelayCommand(_ =>
+            {
+                var selectedPerson = ((IList) _).Cast<PersonVm>().ToList();
+                var service = new ContestService();
+                service.RemovePlayer(Contest, selectedPerson.Select(vm => vm.Person).ToList());
+                RefreshPlayerList(null, null);
+            },
+            _ =>
+            {
+                var selectedPerson = ((IList)_).Cast<PersonVm>().ToList();
+                return selectedPerson.Count != 0 && selectedPerson.Any(_ => _.AffectedTeam != null);
+            }
+        );
+
+        #endregion
 
         #endregion
     }

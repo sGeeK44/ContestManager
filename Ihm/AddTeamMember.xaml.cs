@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Contest.Domain.Players;
+﻿using System.Windows.Input;
+using Microsoft.Xaml.Behaviors.Core;
 
 namespace Contest.Ihm
 {
@@ -8,12 +8,11 @@ namespace Contest.Ihm
     /// </summary>
     public partial class AddTeamMember
     {
-        public AddTeamMember(IList<ITeam> selectableTeam)
+        public AddTeamMember()
         {
             InitializeComponent();
-            var viewModel = new AddTeamMemberVm(selectableTeam);
-            DataContext = viewModel;
-            viewModel.RequestClose += o => Close();
         }
+
+        public ICommand CloseCommand => new ActionCommand(Close);
     }
 }

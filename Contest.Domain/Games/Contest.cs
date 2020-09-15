@@ -343,7 +343,7 @@ namespace Contest.Domain.Games
         public bool IsRegister(ITeam team)
         {
             if (team == null) throw new ArgumentNullException(nameof(team));
-            return TeamList.Any(item => item == team);
+            return TeamList.Any(item => item.Equals(team));
         }
 
         /// <summary>
@@ -369,6 +369,7 @@ namespace Contest.Domain.Games
             if (!IsRegister(team))
                 throw new ArgumentException(
                     $"L'équipe spécifié n'est pas inscrite au tournoi. Equipe:{team.Name}.");
+
             TeamList.Remove(team);
         }
 
@@ -380,7 +381,7 @@ namespace Contest.Domain.Games
             if (EliminationSetting == null)
                 throw new NotSupportedException("Elimination setting have to be set before start contest.");
 
-            _fieldList = new Lazy<IList<IField>>(() => CreateField());
+            _fieldList = new Lazy<IList<IField>>(CreateField);
 
             TeamList.Shuffle();
 

@@ -49,7 +49,6 @@ namespace Contest.Domain.Settings
             if (countField == 0) throw new ArgumentException("Il faut au moins un terrain de disponible.");
             var result = new PhysicalSetting
             {
-                Id = Guid.NewGuid(),
                 Address = address,
                 PhysicalType = type,
                 CountField = countField

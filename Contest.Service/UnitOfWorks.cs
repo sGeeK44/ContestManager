@@ -18,6 +18,11 @@ namespace Contest.Service
                 DataStore.Update(entity);
         }
 
+        public void Delete(IEntity entity)
+        {
+            DataStore.Delete(entity);
+        }
+
         public void Begin()
         {
             DataStore.BeginTransaction();

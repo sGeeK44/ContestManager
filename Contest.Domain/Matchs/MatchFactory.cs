@@ -32,7 +32,7 @@ namespace Contest.Domain.Matchs
                 TeamScore1 = 0,
                 TeamScore2 = 0,
                 MatchState = MatchState.Planned,
-                GameStepId = gameStep.Id,
+                GameStep = gameStep,
                 Setting = setting
             };
             team1.AddMatch(result);

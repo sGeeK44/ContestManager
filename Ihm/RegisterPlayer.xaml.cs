@@ -1,4 +1,7 @@
-﻿using Contest.Domain.Players;
+﻿using System.Windows;
+using System.Windows.Input;
+using Contest.Domain.Players;
+using Microsoft.Xaml.Behaviors.Core;
 
 namespace Contest.Ihm
 {
@@ -7,12 +10,11 @@ namespace Contest.Ihm
     /// </summary>
     public partial class RegisterPlayer
     {
-        public RegisterPlayer(Person personToUpdate = null)
+        public RegisterPlayer()
         {
             InitializeComponent();
-            var viewModel = new RegisterPlayerVm(personToUpdate);
-            DataContext = viewModel;
-            viewModel.RequestClose += o => Close();
         }
+
+        public ICommand CloseCommand => new ActionCommand(Close);
     }
 }

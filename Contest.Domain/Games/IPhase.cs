@@ -8,14 +8,14 @@ namespace Contest.Domain.Games
     public interface IPhase : IEntity
     {
         /// <summary>
-        ///     Get identifier of current match.
-        /// </summary>
-        Guid ContestId { get; }
-
-        /// <summary>
         ///     Get type of current game step.
         /// </summary>
         PhaseType Type { get; }
+
+        /// <summary>
+        ///     Get team involved in current game step.
+        /// </summary>
+        IList<IRelationship<ITeam, IPhase>> TeamPhaseList { get; }
 
         /// <summary>
         ///     Get team involved in current game step.

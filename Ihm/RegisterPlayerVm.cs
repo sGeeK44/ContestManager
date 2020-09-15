@@ -1,6 +1,8 @@
-﻿using Contest.Core.Windows.Commands;
+﻿using System.Collections.ObjectModel;
+using Contest.Core.Windows.Commands;
 using Contest.Core.Windows.Mvvm;
 using Contest.Domain.Players;
+using Contest.Service;
 
 namespace Contest.Ihm
 {
@@ -8,7 +10,7 @@ namespace Contest.Ihm
     {
         #region Constructors
 
-        public RegisterPlayerVm(IPerson personToUpdate)
+        public RegisterPlayerVm(IPerson personToUpdate = null)
         {
             Player = personToUpdate;
 
@@ -27,15 +29,15 @@ namespace Contest.Ihm
             Save = new RelayCommand(
                 delegate
                     {
+                        var contestService = new ContestService();
                         if (Player == null)
                         {
-                            Player = Person.Create(LastName, FirstName, Alias);
+                            contestService.CreatePerson(LastName, FirstName, Alias, Mail, CanMailing, IsMemberOfAssociation);
                         }
-                        else Player.SetIndentity(LastName, FirstName, Alias);
-                        Player.Mail = Mail;
-                        Player.CanMailing = CanMailing;
-                        Player.IsMember = IsMemberOfAssociation;
-                        CloseCommand.Execute(Player);
+                        else
+                        {
+                            contestService.UpdatePerson(Player, LastName, FirstName, Alias, Mail, CanMailing, IsMemberOfAssociation);
+                        }
                     },
                 delegate
                     {

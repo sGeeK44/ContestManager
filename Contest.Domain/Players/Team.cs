@@ -20,8 +20,8 @@ namespace Contest.Domain.Players
         #region Fields
 
         private ReferenceHolder<IContest, Guid> _contest;
-        private Lazy<IList<IPerson>> _members;
         private Lazy<IList<IMatch>> _matchList;
+        private Lazy<IList<IRelationship<ITeam, IPerson>>> _memberList;
         private Lazy<IList<IRelationship<ITeam, IGameStep>>> _gameStepTeamRelationshipList;
         private Lazy<IList<IRelationship<ITeam, IPhase>>> _phaseTeamRelationshipList;
 
@@ -37,9 +37,11 @@ namespace Contest.Domain.Players
 
         [Import] private IRepository<Games.Contest, IContest> ContestRepository { get; set; }
 
-        [Import] private IRepository<Relationship<Team, GameStep>, IRelationship<ITeam, IGameStep>> TeamGameStepRelationshipRepository { get; set; }
+        [Import] private IRepository<TeamPersonRelationship, IRelationship<ITeam, IPerson>> TeamPersonRelationshipRepository { get; set; }
 
-        [Import] private IRepository<Relationship<Team, Phase>, IRelationship<ITeam, IPhase>> TeamPhaseRelationshipRepository { get; set; }
+        [Import] private IRepository<TeamGameStepRelationship, IRelationship<ITeam, IGameStep>> TeamGameStepRelationshipRepository { get; set; }
+
+        [Import] private IRepository<TeamPhaseRelationship, IRelationship<ITeam, IPhase>> TeamPhaseRelationshipRepository { get; set; }
 
         [Import] private IRelationshipFactory<ITeam, IGameStep> TeamGameStepRelationshipFactory { get; set; }
 
@@ -52,27 +54,22 @@ namespace Contest.Domain.Players
         public Team()
         {
             FlippingContainer.Instance.ComposeParts(this);
-            _members = new Lazy<IList<IPerson>>(() =>
-                PersonRepository.Find(_ => _.AffectedTeamId == Id).ToList());
+            _contest = new ReferenceHolder<IContest, Guid>(ContestRepository);
             _matchList = new Lazy<IList<IMatch>>(() => MatchRepository.Find(_ => _.Team1Id == Id)
                 .Union(MatchRepository.Find(_ => _.Team2Id == Id))
                 .ToList());
-            _contest = new ReferenceHolder<IContest, Guid>(ContestRepository);
-            _gameStepTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IGameStep>>>(() =>
-                TeamGameStepRelationshipRepository
-                    .Find(_ => _.FirstItemInvolveId == Id).ToList());
-            _phaseTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IPhase>>>(() =>
-                TeamPhaseRelationshipRepository.Find(_ => _.SecondItemInvolveId == Id)
-                    .ToList());
+            _memberList = new Lazy<IList<IRelationship<ITeam, IPerson>>>(() => TeamPersonRelationshipRepository.Find(_ => _.FirstItemInvolveId == Id).ToList());
+            _gameStepTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IGameStep>>>(() => TeamGameStepRelationshipRepository.Find(_ => _.FirstItemInvolveId == Id).ToList());
+            _phaseTeamRelationshipList = new Lazy<IList<IRelationship<ITeam, IPhase>>>(() => TeamPhaseRelationshipRepository.Find(_ => _.SecondItemInvolveId == Id).ToList());
         }
 
         public Team(IContest contest, string name)
+            : this()
         {
-            Id = Guid.NewGuid();
             Contest = contest;
             Name = name;
-            Members = new List<IPerson>();
             MatchList = new List<IMatch>();
+            Members = new List<IRelationship<ITeam, IPerson>>();
             _gameStepTeamRelationshipList =
                 new Lazy<IList<IRelationship<ITeam, IGameStep>>>(() => new List<IRelationship<ITeam, IGameStep>>());
             _phaseTeamRelationshipList =
@@ -89,19 +86,16 @@ namespace Contest.Domain.Players
         [Field(FieldName = "NAME")]
         public string Name { get; set; }
 
-        /// <summary>
-        ///     Get all person who compose team
-        /// </summary>
-        public IList<IPerson> Members
-        {
-            get => _members.Value;
-            set { _members = new Lazy<IList<IPerson>>(() => value); }
-        }
-
         public IList<IMatch> MatchList
         {
             get => _matchList.Value;
             set { _matchList = new Lazy<IList<IMatch>>(() => value); }
+        }
+
+        public IList<IRelationship<ITeam, IPerson>> Members
+        {
+            get => _memberList.Value;
+            set { _memberList = new Lazy<IList<IRelationship<ITeam, IPerson>>>(() => value); }
         }
 
         /// <summary>
@@ -163,26 +157,26 @@ namespace Contest.Domain.Players
 
         #region Methods
 
-        public void AddPlayer(IPerson playerToAdd)
-        {
-            if (playerToAdd == null) throw new ArgumentNullException(nameof(playerToAdd));
-            if (Members.Count(item => item == playerToAdd) != 0) return;
-
-            Members.Add(playerToAdd);
-            playerToAdd.AffectedTeam = this;
-        }
-
-        public void RemovePlayer(IPerson playerToRemove)
-        {
-            if (playerToRemove == null) throw new ArgumentNullException(nameof(playerToRemove));
-            Members.Remove(playerToRemove);
-            playerToRemove.AffectedTeam = null;
-        }
-
         public void AddMatch(IMatch match)
         {
             if (match == null) return;
             if (!MatchList.Contains(match)) MatchList.Add(match);
+        }
+
+        public IRelationship<ITeam, IPerson> AddPlayer(IPerson person)
+        {
+            var association = new TeamPersonRelationship(this, person);
+            _memberList.Value.Add(association);
+            person.TeamList.Add(association);
+            return association;
+        }
+
+        public IRelationship<ITeam, IPerson> RemovePlayer(IPerson person)
+        {
+            var association = Members.FirstOrDefault(_ => _.SecondItemInvolveId == person.Id);
+            _memberList.Value.Remove(association);
+            person.TeamList.Remove(association);
+            return association;
         }
 
         #endregion

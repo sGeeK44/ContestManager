@@ -1,4 +1,6 @@
-﻿using Contest.Domain.Games;
+﻿using System.Windows.Input;
+using Contest.Domain.Games;
+using Microsoft.Xaml.Behaviors.Core;
 
 namespace Contest.Ihm
 {
@@ -7,12 +9,11 @@ namespace Contest.Ihm
     /// </summary>
     public partial class RegisterTeam
     {
-        public RegisterTeam(IContest contest)
+        public RegisterTeam()
         {
             InitializeComponent();
-            var viewModel = new RegisterTeamVm(contest);
-            DataContext = viewModel;
-            viewModel.RequestClose += o => Close();
         }
+
+        public ICommand CloseCommand => new ActionCommand(Close);
     }
 }
