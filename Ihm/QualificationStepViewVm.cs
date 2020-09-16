@@ -100,13 +100,13 @@ namespace Contest.Ihm
             public void RefreshVm(object sender)
             {
                 CountMatchPlayed = MatchList.Count(item => item.IsFinished);
-                CountMatchWin = MatchList.Count(item => item.IsFinished && item.Winner == CurrenTeam);
-                CountMatchLoose = MatchList.Count(item => item.IsFinished && item.Winner != CurrenTeam);
+                CountMatchWin = MatchList.Count(item => item.IsFinished && item.Winner.Equals(CurrenTeam));
+                CountMatchLoose = MatchList.Count(item => item.IsFinished && !item.Winner.Equals(CurrenTeam));
                 SumMarkedPoint = MatchList.Where(item => item.IsFinished)
-                                          .Select(item => (item.Team1 == CurrenTeam) ? item.TeamScore1 : item.TeamScore2)
+                                          .Select(item => (item.Team1.Equals(CurrenTeam)) ? item.TeamScore1 : item.TeamScore2)
                                           .Sum(item => item);
                 SumTakePoint = MatchList.Where(item => item.IsFinished)
-                                            .Select(item => (item.Team1 == CurrenTeam) ? item.TeamScore2 : item.TeamScore1)
+                                            .Select(item => (item.Team1.Equals(CurrenTeam)) ? item.TeamScore2 : item.TeamScore1)
                                             .Sum(item => item);
                 DifPointTakePoint = SumMarkedPoint - SumTakePoint;
             }

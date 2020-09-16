@@ -196,6 +196,39 @@ namespace Contest.Service
             });
         }
 
+        public void SaveContest(IContest currentContest)
+        {
+            WithTransaction(() =>
+            {
+                UnitOfWorks.Save(currentContest);
+                foreach (var field in currentContest.FieldList)
+                {
+                    UnitOfWorks.Save(field);
+                }
+                foreach (var phase in currentContest.PhaseList)
+                {
+                    UnitOfWorks.Save(phase);
+                    foreach (var gameStep in phase.GameStepList)
+                    {
+                        UnitOfWorks.Save(gameStep.CurrentMatchSetting);
+                        UnitOfWorks.Save(gameStep);
+                        foreach (var team in gameStep.TeamGameStepList)
+                        {
+                            UnitOfWorks.Save(team);
+                        }
+                        foreach (var match in gameStep.MatchList)
+                        {
+                            UnitOfWorks.Save(match);
+                        }
+                    }
+                    foreach (var teamPhase in phase.TeamPhaseList)
+                    {
+                        UnitOfWorks.Save(teamPhase);
+                    }
+                }
+            });
+        }
+
         private void WithTransaction(Action action)
         {
             try

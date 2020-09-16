@@ -20,10 +20,13 @@ namespace Contest.Ihm
         {
             if (match == null) throw new ArgumentException();
             
+            CurrentMatch = match;
             var timer = new DispatcherTimer();
             timer.Tick += RefreshTimeElapse;
             timer.Interval = TimeSpan.FromSeconds(1);
-            CurrentMatch = match;
+            if (match.MatchState == MatchState.InProgress)
+                timer.Start();
+
             UpdateScore();
             UpdateState();
             UpdateField();
@@ -77,6 +80,7 @@ namespace Contest.Ihm
                     IsEnded = false;
                     break;
                 case MatchState.Finished:
+                case MatchState.Closed:
                     IsStarted = true;
                     IsInProgress = false;
                     IsEnded = true;

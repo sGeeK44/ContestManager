@@ -151,6 +151,8 @@ namespace Contest.Ihm
                 delegate
                 {
                     CurrentContest.LaunchNextPhase();
+                    var contestService = new ContestService();
+                    contestService.SaveContest(CurrentContest);
                     RefreshVm();
                 },
                 delegate

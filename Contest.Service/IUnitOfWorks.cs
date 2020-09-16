@@ -3,7 +3,7 @@ using Contest.Domain.Players;
 
 namespace Contest.Service
 {
-    internal interface IUnitOfWorks
+    public interface IUnitOfWorks
     {
         void Save(IEntity entity);
 
