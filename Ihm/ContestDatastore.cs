@@ -5,6 +5,7 @@ using Contest.Domain.Games;
 using Contest.Domain.Matchs;
 using Contest.Domain.Players;
 using Contest.Domain.Settings;
+using SmartWay.Orm.Caches;
 using SmartWay.Orm.Interfaces;
 using SmartWay.Orm.Sql;
 using SmartWay.Orm.Sqlite;
@@ -35,6 +36,7 @@ namespace Contest.Ihm
             AddType<TeamGameStepRelationship>();
             AddType<TeamPhaseRelationship>();
             AddType<TeamPersonRelationship>();
+            Cache = new EntitiesCache();
         }
     }
 }
