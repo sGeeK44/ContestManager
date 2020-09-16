@@ -20,13 +20,13 @@
         </DockPanel>
         <StackPanel Margin="5,0" Grid.Column="1" Orientation="Horizontal" Visibility="{Binding ShowUpdateScoreBox, Converter={StaticResource TrueToVisible}}">
             <DockPanel Width="30">
-                <TextBox Width="20" Text="{Binding TeamScore1}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextBox GotFocus="TextBox_OnGotFocus" Width="20" Text="{Binding TeamScore1}" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </DockPanel>
             <DockPanel Width="5">
                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">-</TextBlock>
             </DockPanel>
             <DockPanel Width="30">
-                <TextBox Width="20" Text="{Binding TeamScore2}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextBox GotFocus="TextBox_OnGotFocus" Width="20" Text="{Binding TeamScore2}" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </DockPanel>
         </StackPanel>
         <StackPanel Margin="5,0" Grid.Column="1" Orientation="Horizontal" Visibility="{Binding ShowScoreBlock, Converter={StaticResource TrueToVisible}}" >

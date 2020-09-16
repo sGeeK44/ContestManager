@@ -8,14 +8,15 @@
         mc:Ignorable="d" WindowStartupLocation="CenterScreen"
         d:DataContext="{d:DesignInstance vm:RegisterTeamVm}"
         Title="Créer une équipe" Width="300" Height="130"
-        x:Name="Self">
+        x:Name="Self"
+        FocusManager.FocusedElement="{Binding ElementName=Name}">
     <StackPanel Margin="10, 10, 10, 10">
         <DockPanel Margin="0, 10, 0, 0">
             <Label Content="_Nom:" Target="{Binding ElementName=Name}"/>
             <TextBox Name="Name" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}">
             </TextBox>
         </DockPanel>
-        <Button Margin="0, 10, 0, 0" Width="125" Height="25" HorizontalAlignment="Center"
+        <Button Margin="0, 10, 0, 0" Width="125" Height="25" HorizontalAlignment="Center"  IsDefault="True"
                 Content="Créer">
             <b:Interaction.Triggers>
                 <b:EventTrigger EventName="Click" >

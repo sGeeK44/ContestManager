@@ -10,9 +10,9 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
-            <ColumnDefinition Width="500"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+        <ScrollViewer Grid.Column="0">
             <StackPanel>
                 <ItemsControl ItemsSource="{Binding GameStepList}">
                 <ItemsControl.ItemTemplate>
@@ -30,7 +30,7 @@
                                 <ItemsControl Grid.Row="0" ItemsSource="{Binding MatchList}" Visibility="{Binding HasMatchInProgress, Converter={StaticResource TrueToVisible}}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <StackPanel Orientation="Horizontal"/>
+                                                <WrapPanel Orientation="Horizontal"/>
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>

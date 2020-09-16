@@ -7,11 +7,12 @@
         mc:Ignorable="d" Height="300" Width="250" WindowStartupLocation="CenterScreen"
         x:Name="Self"
         d:DataContext="{d:DesignInstance ihm:RegisterPlayerVm}"
-        Title="{Binding Title}">
+        Title="{Binding Title}"
+        FocusManager.FocusedElement="{Binding ElementName=Alias}">
     <StackPanel Margin="10, 10, 10, 10">
         <DockPanel Margin="0, 10, 0, 0">
             <Label Content="Pseu_do:" Target="{Binding ElementName=Alias}"/>
-            <TextBox Text="{Binding Alias, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox x:Name="Alias" Text="{Binding Alias, UpdateSourceTrigger=PropertyChanged}"/>
         </DockPanel>
         <DockPanel Margin="0, 10, 0, 0">
             <Label Content="_Nom:" Target="{Binding ElementName=LastName}"/>
@@ -27,7 +28,7 @@
         </DockPanel>
         <CheckBox Margin="0, 10, 0, 0" Name="CanMailing" IsChecked="{Binding CanMailing}">Recevoir la news letter</CheckBox>
         <CheckBox Margin="0, 10, 0, 0" Name="IsMemberOfAssociation" IsChecked="{Binding IsMemberOfAssociation}">Membre de l'association</CheckBox>
-        <Button Margin="0, 10, 0, 0" Width="125" Height="25" HorizontalAlignment="Center"
+        <Button Margin="0, 10, 0, 0" Width="125" Height="25" HorizontalAlignment="Center" IsDefault="True"
                 Content="Enregistrer">
             <b:Interaction.Triggers>
                 <b:EventTrigger EventName="Click" >

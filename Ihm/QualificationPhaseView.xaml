@@ -24,7 +24,6 @@
                                 <DataGridTextColumn Width="*" Header="P" Binding="{Binding CountMatchLoose}" IsReadOnly="True" FontSize="16" FontWeight="Bold" />
                                 <DataGridTextColumn Width="*" Header="PM" Binding="{Binding SumMarkedPoint}" IsReadOnly="True" FontSize="16" FontWeight="Bold" />
                                 <DataGridTextColumn Width="*" Header="PE" Binding="{Binding SumTakePoint}" IsReadOnly="True" FontSize="16" FontWeight="Bold" />
-                                <DataGridTextColumn Width="*" Header="Diff." Binding="{Binding DifPointTakePoint}" IsReadOnly="True" FontSize="16" FontWeight="Bold" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </StackPanel>

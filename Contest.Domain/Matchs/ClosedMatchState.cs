@@ -47,7 +47,6 @@ namespace Contest.Domain.Matchs
         /// </summary>
         public override void Close()
         {
-            throw new NotSupportedException("Match can not be closed, because it was in closed state.");
         }
 
         #endregion

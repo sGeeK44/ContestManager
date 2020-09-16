@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
+using Contest.Core.Component;
 using Contest.Core.Windows.Commands;
 using Contest.Core.Windows.Mvvm;
 using Contest.Domain.Games;
 using Contest.Domain.Matchs;
 using Contest.Domain.Players;
 using Contest.Domain.Settings;
+using Contest.Service;
 
 namespace Contest.Ihm
 {
@@ -153,9 +156,11 @@ namespace Contest.Ihm
         private string _name;
         private ObservableCollection<MatchUpdateVm> _matchList;
         private bool _hasNext;
+        [Import] private IUnitOfWorks UnitOfWorks { get; set; }
 
         public GameStepVm(IGameStep current, IList<IField> fieldList)
         {
+            FlippingContainer.Instance.ComposeParts(this);
             Name = current.Name;
             ShowNextStepButton = current.NextStep != null;
             MatchList = new ObservableCollection<MatchUpdateVm>();
@@ -179,7 +184,30 @@ namespace Contest.Ihm
                 delegate
                 {
                     current.EndGameStep();
+                    UnitOfWorks.Save(current);
+                    foreach (var match in current.MatchList)
+                    {
+                        UnitOfWorks.Save(match);
+                    }
                     current.Phase.LaunchNextStep();
+                    UnitOfWorks.Save(current.Phase);
+                    foreach (var gameStep in current.Phase.GameStepList)
+                    {
+                        UnitOfWorks.Save(gameStep.CurrentMatchSetting);
+                        UnitOfWorks.Save(gameStep);
+                        foreach (var team in gameStep.TeamGameStepList)
+                        {
+                            UnitOfWorks.Save(team);
+                        }
+                        foreach (var match in gameStep.MatchList)
+                        {
+                            UnitOfWorks.Save(match);
+                        }
+                    }
+                    foreach (var teamPhase in current.Phase.TeamPhaseList)
+                    {
+                        UnitOfWorks.Save(teamPhase);
+                    }
                     ShowNextStepButton = false;
                 },
                 delegate

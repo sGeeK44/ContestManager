@@ -121,21 +121,21 @@ namespace Contest.Domain.Games
                 var currentTeam = team;
                 IList<IMatch> teamMatchList =
                     associatedMatch.Where(item =>
-                            item.IsFinished && (item.Team1 == currentTeam || item.Team2 == currentTeam))
+                            item.IsFinished && (item.Team1.Equals(currentTeam) || item.Team2.Equals(currentTeam)))
                         .ToList();
                 result.Add(currentTeam, new[]
                 {
                     teamMatchList.Count == 0
                         ? 0
-                        : teamMatchList.Count(item => item.Winner == team), //Compute number of victory
+                        : teamMatchList.Count(item => item.Winner.Equals(team)), //Compute number of victory
                     teamMatchList.Count == 0
                         ? 0
                         : teamMatchList.Sum(match =>
-                            match.Team1 == currentTeam ? match.TeamScore1 : match.TeamScore2), //Compute marked point
+                            match.Team1.Equals(currentTeam) ? match.TeamScore1 : match.TeamScore2), //Compute marked point
                     teamMatchList.Count == 0
                         ? 0
                         : teamMatchList.Sum(match =>
-                            match.Team1 == currentTeam ? match.TeamScore2 : match.TeamScore1) //Compute take point
+                            match.Team1.Equals(currentTeam) ? match.TeamScore2 : match.TeamScore1) //Compute take point
                 });
             }
 

@@ -38,7 +38,6 @@ namespace Contest.Ihm
             private int _countMatchLoose;
             private int _sumMarkedPoint;
             private int _sumTakePoint;
-            private int _difPointTakePoint;
 
             public RowVm(ITeam team, IList<IMatch> matchPlayed)
             {
@@ -91,12 +90,6 @@ namespace Contest.Ihm
                 set => Set(ref _sumTakePoint, value);
             }
 
-            public int DifPointTakePoint
-            {
-                get => _difPointTakePoint;
-                set => Set(ref _difPointTakePoint, value);
-            }
-
             public void RefreshVm(object sender)
             {
                 CountMatchPlayed = MatchList.Count(item => item.IsFinished);
@@ -108,7 +101,6 @@ namespace Contest.Ihm
                 SumTakePoint = MatchList.Where(item => item.IsFinished)
                                             .Select(item => (item.Team1.Equals(CurrenTeam)) ? item.TeamScore2 : item.TeamScore1)
                                             .Sum(item => item);
-                DifPointTakePoint = SumMarkedPoint - SumTakePoint;
             }
         }
     }
